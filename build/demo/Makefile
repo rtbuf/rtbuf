@@ -19,6 +19,7 @@ ${OBJECTS}: ${HEADERS}
 
 ${SRC}: %: ${SRCDIR}/%
 	cp $< $@
+	chmod a-w $@
 
 CLEANFILES += ${PROGRAM} ${OBJECTS} ${SRC}
 
