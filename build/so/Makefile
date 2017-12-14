@@ -18,6 +18,7 @@ ${PROGRAM}: ${OBJECTS}
 ${OBJECTS}: ${HEADERS}
 
 ${SRC}: %: ${SRCDIR}/%
+	chmod u+w $@
 	cp $< $@
 	chmod a-w $@
 
