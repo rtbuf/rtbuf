@@ -1,14 +1,14 @@
 
-PROGRAM = clidemo
+PROGRAM =
 SRCDIR = ../..
 
-CPPFLAGS = -I.
+CPPFLAGS =
 CFLAGS = -O0 -ggdb -W -Wall -Werror
 
 LDFLAGS =
-LIBS = -lhistory -lreadline
-HEADERS = cli.h
-OBJECTS = cli.o clidemo.o
+LIBS =
+HEADERS =
+OBJECTS =
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}
 
