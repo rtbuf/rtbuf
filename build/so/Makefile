@@ -18,7 +18,7 @@ ${PROGRAM}: ${OBJECTS}
 ${OBJECTS}: ${HEADERS}
 
 ${SRC}: %: ${SRCDIR}/%
-	chmod u+w $@
+	if [ -f $@ ]; then chmod u+w $@; fi
 	cp $< $@
 	chmod a-w $@
 
