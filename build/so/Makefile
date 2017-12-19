@@ -1,5 +1,5 @@
 
-PROGRAM = lib .so
+PROGRAM = libord.so
 SRCDIR = ../..
 
 CPPFLAGS =
@@ -7,8 +7,8 @@ CFLAGS = -O0 -ggdb -W -Wall -Werror -fpic
 
 LDFLAGS = -fPIC -shared
 LIBS =
-HEADERS =
-OBJECTS =
+HEADERS = ord.h string7.h strings7.h
+OBJECTS = ord.o string7.o strings7.o
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}
 
