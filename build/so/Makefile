@@ -7,8 +7,8 @@ CFLAGS = -O0 -ggdb -W -Wall -Werror -fpic
 
 LDFLAGS = -fPIC -shared
 LIBS =
-HEADERS = ord.h string7.h strings7.h
-OBJECTS = ord.o string7.o strings7.o
+HEADERS = bus7.h ord.h string7.h strings7.h
+OBJECTS = bus7.o ord.o string7.o strings7.o
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}
 
