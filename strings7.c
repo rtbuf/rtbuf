@@ -77,3 +77,40 @@ strings7 * strings7_last (strings7 *r, unsigned l)
     r = r - *r;
   }
 }
+
+char strings7_out (strings7 *r, unsigned l)
+{
+  string7 *s = strings7_last(r, l);
+  if (!s)
+    return 1;
+  *s = 0;
+  return 0;
+}
+
+char strings7_remove (string7 *s, strings7 *r, unsigned l)
+{
+  strings7 *t = strings7_string7(s, r, l);
+  if (!t)
+    return 1;
+  unsigned d = string7_len((string7*) t);
+  strings7 *u = strings7_last(t, l - (t - r));
+  unsigned len = u - t - *u - d;
+  while (len-- > 0) {
+    *t = t[d];
+    t++;
+  }
+  return 0;
+}
+
+strings7 * strings7_nth (strings7 *r, unsigned l, unsigned n)
+{
+  while (1) {
+    if (l == 0 || *r >= 0 || l < (unsigned) -*r)
+      return 0;
+    if (n == 0)
+      return r;
+    l += *r;
+    n--;
+    r -= *r;
+  }
+}
