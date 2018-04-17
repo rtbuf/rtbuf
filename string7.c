@@ -39,14 +39,31 @@ char string7_p (string7 *s)
 
 char string7_eq (string7 *a, string7 *b)
 {
-  if (*a >= 0 || *b >= 0 || *a != *b)
-    return 0;
-  unsigned char l = -*a - 1;
-  while (l-- > 0) {
+  if (*a < 0)
     a++;
+  if (*b < 0)
     b++;
+  while (1) {
     if (*a != *b)
       return 0;
+    if (*a < 0)
+      return 1;
+    a++;
+    b++;
+  }
+}
+
+char string7_eq_len (string7 *a, string7 *b, unsigned char len)
+{
+  if (*a < 0)
+    a++;
+  if (*b < 0)
+    b++;
+  while (len-- > 0) {
+    if (*a < 0 || *b < 0 || *a != *b)
+      return 0;
+    a++;
+    b++;
   }
   return 1;
 }
@@ -113,27 +130,6 @@ char string7_compare (string7 *a, string7 *b)
       return 1;
   }
   return *a == *b ? 0 : (*a > *b ? -1 : 1);
-}
-
-char string7_eq_len (string7 *a, string7 *b, unsigned char l)
-{
-  if (*a < 0) {
-    if (-*a - 1 < l)
-      return 0;
-    a++;
-  }
-  if (*b < 0) {
-    if (-*b - 1 < l)
-      return 0;
-    b++;
-  }
-  while (l-- > 0) {
-    if (*a < 0 || *b < 0 || *a != *b)
-      return 0;
-    a++;
-    b++;
-  }
-  return 1;
 }
 
 char string7_char (char c, string7 *s)

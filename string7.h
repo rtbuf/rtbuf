@@ -8,6 +8,7 @@ unsigned char string7_len (string7 *s);
 unsigned char string7__len (string7 *s);
 char string7_p (string7 *s);
 char string7_eq (string7 *a, string7 *b);
+char string7_eq_len (string7 *a, string7 *b, unsigned char len);
 char string7_lt (string7 *a, string7 *b);
 char string7_lte (string7 *a, string7 *b);
 char string7_gt (string7 *a, string7 *b);
