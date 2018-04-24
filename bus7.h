@@ -193,21 +193,21 @@
 #define BUS7_OUT(count) bus7_ ## count ## _out
 #define PROTO_BUS7_OUT(count)                   \
   char BUS7_OUT(count) (S_BUS7(count) *b)
-#define DEF_BUS7_OUT(count)                                             \
-  PROTO_BUS7_OUT(count)                                                 \
-  {                                                                     \
-    if (!b || !b->len)                                                  \
-      return 1;                                                         \
-    string7 *r = b->r + b->out;                                         \
-    if (*r >= 0)                                                        \
-      return 1;                                                         \
-    b->out -= *r;                                                       \
-    b->len--;                                                           \
-    if (b->out > count || b->len && b->r[b->out] >= 0)                  \
-      b->out = 0;                                                       \
-    *r = 0;                                                             \
-    return 0;                                                           \
-  }                                                                     \
+#define DEF_BUS7_OUT(count)                                     \
+  PROTO_BUS7_OUT(count)                                         \
+  {                                                             \
+    if (!b || !b->len)                                          \
+      return 1;                                                 \
+    string7 *r = b->r + b->out;                                 \
+    if (*r >= 0)                                                \
+      return 1;                                                 \
+    b->out -= *r;                                               \
+    b->len--;                                                   \
+    if (b->out > count || b->len && b->r[b->out] >= 0)          \
+      b->out = 0;                                               \
+    *r = 0;                                                     \
+    return 0;                                                   \
+  }                                                             \
 
 #define HEADER_BUS7(count)                      \
   TYPEDEF_BUS7(count)                           \
