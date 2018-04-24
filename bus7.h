@@ -203,7 +203,7 @@
       return 1;                                                 \
     b->out -= *r;                                               \
     b->len--;                                                   \
-    if (b->out > count || b->len && b->r[b->out] >= 0)          \
+    if (b->out > count || (b->len && b->r[b->out] >= 0))        \
       b->out = 0;                                               \
     *r = 0;                                                     \
     return 0;                                                   \
