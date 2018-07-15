@@ -1,5 +1,5 @@
 
-PROGRAM = demo_ord
+PROGRAM = rtbuf
 SRCDIR = ../..
 
 CPPFLAGS = -I${SRCDIR}/../cli/build/so
@@ -7,8 +7,8 @@ CFLAGS = -O0 -ggdb -W -Wall -Werror
 
 LDFLAGS = -L${SRCDIR}/../cli/build/so
 LIBS = -lcli
-HEADERS = ord.h
-OBJECTS = ord.o demo_ord.o
+HEADERS = rtbuf.h rtbuf_lib.h
+OBJECTS = rtbuf.o rtbuf_lib.o rtbuf_cli.o
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}
 

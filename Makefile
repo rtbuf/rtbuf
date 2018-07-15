@@ -1,5 +1,5 @@
 
-SUBDIRS = demo so
+SUBDIRS = rtbuf so
 
 all: ${SUBDIRS}
 all: TARGET =
