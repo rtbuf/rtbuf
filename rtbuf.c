@@ -18,50 +18,49 @@ int rtbuf_init ()
   return 0;
 }
 
-s_rtbuf * rtbuf_next ()
+int rtbuf_next ()
 {
   s_rtbuf *rtb = g_rtbuf;
   unsigned int i = 0;
-  while (1) {
-    if (i >= RTBUF_MAX)
-      return 0;
-    if (!rtb->data) {
+  while (i < RTBUF_MAX) {
+    if (rtb->data == 0) {
       g_rtbuf_n++;
-      return rtb;
+      return i;
     }
     rtb++;
     i++;
   }
+  return -1;
 }
 
-s_rtbuf * rtbuf_new (s_rtbuf_fun *rf)
+int rtbuf_new (s_rtbuf_fun *rf)
 {
   assert(rf);
-  s_rtbuf *rtb = rtbuf_next();
-  if (!rtb)
-    return 0;
-  rtb->data = calloc(rf->spec.nmemb, rf->spec.size);
-  rtb->fun = rf;
-  rtb->var = calloc(rf->spec.nvar, sizeof(void *));
+  int rtb;
+  if ((rtb = rtbuf_next()) < 0)
+    return -1;
+  g_rtbuf[rtb].data = calloc(rf->spec.nmemb, rf->spec.size);
+  g_rtbuf[rtb].fun = rf;
+  g_rtbuf[rtb].var = calloc(rf->spec.nvar, sizeof(int));
   g_rtbuf_sort = 1;
   return rtb;
 }
 
 void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int i)
 {
-  if (rtb->var[i])
-    rtb->var[i]->refc--;
-  rtb->var[i] = 0;
+  if (rtb->var[i] >= 0)
+    g_rtbuf[rtb->var[i]].refc--;
+  rtb->var[i] = -1;
 }
 
-void rtbuf_var_bind (s_rtbuf *rtb, unsigned int i, s_rtbuf *target)
+void rtbuf_var_bind (s_rtbuf *rtb, unsigned int i, int target)
 {
   if (rtb->var[i] == target)
     return;
-  if (rtb->var[i])
-    rtb->var[i]->refc--;
+  if (rtb->var[i] >= 0)
+    g_rtbuf[rtb->var[i]].refc--;
   rtb->var[i] = target;
-  target->refc++;
+  g_rtbuf[target].refc++;
   g_rtbuf_sort = 1;
 }
 
@@ -83,7 +82,7 @@ void rtbuf_delete (s_rtbuf *rtb)
 }
 
 typedef struct rtbuf_var_ptr {
-  s_rtbuf *rtbuf;
+  unsigned int rtb;
   unsigned int var;
 } s_rtbuf_var_ptr;
 
@@ -98,14 +97,14 @@ void rtbuf_var_stack_init (s_rtbuf_var_stack *rvs)
 }
 
 s_rtbuf_var_ptr * rtbuf_var_stack_push (s_rtbuf_var_stack *rvs,
-                                        s_rtbuf *rtbuf,
+                                        unsigned int rtb,
                                         unsigned int var)
 {
   s_rtbuf_var_ptr *top;
   if (rvs->size >= RTBUF_MAX)
     return 0;
   top = rvs->st[rvs->size];
-  top->rtbuf = rtbuf;
+  top->rtb = rtb;
   top->var = var;
   rvs->size++;
   return top;
@@ -135,9 +134,8 @@ void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
     if (rtb->flags & RTBUF_DELETE)
       rtbuf_delete(rtb);
     else {
-      rtb->flags = rtb->flags & ~RTBUF_SORT;
       if (rtb->refc == 0)
-        rtbuf_var_stack_push(rvs, rtb, 0);
+        rtbuf_var_stack_push(rvs, i, 0);
     }
     rtb++;
     i++;
@@ -148,9 +146,9 @@ void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
 void rtbuf_sort_push_child (s_rtbuf_var_stack *rvs,
                             s_rtbuf_var_ptr *ptr)
 {
-  s_rtbuf *rtb = ptr->rtbuf->var[ptr->var];
+  int rtb = g_rtbuf[ptr->rtb].var[ptr->var];
   ptr->var++;
-  if (rtb)
+  if (rtb >= 0)
     rtbuf_var_stack_push(rvs, rtb, 0);
 }
 
@@ -164,14 +162,27 @@ void rtbuf_sort ()
   rtbuf_var_stack_init(&rvs);
   rtbuf_find_roots(&rvs);
   while ((ptr = rtbuf_var_stack_top(&rvs))) {
-    if (ptr->var == ptr->rtbuf->fun->spec.nvar) {
-      g_rtbuf_sorted[i++] = ptr->rtbuf;
+    if (ptr->var == g_rtbuf[ptr->rtb].fun->spec.nvar) {
+      g_rtbuf_sorted[i++] = &g_rtbuf[ptr->rtb];
       rtbuf_var_stack_pop(&rvs);
     } else
       rtbuf_sort_push_child(&rvs, ptr);
   }
   g_rtbuf_sorted_n = i;
   g_rtbuf_sort = 0;
+}
+
+void rtbuf_start ()
+{
+  unsigned int i = 0;
+  if (g_rtbuf_sort)
+    rtbuf_sort();
+  while (i < g_rtbuf_sorted_n) {
+    s_rtbuf *rtb = g_rtbuf_sorted[i];
+    if (rtb->fun->start)
+      rtb->fun->start(rtb);
+    i++;
+  }
 }
 
 void rtbuf_run ()
@@ -181,7 +192,29 @@ void rtbuf_run ()
     rtbuf_sort();
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = g_rtbuf_sorted[i];
-    rtb->fun->f(rtb);
+    if (rtb->fun->f)
+      rtb->fun->f(rtb);
     i++;
   }
+}
+
+void rtbuf_stop ()
+{
+  unsigned int i = 0;
+  if (g_rtbuf_sort)
+    rtbuf_sort();
+  while (i < g_rtbuf_sorted_n) {
+    s_rtbuf *rtb = g_rtbuf_sorted[i];
+    if (rtb->fun->stop)
+      rtb->fun->stop(rtb);
+    i++;
+  }
+}
+
+int rtbuf_find (const char *x)
+{
+  int i = atoi(x);
+  if (0 <= i && i < RTBUF_MAX && g_rtbuf[i].data && g_rtbuf[i].fun)
+    return i;
+  return -1;
 }
