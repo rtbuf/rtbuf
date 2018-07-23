@@ -39,13 +39,16 @@ int rtbuf_next ()
 
 int rtbuf_new (s_rtbuf_fun *rf)
 {
-  assert(rf);
   int rtb;
+  unsigned int j = 0;
+  assert(rf);
   if ((rtb = rtbuf_next()) < 0)
     return -1;
   g_rtbuf[rtb].data = calloc(rf->spec.nmemb, rf->spec.size);
   g_rtbuf[rtb].fun = rf;
   g_rtbuf[rtb].var = calloc(rf->spec.nvar, sizeof(int));
+  while (j < rf->spec.nvar)
+    g_rtbuf[rtb].var[j++] = -1;
   g_rtbuf_sort = 1;
   return rtb;
 }
