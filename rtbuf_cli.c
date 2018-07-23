@@ -173,9 +173,9 @@ int rtbuf_cli_bind (int argc, const char *argv[])
   int var;
   int target;
   if (argc != 3)
-    return -1;
+    return rtbuf_err("usage: bind BUFFER VARIABLE TARGET");
   if ((rtb = rtbuf_find(argv[1])) < 0)
-    return rtbuf_err("rtbuf not found");
+    return rtbuf_err("buffer not found");
   var = atoi(argv[2]);
   if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->spec.nvar)
     return rtbuf_err("variable not found");
