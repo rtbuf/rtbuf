@@ -1,5 +1,6 @@
 
 #include <math.h>
+#include <stdio.h>
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
 #include "rtbuf_signal.h"
@@ -36,10 +37,13 @@ int sinus (s_rtbuf *rtb)
   double *freq_samples = freq < 0 ? 0 : (double*) g_rtbuf[freq].data;
   phase = data->phase;
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    double f = freq ? freq_samples[i] : 440;
+    double f = freq ? freq_samples[i] : 220;
+    //printf(" i=%u freq=%f", i, f);
     f /= (double) RTBUF_SIGNAL_SAMPLERATE;
     phase = phase + 2.0 * M_PI * f;
-    data->samples[i++] = sin(phase);
+    data->samples[i] = sin(phase);
+    //printf(" sin=%f", data->samples[i]);
+    i++;
   }
   data->phase = phase;
   return 0;
