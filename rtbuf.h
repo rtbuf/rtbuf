@@ -39,8 +39,9 @@ typedef int f_rtbuf_lib_init ();
 extern s_rtbuf      g_rtbuf[];
 extern unsigned int g_rtbuf_max;
 extern unsigned int g_rtbuf_n;
+extern int          g_rtbuf_run;
 extern unsigned int g_rtbuf_sort;
-extern s_rtbuf *    g_rtbuf_sorted[];
+extern int          g_rtbuf_sorted[];
 extern unsigned int g_rtbuf_sorted_n;
 
 int  rtbuf_init ();
