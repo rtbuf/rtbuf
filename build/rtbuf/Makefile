@@ -6,7 +6,7 @@ CPPFLAGS = -I${SRCDIR}/../cli/build/so
 CFLAGS = -O0 -ggdb -W -Wall -Werror
 
 LDFLAGS = -L${SRCDIR}/../cli/build/so
-LIBS = -lcli
+LIBS = -lcli -lpthread
 HEADERS = rtbuf.h rtbuf_lib.h
 OBJECTS = rtbuf.o rtbuf_lib.o rtbuf_cli.o
 

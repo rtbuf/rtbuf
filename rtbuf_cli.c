@@ -1,9 +1,12 @@
 
 #include <assert.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <cli.h>
 #include "rtbuf_lib.h"
+
+pthread_t g_rtbuf_cli_thread = 0;
 
 void print_lib (unsigned int i)
 {
@@ -183,6 +186,62 @@ int rtbuf_cli_bind (int argc, const char *argv[])
   return 0;
 }
 
+int rtbuf_cli_unbind (int argc, const char *argv[])
+{
+  int rtb;
+  if (argc < 1 || argc > 2)
+    return rtbuf_err("usage: unbind BUFFER [VARIABLE]");
+  if ((rtb = rtbuf_find(argv[1])) < 0)
+    return rtbuf_err("buffer not found");
+  if (argc == 2) {
+    int var = atoi(argv[2]);
+    if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->spec.nvar)
+      return rtbuf_err("variable not found");
+    rtbuf_var_unbind(&g_rtbuf[rtb], var);
+  }
+  else
+    rtbuf_unbind(&g_rtbuf[rtb]);
+  print_rtbuf_long(rtb);
+  return 0;
+}
+
+void * rtbuf_cli_thread_fun (void *arg)
+{
+  (void) arg;
+  rtbuf_start();
+  g_rtbuf_run = 1;
+  while (g_rtbuf_run) {
+    rtbuf_run();
+  }
+  rtbuf_stop();
+  return 0;
+}
+
+int rtbuf_cli_start (int argc, const char *argv[])
+{
+  (void) argv;
+  if (argc != 0)
+    return rtbuf_err("usage: start");
+  if (!g_rtbuf_cli_thread) {
+    if (pthread_create(&g_rtbuf_cli_thread, 0, &rtbuf_cli_thread_fun,
+                       0))
+      return rtbuf_err("pthread_create failed");
+  }
+  return 0;
+}
+
+int rtbuf_cli_stop (int argc, const char *argv[])
+{
+  (void) argv;
+  if (argc != 0)
+    return rtbuf_err("usage: stop");
+  g_rtbuf_run = 0;
+  if (pthread_join(g_rtbuf_cli_thread, 0))
+    return rtbuf_err("pthread_join failed");
+  g_rtbuf_cli_thread = 0;
+  return 0;
+}
+
 int rtbuf_cli_help (int argc, const char *argv[])
 {
   (void) argc;
@@ -219,9 +278,10 @@ s_cli_function rtbuf_cli_functions[] = {
   { "new",     2, rtbuf_cli_new },
   { "delete",  1, rtbuf_cli_delete },
   { "bind",    3, rtbuf_cli_bind },
-  /*
+  { "unbind",  1, rtbuf_cli_unbind },
   { "unbind",  2, rtbuf_cli_unbind },
-  */
+  { "start",   0, rtbuf_cli_start },
+  { "stop",    0, rtbuf_cli_stop },
   { "h",       0, rtbuf_cli_help },
   { "help",    0, rtbuf_cli_help },
   { "quit",    0, rtbuf_cli_quit },
