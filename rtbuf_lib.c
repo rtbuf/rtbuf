@@ -95,6 +95,11 @@ void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
   }
 }
 
+int rtbuf_fun_p (s_rtbuf_fun *fun)
+{
+  return fun->f || fun->start || fun->stop;
+}
+
 s_rtbuf_lib * rtbuf_lib_load (const char *name)
 {
   s_rtbuf_lib *lib = rtbuf_lib_new();
@@ -112,7 +117,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   lib->fun = dlsym(lib->lib, "rtbuf_lib_fun");
   lib->fun_n = 0;
   while (lib->fun_n < RTBUF_LIB_MAX &&
-         lib->fun[lib->fun_n].f)
+         rtbuf_fun_p(&lib->fun[lib->fun_n]))
     lib->fun_n++;
   return lib;
 }
