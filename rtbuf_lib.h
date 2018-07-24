@@ -11,6 +11,7 @@ typedef struct rtbuf_lib {
   unsigned int fun_n;
   void *lib;
   char path[1024];
+  char *name;
 } s_rtbuf_lib;
 
 extern s_rtbuf_lib  g_rtbuf_lib[];

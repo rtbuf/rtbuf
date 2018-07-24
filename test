@@ -1,5 +1,5 @@
-load ./signal.so
-load ./sndio.so
+load signal
+load sndio
 new 0 0
 new 0 0
 new 1 1

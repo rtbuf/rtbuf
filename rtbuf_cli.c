@@ -327,6 +327,7 @@ int main (int argc, char *argv[])
 {
   (void) argc;
   (void) argv;
+  rtbuf_lib_init();
   return repl();
 }
 
