@@ -8,7 +8,7 @@ CFLAGS = -O0 -ggdb -W -Wall -Werror
 LDFLAGS = -L${SRCDIR}/../cli/build/so
 LIBS = -lcli -lpthread
 HEADERS = rtbuf.h rtbuf_lib.h symbol.h
-OBJECTS = rtbuf.o rtbuf_lib.o rtbuf_cli.o symbol.o
+OBJECTS = rtbuf.o rtbuf_lib.o rtbuf_cli.o rtbuf_fun.o symbol.o
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}
 

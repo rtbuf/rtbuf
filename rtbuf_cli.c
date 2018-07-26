@@ -5,13 +5,24 @@
 #include <stdio.h>
 #include <cli.h>
 #include "rtbuf_lib.h"
+#include "symbol.h"
 
 pthread_t g_rtbuf_cli_thread = 0;
 
 void print_lib (unsigned int i)
 {
   assert(i < RTBUF_LIB_MAX);
-  printf("#<lib %i \"%s\">\n", i, g_rtbuf_lib[i].path);
+  printf("#<lib %i %s>\n", i, g_rtbuf_lib[i].name);
+}
+
+void print_rtbuf_fun (s_rtbuf_fun *fun)
+{
+  printf("#<fun %i %s nmemb=%u size=%u var_n=%u>",
+         fun->lib_fun,
+         fun->name,
+         fun->nmemb,
+         fun->size,
+         fun->var_n);
 }
 
 void print_lib_long (unsigned int i)
@@ -20,14 +31,13 @@ void print_lib_long (unsigned int i)
   unsigned int j = 0;
   assert(i < RTBUF_LIB_MAX);
   lib = &g_rtbuf_lib[i];
-  printf("#<lib %i \"%s\"\n", i, lib->path);
+  printf("#<lib %i %s", i, lib->name);
   while (j < lib->fun_n) {
-    s_rtbuf_fun *fun = &lib->fun[j];
-    printf("  #<fun %i %i %i %i>\n", j, fun->spec.nmemb, fun->spec.size,
-           fun->spec.nvar);
+    printf("\n  ");
+    print_rtbuf_fun(lib->fun[j]);
     j++;
   }
-  printf("  >\n");
+  printf(">\n");
   fflush(stdout);
 }
 
@@ -50,9 +60,9 @@ void print_rtbuf_long (unsigned int i)
     printf(" %x", rtb->flags);
     printf(" %d", rtb->refc);
   }
-  while (j < rtb->fun->spec.nvar) {
+  while (j < rtb->fun->var_n) {
     if (rtb->var[j] >= 0) {
-      printf("\n  var[%i] = ", j);
+      printf("\n  %i %s = ", j, rtb->fun->var[j]);
       print_rtbuf(rtb->var[j]);
     }
     j++;
@@ -80,15 +90,15 @@ int rtbuf_cli_libs (int argc, const char *argv[])
 
 int rtbuf_cli_lib (int argc, const char *argv[])
 {
-  unsigned int i;
-  assert(argc == 1);
-  i = atoi(argv[1]);
-  if (i >= RTBUF_LIB_MAX) {
-    printf("library not found\n");
-    return -1;
+  int i;
+  if (argc != 1)
+    return rtbuf_err("usage: lib LIBRARY");
+  i = rtbuf_lib_find(argv[1]);
+  if (0 <= i && i < RTBUF_LIB_MAX) {
+    print_lib_long(i);
+    return 0;
   }
-  print_lib_long(i);
-  return 0;
+  return rtbuf_err("library not found");
 }
 
 int rtbuf_cli_load (int argc, const char *argv[])
@@ -146,7 +156,7 @@ int rtbuf_cli_new (int argc, const char *argv[])
     return rtbuf_err("library not found");
   if ((rf = rtbuf_lib_find_fun(&g_rtbuf_lib[rl], argv[2])) < 0)
     return rtbuf_err("function not found");
-  if ((rtb = rtbuf_new(&g_rtbuf_lib[rl].fun[rf])) < 0)
+  if ((rtb = rtbuf_new(g_rtbuf_lib[rl].fun[rf])) < 0)
     return rtbuf_err("buffer not created");
   print_rtbuf(rtb);
   printf("\n");
@@ -177,7 +187,7 @@ int rtbuf_cli_bind (int argc, const char *argv[])
   if ((rtb = rtbuf_find(argv[1])) < 0)
     return rtbuf_err("buffer not found");
   var = atoi(argv[2]);
-  if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->spec.nvar)
+  if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->var_n)
     return rtbuf_err("variable not found");
   if ((target = rtbuf_find(argv[3])) < 0)
     return rtbuf_err("target not found");
@@ -195,7 +205,7 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
     return rtbuf_err("buffer not found");
   if (argc == 2) {
     int var = atoi(argv[2]);
-    if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->spec.nvar)
+    if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->var_n)
       return rtbuf_err("variable not found");
     rtbuf_var_unbind(&g_rtbuf[rtb], var);
   }
@@ -327,11 +337,12 @@ int main (int argc, char *argv[])
 {
   (void) argc;
   (void) argv;
+  init_symbols();
   rtbuf_lib_init();
   return repl();
 }
 
-int rtbuf_err (const char *msg)
+extern int rtbuf_err (const char *msg)
 {
   fprintf(stderr, "%s\n", msg);
   return -1;

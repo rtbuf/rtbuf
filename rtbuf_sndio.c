@@ -31,15 +31,20 @@ typedef struct sndio_output_data {
 static int sndio_output (s_rtbuf *rtb);
 static int sndio_output_start (s_rtbuf *rtb);
 static int sndio_output_stop (s_rtbuf *rtb);
+static const char *sndio_output_vars[] = { "left", "right", 0 };
 
-unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;
-s_rtbuf_fun rtbuf_lib_fun[] = {
-  { sndio_input, sndio_input_start, sndio_input_stop,
-    { sizeof(s_sndio_input_data) / sizeof(double), sizeof(double),
-      0 } },
-  { sndio_output, sndio_output_start, sndio_output_stop,
-    { 1, sizeof(s_sndio_output_data), RTBUF_SNDIO_CHANNELS } },
-  { 0, 0, 0, { 0, 0, 0 } }
+extern const char     *rtbuf_lib_name;
+extern unsigned long   rtbuf_lib_ver;
+extern s_rtbuf_lib_fun rtbuf_lib_fun[];
+
+const char     *rtbuf_lib_name = "sndio";
+unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
+s_rtbuf_lib_fun rtbuf_lib_fun[] = {
+  { "input", sndio_input, sndio_input_start, sndio_input_stop,
+    sizeof(s_sndio_input_data) / sizeof(double), sizeof(double), 0 },
+  { "output", sndio_output, sndio_output_start, sndio_output_stop,
+    1, sizeof(s_sndio_output_data), sndio_output_vars },
+  { 0, 0, 0, 0, 0, 0, 0 }
 };
 
 int sndio_input (s_rtbuf *rtb)
@@ -170,9 +175,10 @@ int sndio_output (s_rtbuf *rtb)
   //printf("\n");
   return 0;
 }
-
+/*
 int rtbuf_err (const char *msg)
 {
   fprintf(stderr, "%s\n", msg);
   return -1;
 }
+*/

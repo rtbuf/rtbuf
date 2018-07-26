@@ -16,16 +16,18 @@ typedef struct sinus_data {
   double phase;
 } s_sinus_data;
 
-static int sinus (s_rtbuf *rtb);
-static int sinus_start (s_rtbuf *rtb);
+extern int sinus (s_rtbuf *rtb);
+extern int sinus_start (s_rtbuf *rtb);
 
-unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;
-s_rtbuf_fun rtbuf_lib_fun[] = {
-  { sinus, sinus_start, 0,
-    { sizeof(s_sinus_data) / sizeof(double),
-      sizeof(double),
-      SINUS_ARITY } },
-  { 0, 0, 0, { 0, 0, 0 } }
+const char *sinus_vars[] = { "frequency", "amplitude", 0 };
+
+const char     *rtbuf_lib_name = "signal";
+unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
+s_rtbuf_lib_fun rtbuf_lib_fun[] = {
+  { "sinus", sinus, sinus_start, 0,
+    sizeof(s_sinus_data) / sizeof(double),
+    sizeof(double), sinus_vars },
+  { 0, 0, 0, 0, 0, 0, 0 }
 };
 
 int sinus (s_rtbuf *rtb)
@@ -37,7 +39,7 @@ int sinus (s_rtbuf *rtb)
   double *freq_samples = freq < 0 ? 0 : (double*) g_rtbuf[freq].data;
   phase = data->phase;
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    double f = freq ? freq_samples[i] : 220;
+    double f = freq_samples ? freq_samples[i] : 220;
     //printf(" i=%u freq=%f", i, f);
     f /= (double) RTBUF_SIGNAL_SAMPLERATE;
     phase = phase + 2.0 * M_PI * f;

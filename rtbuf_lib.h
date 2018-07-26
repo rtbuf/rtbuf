@@ -6,12 +6,22 @@
 #define RTBUF_LIB_MAX 1000
 #define RTBUF_LIB_VER 0x00010001
 
+typedef struct rtbuf_lib_fun {
+  const char *name;
+  f_rtbuf_fun *f;
+  f_rtbuf_fun *start;
+  f_rtbuf_fun *stop;
+  unsigned int nmemb; /* number of members in buffer data */
+  unsigned int size;  /* size of members in bytes in buffer data */
+  const char **var;  /* names of variables, end with NULL */
+} s_rtbuf_lib_fun;
+
 typedef struct rtbuf_lib {
-  s_rtbuf_fun *fun;
+  const char *name;
+  s_rtbuf_fun **fun;
   unsigned int fun_n;
   void *lib;
-  char path[1024];
-  char *name;
+  const char *path;
 } s_rtbuf_lib;
 
 extern s_rtbuf_lib  g_rtbuf_lib[];
