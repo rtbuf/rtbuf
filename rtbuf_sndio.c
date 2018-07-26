@@ -5,49 +5,30 @@
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
 #include "rtbuf_signal.h"
-
-enum {
-  RTBUF_SNDIO_LEFT = 0,
-  RTBUF_SNDIO_RIGHT,
-  RTBUF_SNDIO_CHANNELS
-};
-
-typedef struct sndio_input_data {
-  double samples[RTBUF_SNDIO_CHANNELS][RTBUF_SIGNAL_SAMPLES];
-  short short_samples[RTBUF_SNDIO_CHANNELS * RTBUF_SIGNAL_SAMPLES];
-} s_sndio_input_data;
-
-static int sndio_input (s_rtbuf *rtb);
-static int sndio_input_start (s_rtbuf *rtb);
-static int sndio_input_stop (s_rtbuf *rtb);
-
-typedef struct sndio_output_data {
-  short samples[RTBUF_SNDIO_CHANNELS * RTBUF_SIGNAL_SAMPLES];
-  struct sio_hdl *sio_hdl;
-  struct sio_par want;
-  struct sio_par have;
-} s_sndio_output_data;
-
-static int sndio_output (s_rtbuf *rtb);
-static int sndio_output_start (s_rtbuf *rtb);
-static int sndio_output_stop (s_rtbuf *rtb);
-static const char *sndio_output_vars[] = { "left", "right", 0 };
-
-extern const char     *rtbuf_lib_name;
-extern unsigned long   rtbuf_lib_ver;
-extern s_rtbuf_lib_fun rtbuf_lib_fun[];
+#include "rtbuf_sndio.h"
 
 const char     *rtbuf_lib_name = "sndio";
 unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
 s_rtbuf_lib_fun rtbuf_lib_fun[] = {
-  { "input", sndio_input, sndio_input_start, sndio_input_stop,
-    sizeof(s_sndio_input_data) / sizeof(double), sizeof(double), 0 },
-  { "output", sndio_output, sndio_output_start, sndio_output_stop,
-    1, sizeof(s_sndio_output_data), sndio_output_vars },
+  { "input", rtbuf_sndio_input, rtbuf_sndio_input_start,
+    rtbuf_sndio_input_stop,
+    sizeof(s_rtbuf_sndio_input_data) / sizeof(double) + 1,
+    sizeof(double), 0 },
+  { "output", rtbuf_sndio_output, rtbuf_sndio_output_start,
+    rtbuf_sndio_output_stop,
+    sizeof(s_rtbuf_sndio_output_data) / sizeof(short) + 1,
+    sizeof(short),
+    (const char*[]) { "left", "right", 0 } },
   { 0, 0, 0, 0, 0, 0, 0 }
 };
 
-int sndio_input (s_rtbuf *rtb)
+void print_sio_par (struct sio_par *par)
+{
+  printf("#<sio_par bits=%i sig=%i rchan=%i pchan=%i rate=%i>",
+         par->bits, par->sig, par->rchan, par->pchan, par->rate);
+}
+
+int rtbuf_sndio_input (s_rtbuf *rtb)
 {
   /*
     s_sndio_input_data *data = (s_sndio_input_data*) rtb->data;
@@ -56,25 +37,19 @@ int sndio_input (s_rtbuf *rtb)
   return 0;
 }
 
-int sndio_input_start (s_rtbuf *rtb)
+int rtbuf_sndio_input_start (s_rtbuf *rtb)
 {
   (void) rtb;
   return 0;
 }
 
-int sndio_input_stop (s_rtbuf *rtb)
+int rtbuf_sndio_input_stop (s_rtbuf *rtb)
 {
   (void) rtb;
   return 0;
 }
 
-void print_sio_par (struct sio_par *par)
-{
-  printf("#<sio_par bits=%i sig=%i rchan=%i pchan=%i rate=%i>",
-         par->bits, par->sig, par->rchan, par->pchan, par->rate);
-}
-
-void sndio_output_parameters (struct sio_par *want)
+void rtbuf_sndio_output_parameters (struct sio_par *want)
 {
   bzero(want, sizeof(struct sio_par));
   sio_initpar(want);
@@ -88,7 +63,7 @@ void sndio_output_parameters (struct sio_par *want)
   print_sio_par(want); printf("\n");
 }
 
-int sndio_output_check_parameters (struct sio_par *have)
+int rtbuf_sndio_output_check_parameters (struct sio_par *have)
 {
   print_sio_par(have); printf("\n");
   int ok = (have->bits == 16 &&
@@ -99,21 +74,22 @@ int sndio_output_check_parameters (struct sio_par *have)
   return ok;
 }
 
-int sndio_output_start (s_rtbuf *rtb)
+int rtbuf_sndio_output_start (s_rtbuf *rtb)
 {
-  s_sndio_output_data *data = (s_sndio_output_data*) rtb->data;
+  s_rtbuf_sndio_output_data *data;
   int err = 0;
+  data = (s_rtbuf_sndio_output_data*) rtb->data;
   if (!data->sio_hdl) {
     data->sio_hdl = sio_open(SIO_DEVANY, SIO_PLAY, 0);
     if (!data->sio_hdl)
       err = rtbuf_err("sndio_output_start: sio_open failed");
     else {
-      sndio_output_parameters(&data->want);
+      rtbuf_sndio_output_parameters(&data->want);
       if (sio_setpar(data->sio_hdl, &data->want) != 1)
         err = rtbuf_err("sndio_output_start: sio_setpar failed");
       else if (sio_getpar(data->sio_hdl, &data->have) != 1)
         err = rtbuf_err("sndio_output_start: sio_getpar failed");
-      else if (!sndio_output_check_parameters(&data->have))
+      else if (!rtbuf_sndio_output_check_parameters(&data->have))
         err = rtbuf_err("sndio_output_start: check_parameters failed");
       else if (sio_start(data->sio_hdl) != 1)
         err = rtbuf_err("sndio_output_start: sio_start failed");
@@ -122,9 +98,10 @@ int sndio_output_start (s_rtbuf *rtb)
   return err;
 }
 
-int sndio_output_stop (s_rtbuf *rtb)
+int rtbuf_sndio_output_stop (s_rtbuf *rtb)
 {
-  s_sndio_output_data *data = (s_sndio_output_data*) rtb->data;
+  s_rtbuf_sndio_output_data *data;
+  data = (s_rtbuf_sndio_output_data*) rtb->data;
   if (data->sio_hdl) {
     sio_close(data->sio_hdl);
     data->sio_hdl = 0;
@@ -132,23 +109,15 @@ int sndio_output_stop (s_rtbuf *rtb)
   return 0;
 }
 
-double min (double a, double b)
+int rtbuf_sndio_output (s_rtbuf *rtb)
 {
-  return a < b ? a : b;
-}
-
-double max (double a, double b)
-{
-  return a > b ? a : b;
-}
-
-int sndio_output (s_rtbuf *rtb)
-{
-  s_sndio_output_data *data = (s_sndio_output_data*) rtb->data;
+  s_rtbuf_sndio_output_data *data;
   double *in[RTBUF_SNDIO_CHANNELS];
-  short *sample = data->samples;
+  short *sample;
   unsigned int i = 0;
   unsigned int j = 0;
+  data = (s_rtbuf_sndio_output_data*) rtb->data;
+  sample = data->samples;
   //printf("sndio_output");
   while (j < RTBUF_SNDIO_CHANNELS) {
     in[j] = rtb->var[j] < 0 ? 0 : (double*) g_rtbuf[rtb->var[j]].data;
@@ -175,10 +144,3 @@ int sndio_output (s_rtbuf *rtb)
   //printf("\n");
   return 0;
 }
-/*
-int rtbuf_err (const char *msg)
-{
-  fprintf(stderr, "%s\n", msg);
-  return -1;
-}
-*/

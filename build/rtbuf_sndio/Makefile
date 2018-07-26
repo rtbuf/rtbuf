@@ -7,7 +7,7 @@ CFLAGS = -O0 -ggdb -W -Wall -Werror -fpic
 
 LDFLAGS = -fPIC -shared
 LIBS = -lsndio
-HEADERS = rtbuf.h rtbuf_lib.h rtbuf_signal.h
+HEADERS = rtbuf.h rtbuf_lib.h rtbuf_signal.h rtbuf_sndio.h
 OBJECTS = rtbuf_sndio.o
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}
