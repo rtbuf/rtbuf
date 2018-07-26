@@ -1,8 +1,8 @@
 load signal
 load sndio
-new 0 0
-new 0 0
-new 1 1
+new signal sinus
+new signal sinus
+new sndio output
 bind 2 0 0
 bind 2 1 1
 buffer 0
