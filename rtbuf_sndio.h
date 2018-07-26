@@ -1,6 +1,8 @@
 #ifndef RTBUF_SNDIO_H
 #define RTBUF_SNDIO_H
 
+void print_sio_par (struct sio_par *par);
+
 enum {
   RTBUF_SNDIO_LEFT = 0,
   RTBUF_SNDIO_RIGHT,
