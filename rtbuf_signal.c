@@ -18,18 +18,3 @@ s_rtbuf_lib_fun rtbuf_lib_fun[] = {
     (const char*[]) { "frequency", "amplitude", "pulse", 0 } },
   { 0, 0, 0, 0, 0, 0, 0 }
 };
-
-double min (double a, double b)
-{
-  return a < b ? a : b;
-}
-
-double max (double a, double b)
-{
-  return a < b ? b : a;
-}
-
-double clamp (double inf, double x, double sup)
-{
-  return max(inf, min(x, sup));
-}

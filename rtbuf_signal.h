@@ -4,10 +4,6 @@
 #define RTBUF_SIGNAL_SAMPLES 256
 #define RTBUF_SIGNAL_SAMPLERATE 44100
 
-double min (double a, double b);
-double max (double a, double b);
-double clamp (double inf, double x, double sup);
-
 /* sinus */
 
 enum {

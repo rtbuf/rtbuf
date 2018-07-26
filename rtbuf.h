@@ -66,4 +66,19 @@ void rtbuf_unbind (s_rtbuf *rtb);
 void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var);
 void rtbuf_var_bind (s_rtbuf *rtb, unsigned int var, int target);
 
+static inline double min (double a, double b)
+{
+  return a < b ? a : b;
+}
+
+static inline double max (double a, double b)
+{
+  return a < b ? b : a;
+}
+
+static inline double clamp (double inf, double x, double sup)
+{
+  return max(inf, min(x, sup));
+}
+
 #endif /* RTBUF_H */
