@@ -1,9 +1,10 @@
 
 #include <assert.h>
+#include <cli.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <cli.h>
+#include <unistd.h>
 #include "rtbuf_lib.h"
 #include "symbol.h"
 
@@ -267,14 +268,16 @@ int rtbuf_cli_help (int argc, const char *argv[])
          "  bind RTBUF VAR TARGET  Bind RTBUF VAR to TARGET.\n"
          "  unbind RTBUF VAR       Unbind RTBUF VAR.\n"
          "  help                   Show this help message.\n"
-         "  quit                   Quit RTBUF.\n");
+         "  exit                   Quit RTBUF.\n");
   return 0;
 }
 
-int rtbuf_cli_quit (int argc, const char *argv[])
+int rtbuf_cli_exit (int argc, const char *argv[])
 {
-  assert(argc == 0);
+  (void) argc;
   (void) argv;
+  rtbuf_cli_stop(0, 0);
+  close(0);
   exit(0);
   return 0;
 }
@@ -294,7 +297,7 @@ s_cli_function rtbuf_cli_functions[] = {
   { "stop",    0, rtbuf_cli_stop },
   { "h",       0, rtbuf_cli_help },
   { "help",    0, rtbuf_cli_help },
-  { "quit",    0, rtbuf_cli_quit },
+  { "exit",    0, rtbuf_cli_exit },
   { 0, 0, 0 }
 };
 
