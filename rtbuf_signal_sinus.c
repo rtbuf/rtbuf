@@ -2,7 +2,6 @@
 #include <math.h>
 #include <stdio.h>
 #include "rtbuf.h"
-#include "rtbuf_lib.h"
 #include "rtbuf_signal.h"
 
 int rtbuf_signal_sinus (s_rtbuf *rtb)
