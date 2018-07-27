@@ -5,6 +5,7 @@
 #include "rtbuf_lib.h"
 #include "rtbuf_signal.h"
 
+static inline
 double square (double amp, double phase, double pulse)
 {
   return phase < pulse ? amp : -amp;
