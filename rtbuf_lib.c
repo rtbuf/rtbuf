@@ -118,7 +118,7 @@ void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
     while (*in)
       g_string[g_string_n++] = *in++;
     g_string[g_string_n++] = 0;
-    printf("lib_load path \"%s\"\n", lib->path);
+    //printf("lib_load path \"%s\"\n", lib->path);
     lib->lib = dlopen(lib->path, 0);
   }
 }
@@ -142,10 +142,10 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
     return 0;
   }
   ver = dlsym(lib->lib, "rtbuf_lib_ver");
-  printf("lib_load ver %lu\n", *ver);
+  //printf("lib_load ver %lu\n", *ver);
   assert(*ver == RTBUF_LIB_VER);
   lib->name = intern(name);
-  printf("lib_load name %s\n", lib->name);
+  //printf("lib_load name %s\n", lib->name);
   fun = dlsym(lib->lib, "rtbuf_lib_fun");
   lib->fun_n = 0;
   while (lib->fun_n < RTBUF_LIB_MAX &&
