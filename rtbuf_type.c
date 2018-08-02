@@ -61,21 +61,20 @@ s_rtbuf_type * rtbuf_type_find (const char *name)
 s_rtbuf_type * rtbuf_type_parse_array (const char *name)
 {
   char *bracket = strchr(name, '[');
-  if (bracket) {
+  char *right_bracket = bracket ? strchr(bracket, ']') : 0;
+  if (right_bracket) {
     char buf[1024];
-    s_rtbuf_type *before;
-    int len = bracket - name;
-    char *a = &buf[len + 1];
-    char *right_bracket;
+    unsigned int lb = bracket - name;
+    unsigned int rb = right_bracket - name;
+    s_rtbuf_type *element_type;
     unsigned int size;
     strlcpy(buf, name, sizeof(buf));
-    buf[len] = 0;
-    if ((before = rtbuf_type(buf)) == 0)
+    buf[lb] = 0;
+    if ((element_type = rtbuf_type(buf)) == 0)
       return 0;
-    right_bracket = strchr(a, ']');
-    *right_bracket = 0;
-    size = atoi(a);
-    return rtbuf_type_new(buf, size);
+    buf[rb] = 0;
+    size = atoi(&buf[lb + 1]);
+    return rtbuf_type_new(name, element_type->size * size);
   }
   return 0;
 }
@@ -91,8 +90,9 @@ s_rtbuf_type * rtbuf_type_parse_pointer (const char *name)
 s_rtbuf_type * rtbuf_type (const char *name)
 {
   const char *sym = symbol_find(name);
-  s_rtbuf_type *rt = sym ? rtbuf_type_find(sym) : 0;
-  if (!rt || !(rt = rtbuf_type_parse_array(name)) ||
+  s_rtbuf_type *rt;
+  if (!(rt = sym ? rtbuf_type_find(sym) : 0) &&
+      !(rt = rtbuf_type_parse_array(name)) &&
       !(rt = rtbuf_type_parse_pointer(name)))
     printf("type not found: %s\n", name);
   return rt;
