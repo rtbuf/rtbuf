@@ -4,14 +4,15 @@
 #include "rtbuf_type.h"
 #include "rtbuf_music.h"
 
-#define RTBUF_SIGNAL_SAMPLES 256
+#define RTBUF_SIGNAL_SAMPLE_TYPE "double"
+typedef double t_rtbuf_signal_sample;
+
+#define RTBUF_SIGNAL_SAMPLES      256
 #define RTBUF_SIGNAL_SAMPLERATE 44100
 #define RTBUF_SIGNAL_DT \
   ((double) RTBUF_SIGNAL_SAMPLES / RTBUF_SIGNAL_SAMPLERATE)
-#define RTBUF_SIGNAL_TYPE                       \
-  RTBUF_TYPE_DOUBLE_ARRAY(RTBUF_SIGNAL_SAMPLES)
 
-typedef double t_rtbuf_signal[RTBUF_SIGNAL_SAMPLES];
+typedef t_rtbuf_signal_sample t_rtbuf_signal[RTBUF_SIGNAL_SAMPLES];
 
 double rtbuf_signal_sample (s_rtbuf *rtb, unsigned int var,
                             unsigned int i, double default_value);

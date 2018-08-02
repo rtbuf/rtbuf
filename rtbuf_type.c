@@ -97,3 +97,11 @@ s_rtbuf_type * rtbuf_type (const char *name)
     printf("type not found: %s\n", name);
   return rt;
 }
+
+s_rtbuf_type * rtbuf_type_array (const char *element_type,
+                                 unsigned int size)
+{
+  char buf[1024];
+  snprintf(buf, sizeof(buf), "%s[%u]", element_type, size);
+  return rtbuf_type(buf);
+}

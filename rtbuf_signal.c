@@ -5,6 +5,7 @@
 #include "rtbuf_lib.h"
 #include "rtbuf_music.h"
 #include "rtbuf_signal.h"
+#include "rtbuf_signal_type.h"
 
 s_rtbuf_lib_fun_var g_rtbuf_signal_sinus_var[] = {
   { "frequency", RTBUF_SIGNAL_TYPE },

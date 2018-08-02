@@ -25,7 +25,6 @@ int rtbuf_signal_adsr (s_rtbuf *rtb)
   s_rtbuf_signal_adsr_data *data;
   double *sample;
   unsigned int i = 0;
-  double dt = 
   data = (s_rtbuf_signal_adsr_data*) rtb->data;
   sample = data->samples;
   while (i < RTBUF_SIGNAL_SAMPLES) {
@@ -46,7 +45,7 @@ int rtbuf_signal_adsr (s_rtbuf *rtb)
       d = max(0.0, d);
       s = max(0.0, s);
       r = max(0.0, r);
-      *sample = adsr(a, d, s, r, data->start, data->stop);
+      *sample = adsr(a, d, s, r, start, stop);
     }
     else
       *sample = 0.0;

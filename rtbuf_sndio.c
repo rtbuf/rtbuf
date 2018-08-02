@@ -5,7 +5,9 @@
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
 #include "rtbuf_signal.h"
+#include "rtbuf_signal_type.h"
 #include "rtbuf_sndio.h"
+#include "rtbuf_sndio_type.h"
 
 s_rtbuf_lib_fun_out g_rtbuf_sndio_input_out[] = {
   { "left", RTBUF_SIGNAL_TYPE },
