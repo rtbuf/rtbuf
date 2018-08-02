@@ -27,6 +27,19 @@ s_rtbuf_lib_fun_out g_rtbuf_signal_square_out[] = {
   { "phase", "double" },
   { 0, 0 } };
 
+s_rtbuf_lib_fun_var g_rtbuf_signal_adsr_var[] = {
+  { "attack",  RTBUF_SIGNAL_TYPE },
+  { "decay",   RTBUF_SIGNAL_TYPE },
+  { "sustain", RTBUF_SIGNAL_TYPE },
+  { "release", RTBUF_SIGNAL_TYPE },
+  { 0, 0 } };
+
+s_rtbuf_lib_fun_out g_rtbuf_signal_adsr_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "start", "double" },
+  { "stop", "double" },
+  { 0, 0 } };
+
 s_rtbuf_lib_fun_var g_rtbuf_signal_synth_var[] = {
   { "keyboard", RTBUF_MUSIC_NOTES_TYPE },
   { "envelope", RTBUF_SIGNAL_TYPE },
@@ -45,6 +58,8 @@ s_rtbuf_lib_fun rtbuf_lib_fun[] = {
     g_rtbuf_signal_sinus_var, g_rtbuf_signal_sinus_out },
   { "square", rtbuf_signal_square, rtbuf_signal_square_start, 0,
     g_rtbuf_signal_square_var, g_rtbuf_signal_square_out },
+  { "adsr", rtbuf_signal_adsr, rtbuf_signal_adsr_start, 0,
+    g_rtbuf_signal_adsr_var, g_rtbuf_signal_adsr_out },
   { "synth", rtbuf_signal_synth, rtbuf_signal_synth_start, 0,
     g_rtbuf_signal_synth_var, g_rtbuf_signal_synth_out },
   { 0, 0, 0, 0, 0, 0 } };

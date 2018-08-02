@@ -53,3 +53,23 @@ void rtbuf_music_notes_dt (s_rtbuf_music_notes *notes, double dt)
     }
   }
 }
+
+s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
+                                         unsigned int var)
+{
+  s_rtbuf_binding *v = &rtb->var[var];
+  s_rtbuf *target;
+  void *data;
+  if (v->rtb < 0)
+    return 0;
+  target = &g_rtbuf[v->rtb];
+  //if (v->out >= target->fun->out_n)
+  data = target->data + target->fun->out[v->out].offset;
+  return (s_rtbuf_music_notes*) data;
+}
+
+int rtbuf_music_note_p (s_rtbuf_music_note *note)
+{
+  return (note && note->freq > 0.0 && note->velocity > 0.0 &&
+          note->start >= 0.0);
+}

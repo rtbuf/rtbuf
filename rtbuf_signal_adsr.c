@@ -20,37 +20,51 @@ double adsr (double attack, double decay, double sustain,
   return 0.0;
 }
 
-enum {
-  RTBUF_SIGNAL_ADSR_VAR_NOTE = 0,
-  RTBUF_SIGNAL_ADSR_VAR_ATTACK,
-  RTBUF_SIGNAL_ADSR_VAR_DECAY,
-  RTBUF_SIGNAL_ADSR_VAR_SUSTAIN,
-  RTBUF_SIGNAL_ADSR_VAR_RELEASE,
-  RTBUF_SIGNAL_ADSR_VAR_N,
-};
-
-typedef struct rtbuf_signal_adsr_data {
-  double samples[RTBUF_SIGNAL_SAMPLES];
-} s_rtbuf_signal_adsr_data;
-
 int rtbuf_signal_adsr (s_rtbuf *rtb)
 {
   s_rtbuf_signal_adsr_data *data;
-  int attack = rtb->var[RTBUF_SIGNAL_ADSR_VAR_ATTACK];
-  int decay = rtb->var[RTBUF_SIGNAL_ADSR_VAR_DECAY];
-  int sustain = rtb->var[RTBUF_SIGNAL_ADSR_VAR_SUSTAIN];
-  int release = rtb->var[RTBUF_SIGNAL_ADSR_VAR_RELEASE];
-  double *attack_samples = attack < 0 ? 0 : g_rtbuf[attack].data;
-  double *decay_samples = decay < 0 ? 0 : g_rtbuf[decay].data;
-  double *sustain_samples = sustain < 0 ? 0 : g_rtbuf[sustain].data;
-  double *release_samples = release < 0 ? 0 : g_rtbuf[release].data;
   double *sample;
   unsigned int i = 0;
+  double dt = 
   data = (s_rtbuf_signal_adsr_data*) rtb->data;
   sample = data->samples;
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    *sample = adsr(
+    if (data->start >= 0.0) {
+      double a = rtbuf_signal_sample(rtb, RTBUF_SIGNAL_ADSR_VAR_ATTACK,
+                                     i, 0.05);
+      double d = rtbuf_signal_sample(rtb, RTBUF_SIGNAL_ADSR_VAR_DECAY,
+                                     i, 0.02);
+      double s = rtbuf_signal_sample(rtb, RTBUF_SIGNAL_ADSR_VAR_SUSTAIN,
+                                     i, 0.666);
+      double r = rtbuf_signal_sample(rtb, RTBUF_SIGNAL_ADSR_VAR_RELEASE,
+                                     i, 0.2);
+      double start = data->start + (double) i / RTBUF_SIGNAL_SAMPLERATE;
+      double stop = data->stop;
+      if (data->stop >= 0.0)
+        data->stop += (double) i / RTBUF_SIGNAL_SAMPLERATE;
+      a = max(0.0, a);
+      d = max(0.0, d);
+      s = max(0.0, s);
+      r = max(0.0, r);
+      *sample = adsr(a, d, s, r, data->start, data->stop);
+    }
+    else
+      *sample = 0.0;
     sample++;
     i++;
   }
+  if (data->start >= 0.0)
+    data->start += RTBUF_SIGNAL_DT;
+  if (data->stop >= 0.0)
+    data->stop += RTBUF_SIGNAL_DT;
+  return 0;
+}
+
+int rtbuf_signal_adsr_start (s_rtbuf *rtb)
+{
+  s_rtbuf_signal_adsr_data *data;
+  data = (s_rtbuf_signal_adsr_data*) rtb->data;
+  data->start = 0.0;
+  data->stop = -1.0;
+  return 0;
 }

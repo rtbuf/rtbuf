@@ -2,14 +2,15 @@
 #define RTBUF_FUN_H
 
 #include "rtbuf_defs.h"
+#include "symbol.h"
 
 struct rtbuf_fun_var {
-  const char *name;     /* symbol */
+  symbol name;
   s_rtbuf_type *type;
 };
 
 struct rtbuf_fun_out {
-  const char *name;     /* symbol */
+  symbol name;
   s_rtbuf_type *type;
   unsigned int offset;
 };
@@ -18,7 +19,7 @@ struct rtbuf_fun_out {
 #define RTBUF_FUN_OUT_MAX 32
 
 struct rtbuf_fun {
-  const char     *name;                        /* symbol */
+  symbol          name;
   f_rtbuf_fun    *f;
   f_rtbuf_fun    *start;
   f_rtbuf_fun    *stop;
@@ -35,10 +36,12 @@ struct rtbuf_fun {
 extern s_rtbuf_fun g_rtbuf_fun[RTBUF_FUN_MAX];
 extern unsigned int g_rtbuf_fun_n;
 
-extern void          rtbuf_fun_init ();
-extern int           rtbuf_fun_p (s_rtbuf_fun *fun);
-extern s_rtbuf_fun * rtbuf_fun_new (s_rtbuf_lib_fun *x);
-extern void          rtbuf_fun_delete (s_rtbuf_fun *fun);
-extern s_rtbuf_fun * rtbuf_fun_find (const char *x);
+extern void              rtbuf_fun_init ();
+extern int               rtbuf_fun_p (s_rtbuf_fun *fun);
+extern s_rtbuf_fun *     rtbuf_fun_new (s_rtbuf_lib_fun *x);
+extern void              rtbuf_fun_delete (s_rtbuf_fun *fun);
+extern s_rtbuf_fun *     rtbuf_fun_find (const char *x);
+extern s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,
+                                             symbol name);
 
 #endif

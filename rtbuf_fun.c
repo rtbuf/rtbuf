@@ -98,3 +98,15 @@ s_rtbuf_fun * rtbuf_fun_find (const char *x)
   }
   return 0;
 }
+
+s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,
+                                      symbol name)
+{
+  unsigned int i = 0;
+  while (i < fun->out_n) {
+    if (name == fun->out[i].name)
+      return &fun->out[i];
+    i++;
+  }
+  return 0;
+}

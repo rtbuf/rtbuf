@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <strings.h>
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
@@ -76,6 +77,20 @@ void rtbuf_delete (s_rtbuf *rtb)
   g_rtbuf_sort = 1;
 }
 
+int rtbuf_clone (s_rtbuf *rtb)
+{
+  int i = rtbuf_new(rtb->fun);
+  unsigned int j = 0;
+  if (i < 0)
+    return -1;
+  while (j < rtb->fun->var_n) {
+    g_rtbuf[i].var[j] = rtb->var[j];
+    j++;
+  }
+  g_rtbuf[i].var_n = rtb->var_n;
+  return i;
+}
+
 void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var)
 {
   s_rtbuf_binding *rb = &rtb->var[var];
@@ -105,6 +120,18 @@ void rtbuf_unbind (s_rtbuf *rtb)
   unsigned int i = rtb->fun->var_n;
   while (i--)
     rtbuf_var_unbind(rtb, i);
+}
+
+int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
+                    unsigned int size)
+{
+  s_rtbuf_fun_out *out = rtbuf_fun_out_find(rtb->fun, name);
+  if (out && out->type->size == size) {
+    void *data = rtb->data + out->offset;
+    memcpy(data, value, size);
+    return size;
+  }
+  return 0;
 }
 
 typedef struct rtbuf_var_ptr {

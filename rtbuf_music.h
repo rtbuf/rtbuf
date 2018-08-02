@@ -19,8 +19,13 @@ typedef struct rtbuf_music_notes {
 
 void rtbuf_music_notes_init (s_rtbuf_music_notes *notes);
 int  rtbuf_music_notes_new (s_rtbuf_music_notes *notes);
-void rtbuf_music_notes_delete (s_rtbuf_music_notes *notes, unsigned int i);
+void rtbuf_music_notes_delete (s_rtbuf_music_notes *notes,
+                               unsigned int i);
 void rtbuf_music_notes_dt (s_rtbuf_music_notes *notes, double dt);
+int  rtbuf_music_note_p (s_rtbuf_music_note *note);
 void rtbuf_music_note_dt (s_rtbuf_music_note *note, double dt);
+
+s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
+                                         unsigned int var);
 
 #endif
