@@ -11,9 +11,10 @@ extern unsigned int g_string_n;
 extern symbol       g_symbols[SYMBOL_MAX];
 extern unsigned int g_symbols_n;
 
-void init_symbols ();
-symbol find_symbol (symbol name);
-symbol make_symbol (symbol name);
-symbol intern (symbol name);
+void   symbols_init ();
+symbol symbol_new (symbol name);
+void   symbol_delete (symbol sym);
+symbol symbol_find (symbol name);
+symbol symbol_intern (const char *name);
 
 #endif

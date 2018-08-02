@@ -1,28 +1,37 @@
 #ifndef RTBUF_LIB_H
 #define RTBUF_LIB_H
 
-#include "rtbuf.h"
+#include "rtbuf_defs.h"
 
 #define RTBUF_LIB_MAX 1000
 #define RTBUF_LIB_VER 0x00010001
 
-typedef struct rtbuf_lib_fun {
+struct rtbuf_lib_fun_var {
+  const char *name;
+  const char *type;
+};
+
+struct rtbuf_lib_fun_out {
+  const char *name;
+  const char *type;
+};
+
+struct rtbuf_lib_fun {
   const char *name;
   f_rtbuf_fun *f;
   f_rtbuf_fun *start;
   f_rtbuf_fun *stop;
-  unsigned int nmemb; /* number of members in buffer data */
-  unsigned int size;  /* size of members in bytes in buffer data */
-  const char **var;  /* names of variables, end with NULL */
-} s_rtbuf_lib_fun;
+  s_rtbuf_lib_fun_var *var;  /* variables, end with NULL */
+  s_rtbuf_lib_fun_out *out;  /* outputs, end with NULL */
+};
 
-typedef struct rtbuf_lib {
+struct rtbuf_lib {
   const char *name;
   s_rtbuf_fun **fun;
   unsigned int fun_n;
   void *lib;
   const char *path;
-} s_rtbuf_lib;
+};
 
 extern s_rtbuf_lib  g_rtbuf_lib[];
 extern unsigned int g_rtbuf_lib_n;

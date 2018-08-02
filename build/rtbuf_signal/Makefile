@@ -7,7 +7,8 @@ CFLAGS = -O0 -ggdb -W -Wall -Werror -fpic
 
 LDFLAGS = -fPIC -shared
 LIBS = -lm
-HEADERS = rtbuf.h rtbuf_lib.h rtbuf_signal.h
+HEADERS = rtbuf_defs.h rtbuf_type.h rtbuf_fun.h rtbuf.h rtbuf_lib.h \
+	  rtbuf_music.h rtbuf_signal.h
 OBJECTS = rtbuf_signal.o rtbuf_signal_sinus.o rtbuf_signal_square.o
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}

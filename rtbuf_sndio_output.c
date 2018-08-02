@@ -1,9 +1,9 @@
 
+#include <limits.h>
 #include <sndio.h>
 #include <stdio.h>
 #include <strings.h>
 #include "rtbuf.h"
-#include "rtbuf_signal.h"
 #include "rtbuf_sndio.h"
 
 void rtbuf_sndio_output_parameters (struct sio_par *want)
@@ -69,35 +69,25 @@ int rtbuf_sndio_output_stop (s_rtbuf *rtb)
 int rtbuf_sndio_output (s_rtbuf *rtb)
 {
   s_rtbuf_sndio_output_data *data;
-  double *in[RTBUF_SNDIO_CHANNELS];
   short *sample;
   unsigned int i = 0;
   unsigned int j = 0;
   data = (s_rtbuf_sndio_output_data*) rtb->data;
   sample = data->samples;
   //printf("sndio_output");
-  while (j < RTBUF_SNDIO_CHANNELS) {
-    in[j] = rtb->var[j] < 0 ? 0 : (double*) g_rtbuf[rtb->var[j]].data;
-    j++;
-  }
   while (i < RTBUF_SIGNAL_SAMPLES) {
     j = 0;
     while (j < RTBUF_SNDIO_CHANNELS) {
-      if (in[j]) {
-        double limit = max(-1.0, min(*in[j], 1.0));
-        in[j]++;
-        *sample = (short) (((1 << 15) - 1) * limit);
-        //printf(" %i", *sample);
-      }
-      else
-        *sample = 0;
+      double in = rtbuf_signal_sample(rtb, j, i, 0.0);
+      in = clamp(-1.0, in, 1.0);
+      *sample = (short) (in < 0 ? in * -SHRT_MIN : in * SHRT_MAX);
+      //printf(" %i", *sample);
       sample++;
       j++;
     }
     i++;
   }
-  sio_write(data->sio_hdl, data->samples,
-            sizeof(data->samples));
+  sio_write(data->sio_hdl, data->samples, sizeof(data->samples));
   //printf("\n");
   return 0;
 }

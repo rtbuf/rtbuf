@@ -8,15 +8,16 @@
 #include "rtbuf_music.h"
 #include "rtbuf_glfw3.h"
 
+s_rtbuf_lib_fun_out g_rtbuf_glfw3_keyboard_out[] = {
+  { "notes", RTBUF_MUSIC_NOTES_TYPE },
+  { 0, 0 } };
+
 const char     *rtbuf_lib_name = "glfw3";
 unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
 s_rtbuf_lib_fun rtbuf_lib_fun[] = {
   { "keyboard", rtbuf_glfw3_keyboard, rtbuf_glfw3_keyboard_start, 0,
-    sizeof(s_rtbuf_glfw3_keyboard_data) / sizeof(double) + 1,
-    sizeof(double),
-    (const char*[]) { 0 } },
-  { 0, 0, 0, 0, 0, 0, 0 }
-};
+    0, g_rtbuf_glfw3_keyboard_out },
+  { 0, 0, 0, 0, 0, 0 } };
 
 s_rtbuf_music_notes g_rtbuf_glfw3_keyboard;
 

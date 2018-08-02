@@ -2,6 +2,7 @@
 #define RTBUF_GLFW3_H
 
 #include <GLFW/glfw3.h>
+#include "rtbuf_defs.h"
 #include "rtbuf_music.h"
 
 typedef struct rtbuf_glfw3_keyboard_data {

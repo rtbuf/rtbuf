@@ -9,14 +9,83 @@
 s_rtbuf_fun g_rtbuf_fun[RTBUF_FUN_MAX];
 unsigned int g_rtbuf_fun_n = 0;
 
+void rtbuf_fun_init ()
+{
+  bzero(g_rtbuf_fun, sizeof(g_rtbuf_fun));
+}
+
 int rtbuf_fun_p (s_rtbuf_fun *fun)
 {
   return fun && fun->name;
 }
 
-s_rtbuf_fun * find_rtbuf_fun (const char *x)
+void rtbuf_fun_new_var (s_rtbuf_fun *fun, s_rtbuf_lib_fun_var *var)
 {
-  const char *sym = find_symbol(x);
+  unsigned int i = 0;
+  bzero(fun->var, sizeof(fun->var));
+  if (var)
+    while (var->name) {
+      s_rtbuf_fun_var *v = &fun->var[i];
+      v->name = symbol_intern(var->name);
+      v->type = rtbuf_type(var->type);
+      i++;
+    }
+  fun->var_n = i;
+}
+
+void rtbuf_fun_new_out (s_rtbuf_fun *fun, s_rtbuf_lib_fun_out *out)
+{
+  unsigned int i = 0;
+  bzero(fun->out, sizeof(fun->out));
+  if (out) {
+    unsigned int offset = 0;
+    while (out->name) {
+      s_rtbuf_fun_out *o = &fun->out[i];
+      o->name = symbol_intern(out->name);
+      o->type = rtbuf_type(out->type);
+      o->offset = offset;
+      offset += o->type->size;
+      i++;
+    }
+  }
+  fun->out_n = i;
+}
+
+s_rtbuf_fun * rtbuf_fun_new (s_rtbuf_lib_fun *x)
+{
+  unsigned int i = 0;
+  if (g_rtbuf_fun_n == RTBUF_FUN_MAX) {
+    fprintf(stderr, "RTBUF_FUN_MAX exceeded\n");
+    return 0;
+  }
+  while (i < RTBUF_FUN_MAX) {
+    s_rtbuf_fun *fun = &g_rtbuf_fun[i];
+    if (!rtbuf_fun_p(fun)) {
+      fun->name = symbol_intern(x->name);
+      fun->f = x->f;
+      fun->start = x->start;
+      fun->stop = x->stop;
+      rtbuf_fun_new_var(&g_rtbuf_fun[i], x->var);
+      rtbuf_fun_new_out(&g_rtbuf_fun[i], x->out);
+      g_rtbuf_fun_n++;
+      return &g_rtbuf_fun[i];
+    }
+    i++;
+  }
+  return 0;
+}
+
+void rtbuf_fun_delete (s_rtbuf_fun *fun)
+{
+  if (fun && fun->name) {
+    bzero(fun, sizeof(s_rtbuf_fun));
+    g_rtbuf_fun_n--;
+  }
+}
+
+s_rtbuf_fun * rtbuf_fun_find (const char *x)
+{
+  const char *sym = symbol_find(x);
   if (sym) {
     unsigned int i = 0;
     unsigned int n = g_rtbuf_fun_n;
@@ -28,55 +97,4 @@ s_rtbuf_fun * find_rtbuf_fun (const char *x)
     }
   }
   return 0;
-}
-
-void init_rtbuf_fun (s_rtbuf_fun *fun, s_rtbuf_lib_fun *x)
-{
-  const char **var = x->var;
-  unsigned int j = 0;
-  fun->name = intern(x->name);
-  fun->f = x->f;
-  fun->start = x->start;
-  fun->stop = x->stop;
-  fun->nmemb = x->nmemb;
-  fun->size = x->size;
-  fun->var_n = 0;
-  if (var)
-    while (*var) {
-      fun->var_n++;
-      var++;
-    }
-  fun->var = malloc(sizeof(const char *) * (fun->var_n + 1));
-  if ((var = x->var))
-    while (*var)
-      fun->var[j++] = intern(*var++);
-  fun->var[j] = 0;
-}
-
-s_rtbuf_fun * new_rtbuf_fun (s_rtbuf_lib_fun *x)
-{
-  unsigned int i = 0;
-  if (g_rtbuf_fun_n == RTBUF_FUN_MAX) {
-    fprintf(stderr, "RTBUF_FUN_MAX exceeded\n");
-    return 0;
-  }
-  while (i < RTBUF_FUN_MAX) {
-    if (!rtbuf_fun_p(&g_rtbuf_fun[i])) {
-      init_rtbuf_fun(&g_rtbuf_fun[i], x);
-      g_rtbuf_fun_n++;
-      return &g_rtbuf_fun[i];
-    }
-    i++;
-  }
-  return 0;
-}
-
-void delete_rtbuf_fun (s_rtbuf_fun *fun)
-{
-  if (fun && fun->var) {
-    free(fun->var);
-    bzero(fun, sizeof(s_rtbuf_fun));
-    g_rtbuf_fun_n--;
-  }
-  fun->name = 0;
 }

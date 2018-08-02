@@ -44,34 +44,58 @@ int rtbuf_next ()
 
 int rtbuf_new (s_rtbuf_fun *rf)
 {
-  int rtb;
+  int i;
+  s_rtbuf *rtb;
+  void *data;
   unsigned int j = 0;
   assert(rf);
-  if ((rtb = rtbuf_next()) < 0)
+  if ((i = rtbuf_next()) < 0)
     return -1;
-  g_rtbuf[rtb].data = calloc(rf->nmemb, rf->size);
-  g_rtbuf[rtb].fun = rf;
-  g_rtbuf[rtb].var = calloc(rf->var_n, sizeof(int));
-  while (j < rf->var_n)
-    g_rtbuf[rtb].var[j++] = -1;
+  rtb = &g_rtbuf[i];
+  bzero(rtb, sizeof(s_rtbuf));
+  data = malloc(rf->out_bytes);
+  if (!data)
+    return rtbuf_err("malloc failed");
+  bzero(data, rf->out_bytes);
+  rtb->data = data;
+  rtb->fun = rf;
+  while (j < RTBUF_FUN_VAR_MAX) {
+    rtb->var[j].rtb = rtb->var[j].out = -1;
+    j++;
+  }
   g_rtbuf_sort = 1;
-  return rtb;
+  return i;
 }
 
-void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int i)
+void rtbuf_delete (s_rtbuf *rtb)
 {
-  if (rtb->var[i] >= 0)
-    g_rtbuf[rtb->var[i]].refc--;
-  rtb->var[i] = -1;
+  rtbuf_unbind(rtb);
+  free(rtb->data);
+  rtb->data = 0;
+  g_rtbuf_n--;
+  g_rtbuf_sort = 1;
 }
 
-void rtbuf_var_bind (s_rtbuf *rtb, unsigned int i, int target)
+void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var)
 {
-  if (rtb->var[i] == target)
+  s_rtbuf_binding *rb = &rtb->var[var];
+  if (rb->rtb >= 0) {
+    g_rtbuf[rb->rtb].refc--;
+    rb->rtb = -1;
+    rtb->var_n--;
+  }
+}
+
+void rtbuf_var_bind (s_rtbuf *rtb, unsigned int var,
+                     unsigned int target, unsigned int target_out)
+{
+  s_rtbuf_binding *rb = &rtb->var[var];
+  if ((unsigned int) rb->rtb == target && rb->out == target_out)
     return;
-  if (rtb->var[i] >= 0)
-    g_rtbuf[rtb->var[i]].refc--;
-  rtb->var[i] = target;
+  rtbuf_var_unbind(rtb, var);
+  rb->rtb = target;
+  rb->out = target_out;
+  rtb->var_n++;
   g_rtbuf[target].refc++;
   g_rtbuf_sort = 1;
 }
@@ -81,16 +105,6 @@ void rtbuf_unbind (s_rtbuf *rtb)
   unsigned int i = rtb->fun->var_n;
   while (i--)
     rtbuf_var_unbind(rtb, i);
-}
-
-void rtbuf_delete (s_rtbuf *rtb)
-{
-  rtbuf_unbind(rtb);
-  free(rtb->data);
-  free(rtb->var);
-  bzero(rtb, sizeof(s_rtbuf));
-  g_rtbuf_n--;
-  g_rtbuf_sort = 1;
 }
 
 typedef struct rtbuf_var_ptr {
@@ -179,7 +193,7 @@ void rtbuf_sort_push_child (s_rtbuf_var_stack *rvs,
   unsigned int i = 0;
   int found = 0;
   //printf("rtbuf_sort_push_child { %u, %u }\n", ptr->rtb, ptr->var);
-  rtb = g_rtbuf[ptr->rtb].var[ptr->var];
+  rtb = g_rtbuf[ptr->rtb].var[ptr->var].rtb;
   ptr->var++;
   if (rtb >= 0) {
     while (i < g_rtbuf_sorted_n && !found) {
@@ -288,5 +302,25 @@ int rtbuf_find (const char *x)
   int i = atoi(x);
   if (0 <= i && i < RTBUF_MAX && g_rtbuf[i].data && g_rtbuf[i].fun)
     return i;
+  return -1;
+}
+
+int rtbuf_out_find (s_rtbuf *rtb, const char *x)
+{
+  const char *sym;
+  if ('0' <= x[0] && x[0] <= '9') {
+    int i = atoi(x);
+    if (0 <= i && (unsigned int) i < rtb->fun->out_n)
+      return i;
+  }
+  if ((sym = symbol_find(x))) {
+    s_rtbuf_fun_out *out = rtb->fun->out;
+    int i = 0;
+    while (i < RTBUF_FUN_OUT_MAX) {
+      if (sym == out->name)
+        return i;
+      i++;
+    }
+  }
   return -1;
 }

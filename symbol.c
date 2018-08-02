@@ -10,28 +10,12 @@ unsigned int g_string_n = 0;
 const char  *g_symbols[SYMBOL_MAX];
 unsigned int g_symbols_n = 0;
 
-void init_symbols () {
+void symbols_init () {
   bzero(g_string, sizeof(g_string));
   bzero(g_symbols, sizeof(g_symbols));
 }
 
-symbol find_symbol (const char *name)
-{
-  unsigned int i = 0;
-  unsigned int n = g_symbols_n;
-  while (i < SYMBOL_MAX && n > 0) {
-    if (g_symbols[i]) {
-      if (name == g_symbols[i] ||
-          strcmp(name, g_symbols[i]) == 0)
-        return g_symbols[i];
-      n--;
-    }
-    i++;
-  }
-  return 0;
-}
-
-symbol make_symbol (const char *name)
+symbol symbol_new (const char *name)
 {
   unsigned int i = 0;
   if (g_symbols_n == SYMBOL_MAX) {
@@ -57,10 +41,26 @@ symbol make_symbol (const char *name)
   return 0;
 }
 
-const char * intern (const char *name)
+symbol symbol_find (const char *name)
 {
-  const char *sym = find_symbol(name);
+  unsigned int i = 0;
+  unsigned int n = g_symbols_n;
+  while (i < SYMBOL_MAX && n > 0) {
+    if (g_symbols[i]) {
+      if (name == g_symbols[i] ||
+          strcmp(name, g_symbols[i]) == 0)
+        return g_symbols[i];
+      n--;
+    }
+    i++;
+  }
+  return 0;
+}
+
+symbol symbol_intern (const char *name)
+{
+  symbol sym = symbol_find(name);
   if (sym == 0)
-    sym = make_symbol(name);
+    sym = symbol_new(name);
   return sym;
 }

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "rtbuf.h"
 #include "rtbuf_lib.h"
 #include "symbol.h"
 
@@ -18,12 +19,27 @@ void print_lib (unsigned int i)
 
 void print_rtbuf_fun (s_rtbuf_fun *fun)
 {
-  printf("#<fun %i %s nmemb=%u size=%u var_n=%u>",
-         fun->lib_fun,
-         fun->name,
-         fun->nmemb,
-         fun->size,
-         fun->var_n);
+  unsigned int i = 0;
+  printf("#<fun %i %s (", fun->lib_fun, fun->name);
+  while (i < fun->var_n) {
+    if (i > 0)
+      fputs(" ", stdout);
+    fputs(fun->var[i].name, stdout);
+    fputs(":", stdout);
+    fputs(fun->var[i].type->name, stdout);
+    i++;
+  }
+  printf(") -> (");
+  i = 0;
+  while (i < fun->out_n) {
+    if (i > 0)
+      fputs(" ", stdout);
+    fputs(fun->out[i].name, stdout);
+    fputs(":", stdout);
+    fputs(fun->out[i].type->name, stdout);
+    i++;
+  }
+  fputs(")>", stdout);
 }
 
 void print_lib_long (unsigned int i)
@@ -62,9 +78,13 @@ void print_rtbuf_long (unsigned int i)
     printf(" %d", rtb->refc);
   }
   while (j < rtb->fun->var_n) {
-    if (rtb->var[j] >= 0) {
-      printf("\n  %i %s = ", j, rtb->fun->var[j]);
-      print_rtbuf(rtb->var[j]);
+    if (rtb->var[j].rtb >= 0) {
+      printf("\n  %i %s:%s = ", j, rtb->fun->var[j].name,
+             rtb->fun->var[j].type->name);
+      print_rtbuf(rtb->var[j].rtb);
+      printf(" %u %s:%s", rtb->var[j].out,
+             rtb->fun->out[j].name,
+             rtb->fun->out[j].type->name);
     }
     j++;
   }
@@ -183,8 +203,9 @@ int rtbuf_cli_bind (int argc, const char *argv[])
   int rtb;
   int var;
   int target;
-  if (argc != 3)
-    return rtbuf_err("usage: bind BUFFER VARIABLE TARGET");
+  int target_out;
+  if (argc != 4)
+    return rtbuf_err("usage: bind BUFFER VARIABLE TARGET OUTPUT");
   if ((rtb = rtbuf_find(argv[1])) < 0)
     return rtbuf_err("buffer not found");
   var = atoi(argv[2]);
@@ -192,7 +213,9 @@ int rtbuf_cli_bind (int argc, const char *argv[])
     return rtbuf_err("variable not found");
   if ((target = rtbuf_find(argv[3])) < 0)
     return rtbuf_err("target not found");
-  rtbuf_var_bind(&g_rtbuf[rtb], var, target);
+  if ((target_out = rtbuf_out_find(&g_rtbuf[rtb], argv[4])) < 0)
+    return rtbuf_err("target output not found");
+  rtbuf_var_bind(&g_rtbuf[rtb], var, target, target_out);
   print_rtbuf_long(rtb);
   return 0;
 }
@@ -340,7 +363,9 @@ int main (int argc, char *argv[])
 {
   (void) argc;
   (void) argv;
-  init_symbols();
+  symbols_init();
+  rtbuf_type_init();
+  rtbuf_fun_init();
   rtbuf_lib_init();
   return repl();
 }

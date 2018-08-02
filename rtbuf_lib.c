@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include "rtbuf.h"
 #include "rtbuf_lib.h"
 #include "symbol.h"
 
@@ -46,7 +47,7 @@ int rtbuf_lib_find (const char *str)
     if (0 <= i && i < RTBUF_LIB_MAX && rtbuf_lib_p(&g_rtbuf_lib[i]))
       return i;
   }
-  if ((sym = find_symbol(str))) {
+  if ((sym = symbol_find(str))) {
     unsigned int i = 0;
     unsigned int n = g_rtbuf_lib_n;
     while (i < RTBUF_LIB_MAX && n > 0) {
@@ -69,7 +70,7 @@ int rtbuf_lib_find_fun (s_rtbuf_lib *rl, const char *str)
     if (0 <= i && (unsigned) i < rl->fun_n)
       return i;
   }
-  if ((sym = find_symbol(str))) {
+  if ((sym = symbol_find(str))) {
     unsigned int i = 0;
     while (i < rl->fun_n) {
       if (sym == rl->fun[i]->name)
@@ -144,7 +145,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   ver = dlsym(lib->lib, "rtbuf_lib_ver");
   //printf("lib_load ver %lu\n", *ver);
   assert(*ver == RTBUF_LIB_VER);
-  lib->name = intern(name);
+  lib->name = symbol_intern(name);
   //printf("lib_load name %s\n", lib->name);
   fun = dlsym(lib->lib, "rtbuf_lib_fun");
   lib->fun_n = 0;
@@ -153,13 +154,13 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
     if (fun[lib->fun_n].name == 0) {
       Dl_info info;
       dladdr(fun[lib->fun_n].f, &info);
-      fun[lib->fun_n].name = intern(info.dli_sname);
+      fun[lib->fun_n].name = symbol_intern(info.dli_sname);
     }
     lib->fun_n++;
   }
   lib->fun = malloc(sizeof(s_rtbuf_fun*) * (lib->fun_n + 1));
   while (i < lib->fun_n) {
-    lib->fun[i] = new_rtbuf_fun(&fun[i]);
+    lib->fun[i] = rtbuf_fun_new(&fun[i]);
     lib->fun[i]->lib = lib;
     lib->fun[i]->lib_fun = i;
     i++;
