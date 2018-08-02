@@ -29,6 +29,8 @@ int rtbuf_next ()
 {
   s_rtbuf *rtb = g_rtbuf;
   unsigned int i = 0;
+  if (g_rtbuf_n == RTBUF_MAX)
+    return rtbuf_err("RTBUF_MAX exhausted");
   while (i < RTBUF_MAX) {
     if (rtb->data == 0) {
       g_rtbuf_n++;
