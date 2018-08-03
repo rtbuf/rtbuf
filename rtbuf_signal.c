@@ -68,7 +68,6 @@ s_rtbuf_lib_fun rtbuf_lib_fun[] = {
 int rtbuf_lib_init (s_rtbuf_lib *lib)
 {
   (void) lib;
-  printf("rtbuf_lib_init signal\n");
   rtbuf_music_init();
   rtbuf_type_new(RTBUF_SIGNAL_SYNTH_NOTE_TYPE,
                  RTBUF_SIGNAL_SYNTH_NOTE_SIZE);
