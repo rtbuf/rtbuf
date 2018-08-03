@@ -65,6 +65,18 @@ s_rtbuf_lib_fun rtbuf_lib_fun[] = {
     g_rtbuf_signal_synth_var, g_rtbuf_signal_synth_out },
   { 0, 0, 0, 0, 0, 0 } };
 
+int rtbuf_lib_init (s_rtbuf_lib *lib)
+{
+  (void) lib;
+  printf("rtbuf_lib_init signal\n");
+  rtbuf_music_init();
+  rtbuf_type_new(RTBUF_SIGNAL_SYNTH_NOTE_TYPE,
+                 RTBUF_SIGNAL_SYNTH_NOTE_SIZE);
+  rtbuf_type_new(RTBUF_SIGNAL_SYNTH_NOTES_TYPE,
+                 RTBUF_SIGNAL_SYNTH_NOTES_SIZE);
+  return 0;
+}
+
 double rtbuf_signal_sample (s_rtbuf *rtb, unsigned int var,
                             unsigned int i, double default_value)
 {

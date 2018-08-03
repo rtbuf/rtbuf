@@ -1,16 +1,14 @@
 
-PROGRAM = signal.so
+PROGRAM = librtbuf.so
 SRCDIR = ../..
 
 CPPFLAGS =
 CFLAGS = -O0 -ggdb -W -Wall -Werror -fpic
 
 LDFLAGS = -fPIC -shared
-LIBS = -lm
-HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_fun.h rtbuf.h \
-	  rtbuf_lib.h rtbuf_music.h rtbuf_signal.h rtbuf_signal_type.h
-OBJECTS = symbol.o rtbuf_music.o rtbuf_signal.o rtbuf_signal_sinus.o \
-	  rtbuf_signal_square.o rtbuf_signal_adsr.o rtbuf_signal_synth.o
+LIBS =
+HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_fun.h rtbuf.h
+OBJECTS = symbol.o rtbuf_type.o rtbuf_fun.o rtbuf.o
 
 SRC = ${HEADERS} ${OBJECTS:%.o=%.c}
 

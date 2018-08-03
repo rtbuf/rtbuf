@@ -15,8 +15,10 @@ typedef struct rtbuf_music_notes {
   unsigned int note_n;
 } s_rtbuf_music_notes;
 
+#define RTBUF_MUSIC_NOTES_SIZE sizeof(s_rtbuf_music_notes)
 #define RTBUF_MUSIC_NOTES_TYPE "music_notes"
 
+extern int  rtbuf_music_init ();
 void rtbuf_music_notes_init (s_rtbuf_music_notes *notes);
 int  rtbuf_music_notes_new (s_rtbuf_music_notes *notes);
 void rtbuf_music_notes_delete (s_rtbuf_music_notes *notes,

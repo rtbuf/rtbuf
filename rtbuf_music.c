@@ -2,6 +2,13 @@
 #include "rtbuf.h"
 #include "rtbuf_music.h"
 
+int rtbuf_music_init ()
+{
+  rtbuf_type_new(RTBUF_MUSIC_NOTES_TYPE,
+                 RTBUF_MUSIC_NOTES_SIZE);
+  return 0;
+}
+
 int rtbuf_music_notes_new (s_rtbuf_music_notes *notes)
 {
   unsigned int i = 0;

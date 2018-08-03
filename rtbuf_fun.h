@@ -38,7 +38,7 @@ extern unsigned int g_rtbuf_fun_n;
 
 extern void              rtbuf_fun_init ();
 extern int               rtbuf_fun_p (s_rtbuf_fun *fun);
-extern s_rtbuf_fun *     rtbuf_fun_new (s_rtbuf_lib_fun *x);
+extern s_rtbuf_fun *     rtbuf_fun_next ();
 extern void              rtbuf_fun_delete (s_rtbuf_fun *fun);
 extern s_rtbuf_fun *     rtbuf_fun_find (const char *x);
 extern s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,

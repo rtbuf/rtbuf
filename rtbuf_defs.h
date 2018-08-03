@@ -13,5 +13,6 @@ typedef struct rtbuf_lib_fun_var s_rtbuf_lib_fun_var;
 typedef struct rtbuf_type        s_rtbuf_type;
 
 typedef int f_rtbuf_fun (s_rtbuf *rtbuf);
+typedef int f_rtbuf_lib_init (s_rtbuf_lib *lib);
 
 #endif

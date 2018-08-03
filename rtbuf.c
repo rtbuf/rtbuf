@@ -5,7 +5,6 @@
 #include <string.h>
 #include <strings.h>
 #include "rtbuf.h"
-#include "rtbuf_lib.h"
 #include "symbol.h"
 
 s_rtbuf      g_rtbuf[RTBUF_MAX];

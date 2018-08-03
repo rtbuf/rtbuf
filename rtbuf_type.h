@@ -14,7 +14,8 @@ s_rtbuf_type g_rtbuf_type[RTBUF_TYPE_MAX];
 unsigned int g_rtbuf_type_n;
 
 void           rtbuf_type_init ();
-s_rtbuf_type * rtbuf_type_new (const char *name, unsigned int size);
+extern s_rtbuf_type * rtbuf_type_new (const char *name,
+                                      unsigned int size);
 void           rtbuf_type_delete (s_rtbuf_type *rt);
 s_rtbuf_type * rtbuf_type_find (const char *name);
 s_rtbuf_type * rtbuf_type (const char *name);

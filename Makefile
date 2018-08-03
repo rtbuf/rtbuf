@@ -1,5 +1,5 @@
 
-SUBDIRS = rtbuf rtbuf_signal rtbuf_sndio rtbuf_glfw3
+SUBDIRS = so rtbuf rtbuf_signal rtbuf_sndio rtbuf_glfw3
 
 all: ${SUBDIRS}
 all: TARGET =

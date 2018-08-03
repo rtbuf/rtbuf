@@ -19,7 +19,7 @@ char *g_rtbuf_lib_path[] = { "./",
                              "/usr/lib/rtbuf/",
                              0 };
 
-void rtbuf_lib_init ()
+void rtbuf_lib_init_ ()
 {
   char *in = getenv("HOME");
   char *out = g_rtbuf_lib_user_dir;
@@ -135,6 +135,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   s_rtbuf_lib_fun *fun;
   unsigned long *ver;
   unsigned int i = 0;
+  f_rtbuf_lib_init *init;
   if (!lib)
     return 0;
   rtbuf_lib_load_path(lib, name);
@@ -147,6 +148,11 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   assert(*ver == RTBUF_LIB_VER);
   lib->name = symbol_intern(name);
   //printf("lib_load name %s\n", lib->name);
+  if ((init = dlsym(lib->lib, "rtbuf_lib_init")))
+    if (init(lib) < 0) {
+      rtbuf_lib_delete(lib);
+      return 0;
+    }
   fun = dlsym(lib->lib, "rtbuf_lib_fun");
   lib->fun_n = 0;
   while (lib->fun_n < RTBUF_LIB_MAX &&
@@ -160,11 +166,60 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   }
   lib->fun = malloc(sizeof(s_rtbuf_fun*) * (lib->fun_n + 1));
   while (i < lib->fun_n) {
-    lib->fun[i] = rtbuf_fun_new(&fun[i]);
+    lib->fun[i] = rtbuf_fun_next();
+    assert(lib->fun[i]);
+    rtbuf_lib_fun_init_fun(lib->fun[i], &fun[i]);
     lib->fun[i]->lib = lib;
     lib->fun[i]->lib_fun = i;
     i++;
   }
   lib->fun[i] = 0;
   return lib;
+}
+
+void rtbuf_lib_fun_var_init_fun (s_rtbuf_fun *fun,
+                                 s_rtbuf_lib_fun_var *var)
+{
+  unsigned int i = 0;
+  bzero(fun->var, sizeof(fun->var));
+  if (var)
+    while (var->name) {
+      s_rtbuf_fun_var *v = &fun->var[i];
+      v->name = symbol_intern(var->name);
+      v->type = rtbuf_type(var->type);
+      var++;
+      i++;
+    }
+  fun->var_n = i;
+}
+
+void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
+                                 s_rtbuf_lib_fun_out *out)
+{
+  unsigned int i = 0;
+  bzero(fun->out, sizeof(fun->out));
+  if (out) {
+    unsigned int offset = 0;
+    while (out->name) {
+      s_rtbuf_fun_out *o = &fun->out[i];
+      o->name = symbol_intern(out->name);
+      o->type = rtbuf_type(out->type);
+      assert(o->type);
+      o->offset = offset;
+      offset += o->type->size;
+      out++;
+      i++;
+    }
+  }
+  fun->out_n = i;
+}
+
+void rtbuf_lib_fun_init_fun (s_rtbuf_fun *fun, s_rtbuf_lib_fun *x)
+{
+  fun->name = symbol_intern(x->name);
+  fun->f = x->f;
+  fun->start = x->start;
+  fun->stop = x->stop;
+  rtbuf_lib_fun_var_init_fun(fun, x->var);
+  rtbuf_lib_fun_out_init_fun(fun, x->out);
 }

@@ -366,7 +366,7 @@ int main (int argc, char *argv[])
   symbols_init();
   rtbuf_type_init();
   rtbuf_fun_init();
-  rtbuf_lib_init();
+  rtbuf_lib_init_();
   return repl();
 }
 
