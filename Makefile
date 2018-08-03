@@ -6,18 +6,27 @@ all: TARGET =
 
 clean: ${SUBDIRS}
 clean: TARGET = clean
+clean:
+	rm -f ${CLEANFILES}
+
+install: ${SUBDIRS}
+install: TARGET = install
 
 rtbuf_signal_type: rtbuf_signal.h rtbuf_signal_type.c
 	${CC} rtbuf_signal_type.c -o $@
+CLEANFILES += rtbuf_signal_type
 
 rtbuf_signal_type.h: rtbuf_signal_type
 	./rtbuf_signal_type > rtbuf_signal_type.h
+CLEANFILES += rtbuf_signal_type.h
 
 rtbuf_sndio_type: rtbuf_sndio.h rtbuf_sndio_type.c
 	${CC} rtbuf_sndio_type.c -o $@
+CLEANFILES += rtbuf_sndio_type
 
 rtbuf_sndio_type.h: rtbuf_sndio_type
 	./rtbuf_sndio_type > rtbuf_sndio_type.h
+CLEANFILES += rtbuf_sndio_type.h
 
 ${SUBDIRS}: %: rtbuf_signal_type.h rtbuf_sndio_type.h
 	${MAKE} -C build/$@ ${TARGET}

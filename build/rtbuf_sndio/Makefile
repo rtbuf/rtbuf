@@ -30,3 +30,9 @@ clean:
 	rm -f ${CLEANFILES}
 
 .PHONY: clean
+
+PREFIX ?= /usr/local
+
+install:
+	install -d -m 0755 "${PREFIX}/lib/rtbuf/"
+	install -C -m 0755 ${PROGRAM} "${PREFIX}/lib/rtbuf/"

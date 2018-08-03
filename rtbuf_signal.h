@@ -1,7 +1,7 @@
 #ifndef RTBUF_SIGNAL_H
 #define RTBUF_SIGNAL_H
 
-#include "rtbuf_type.h"
+#include "rtbuf.h"
 #include "rtbuf_music.h"
 
 #define RTBUF_SIGNAL_SAMPLE_TYPE "double"
@@ -14,8 +14,21 @@ typedef double t_rtbuf_signal_sample;
 
 typedef t_rtbuf_signal_sample t_rtbuf_signal[RTBUF_SIGNAL_SAMPLES];
 
+static inline
 double rtbuf_signal_sample (s_rtbuf *rtb, unsigned int var,
-                            unsigned int i, double default_value);
+                            unsigned int i, double default_value)
+{
+  s_rtbuf_binding *v = &rtb->var[var];
+  s_rtbuf *target;
+  double *signal;
+  unsigned int offset;
+  if (v->rtb < 0)
+    return default_value;
+  target = &g_rtbuf[v->rtb];
+  offset = target->fun->out[v->out].offset;
+  signal = (double*) ((char*) target->data + offset);
+  return signal[i];
+}
 
 /* sinus */
 

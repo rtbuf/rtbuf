@@ -210,6 +210,7 @@ void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
       out++;
       i++;
     }
+    fun->out_bytes = offset;
   }
   fun->out_n = i;
 }

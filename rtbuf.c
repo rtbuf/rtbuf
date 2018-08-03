@@ -25,7 +25,7 @@ int rtbuf_init ()
   return 0;
 }
 
-int rtbuf_next ()
+int rtbuf_new_ (void *data)
 {
   s_rtbuf *rtb = g_rtbuf;
   unsigned int i = 0;
@@ -33,6 +33,7 @@ int rtbuf_next ()
     return rtbuf_err("RTBUF_MAX exhausted");
   while (i < RTBUF_MAX) {
     if (rtb->data == 0) {
+      rtb->data = data;
       g_rtbuf_n++;
       return i;
     }
@@ -49,18 +50,16 @@ int rtbuf_new (s_rtbuf_fun *rf)
   void *data;
   unsigned int j = 0;
   assert(rf);
-  if ((i = rtbuf_next()) < 0)
-    return -1;
-  rtb = &g_rtbuf[i];
-  bzero(rtb, sizeof(s_rtbuf));
   data = malloc(rf->out_bytes);
   if (!data)
     return rtbuf_err("malloc failed");
-  bzero(data, rf->out_bytes);
-  rtb->data = data;
+  if ((i = rtbuf_new_(data)) < 0)
+    return -1;
+  rtb = &g_rtbuf[i];
+  rtb->flags = 0;
   rtb->fun = rf;
   while (j < RTBUF_FUN_VAR_MAX) {
-    rtb->var[j].rtb = rtb->var[j].out = -1;
+    rtb->var[j].rtb = -1;
     j++;
   }
   g_rtbuf_sort = 1;

@@ -49,6 +49,7 @@ void print_lib_long (unsigned int i)
   assert(i < RTBUF_LIB_MAX);
   lib = &g_rtbuf_lib[i];
   printf("#<lib %i %s", i, lib->name);
+  printf("\n  %s", lib->path);
   while (j < lib->fun_n) {
     printf("\n  ");
     print_rtbuf_fun(lib->fun[j]);
@@ -79,12 +80,14 @@ void print_rtbuf_long (unsigned int i)
   }
   while (j < rtb->fun->var_n) {
     if (rtb->var[j].rtb >= 0) {
+      s_rtbuf *target = &g_rtbuf[rtb->var[j].rtb];
+      unsigned int target_out = rtb->var[j].out;
       printf("\n  %i %s:%s = ", j, rtb->fun->var[j].name,
              rtb->fun->var[j].type->name);
       print_rtbuf(rtb->var[j].rtb);
-      printf(" %u %s:%s", rtb->var[j].out,
-             rtb->fun->out[j].name,
-             rtb->fun->out[j].type->name);
+      printf(" %u %s:%s", target_out,
+             target->fun->out[target_out].name,
+             target->fun->out[target_out].type->name);
     }
     j++;
   }
@@ -281,17 +284,17 @@ int rtbuf_cli_help (int argc, const char *argv[])
   (void) argc;
   (void) argv;
   printf("Available commands :\n"
-         "  libs                   List loaded libraries.\n"
-         "  lib N                  Show library N.\n"
-         "  load PATH              Load library at PATH.\n"
-         "  buffers                List buffers.\n"
-         "  buffer N               Show buffer N.\n"
-         "  new LIB FUN            Instanciate library function.\n"
-         "  delete RTBUF           Unlink and delete RTBUF.\n"
-         "  bind RTBUF VAR TARGET  Bind RTBUF VAR to TARGET.\n"
-         "  unbind RTBUF VAR       Unbind RTBUF VAR.\n"
-         "  help                   Show this help message.\n"
-         "  exit                   Quit RTBUF.\n");
+         " libs                        List loaded libraries.\n"
+         " lib N                       Show library N.\n"
+         " load PATH                   Load library at PATH.\n"
+         " buffers                     List buffers.\n"
+         " buffer N                    Show buffer N.\n"
+         " new LIB FUN                 Instanciate library function.\n"
+         " delete BUFFER               Unlink and delete RTBUF.\n"
+         " bind BUFFER VAR TARGET OUT  Bind BUFFER VAR to TARGET OUT.\n"
+         " unbind RTBUF VAR            Unbind RTBUF VAR.\n"
+         " help                        Show this help message.\n"
+         " exit                        Quit RTBUF.\n");
   return 0;
 }
 
@@ -313,7 +316,7 @@ s_cli_function rtbuf_cli_functions[] = {
   { "buffer",  1, rtbuf_cli_buffer },
   { "new",     2, rtbuf_cli_new },
   { "delete",  1, rtbuf_cli_delete },
-  { "bind",    3, rtbuf_cli_bind },
+  { "bind",    4, rtbuf_cli_bind },
   { "unbind",  1, rtbuf_cli_unbind },
   { "unbind",  2, rtbuf_cli_unbind },
   { "start",   0, rtbuf_cli_start },

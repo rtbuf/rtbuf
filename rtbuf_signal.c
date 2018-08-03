@@ -75,18 +75,3 @@ int rtbuf_lib_init (s_rtbuf_lib *lib)
                  RTBUF_SIGNAL_SYNTH_NOTES_SIZE);
   return 0;
 }
-
-double rtbuf_signal_sample (s_rtbuf *rtb, unsigned int var,
-                            unsigned int i, double default_value)
-{
-  s_rtbuf_binding *v = &rtb->var[var];
-  s_rtbuf *target;
-  double *signal;
-  unsigned int offset;
-  if (v->rtb < 0)
-    return default_value;
-  target = &g_rtbuf[v->rtb];
-  offset = target->fun->out[v->out].offset;
-  signal = (double*) ((char*) target->data + offset);
-  return signal[i];
-}

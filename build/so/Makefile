@@ -28,3 +28,9 @@ clean:
 	rm -f ${CLEANFILES}
 
 .PHONY: clean
+
+PREFIX ?= /usr/local
+
+install:
+	install -d -m 0755 "${PREFIX}/lib/"
+	install -C -m 0644 ${PROGRAM} "${PREFIX}/lib/"
