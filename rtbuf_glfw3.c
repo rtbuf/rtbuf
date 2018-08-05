@@ -61,27 +61,31 @@ static int find_note (s_rtbuf_music_notes *notes, double freq)
   return -1;
 }
 
-void keyboard_event (GLFWwindow *w, int key, int scancode, int action,
-                     int mods)
+void rtbuf_glfw3_keyboard_window_key (GLFWwindow *w, int key,
+                                      int scancode, int action,
+                                      int mods)
 {
   int i;
   double freq;
   s_rtbuf_music_note *note;
-  (void) w;
+  s_rtbuf *rtb = (s_rtbuf*) glfwGetWindowUserPointer(w);
+  s_rtbuf_glfw3_keyboard_data *data;
+  s_rtbuf_music_notes *notes;
+  data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
+  notes = &data->notes;
   (void) key;
   (void) mods;
   switch (action) {
   case GLFW_RELEASE:
     freq = scancode_frequency(scancode);
-    if ((i = find_note(&g_rtbuf_glfw3_keyboard, freq)) < 0)
-      break;
-    g_rtbuf_glfw3_keyboard.note[i].stop = 0.0;
+    if ((i = find_note(notes, freq)) >= 0)
+      notes->note[i].stop = 0.0;
     break;
   case GLFW_PRESS:
     freq = scancode_frequency(scancode);
-    if ((i = rtbuf_music_notes_new(&g_rtbuf_glfw3_keyboard)) < 0)
+    if ((i = rtbuf_music_notes_new(notes)) < 0)
       break;
-    note = &g_rtbuf_glfw3_keyboard.note[i];
+    note = &notes->note[i];
     note->freq = freq;
     note->velocity = 1.0;
     note->start = 0.0;
@@ -92,10 +96,92 @@ void keyboard_event (GLFWwindow *w, int key, int scancode, int action,
   }
 }
 
+void rtbuf_glfw3_keyboard_window_size (GLFWwindow *w, int width,
+                                       int height)
+{
+  printf("size\n");
+  glViewport(0, 0, width, height);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, -1.0f);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+}
+
+void rtbuf_glfw3_keyboard_window_draw (GLFWwindow *w)
+{
+  float y_buttons = 0.75f;
+  float y_black = 0.36f;
+  unsigned int octaves = 4;
+  unsigned int i = 0;
+  unsigned int j = 0;
+  printf("draw\n");
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+  glColor3f(0.5f, 0.5f, 0.5f);
+  glBegin(GL_QUAD_STRIP);
+  glVertex2f(0.0f, 1.0f);
+  glVertex2f(0.0f, y_buttons);
+  glVertex2f(1.0f, 1.0f);
+  glVertex2f(1.0f, y_buttons);
+  glEnd();
+  glColor3f(0.0f, 0.0f, 0.0f);
+  while (i < 12 * octaves) {
+    int k = i % 12;
+    if (k == 1 || k == 3 || k == 6 || k == 8 || k == 10) {
+      float x1 = (j - 1.0f / 3.0f) / (octaves * 7);
+      float x2 = (j + 1.0f / 3.0f) / (octaves * 7);
+      glBegin(GL_QUAD_STRIP);
+      glVertex2f(x1, y_buttons);
+      glVertex2f(x1, y_black);
+      glVertex2f(x2, y_buttons);
+      glVertex2f(x2, y_black);
+      glEnd();
+    }
+    else {
+      float x = (float) j / (octaves * 7);
+      glBegin(GL_LINE_STRIP);
+      glVertex2f(x, y_buttons);
+      glVertex2f(x,      0.0f);
+      j++;
+      x = (float) j / (octaves * 7);
+      glVertex2f(x,      0.0f);
+      glVertex2f(x, y_buttons);
+      glEnd();
+    }
+    i++;
+  }
+  glfwSwapBuffers(w);
+}
+
+GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
+{
+  GLFWwindow *window = glfwCreateWindow(512, 128,
+                                        "rtbuf_glfw3_keyboard",
+                                        NULL, NULL);
+  if (!window) {
+    rtbuf_err("glfwCreateWindow failed");
+    return 0;
+  }
+  glfwMakeContextCurrent(window);
+  glfwSetWindowUserPointer(window, rtb);
+  glfwSetKeyCallback(window, rtbuf_glfw3_keyboard_window_key);
+  glfwSetWindowSizeCallback(window, rtbuf_glfw3_keyboard_window_size);
+  glfwSetWindowRefreshCallback(window,
+                               rtbuf_glfw3_keyboard_window_draw);
+  glfwShowWindow(window);
+  printf("created glfw3 keyboard window\n");
+  return window;
+}
+
 int rtbuf_glfw3_keyboard_start (s_rtbuf *rtb)
 {
-  (void) rtb;
-  bzero(&g_rtbuf_glfw3_keyboard, sizeof(g_rtbuf_glfw3_keyboard));
+  s_rtbuf_glfw3_keyboard_data *data;
+  data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
+  if (!data->window &&
+      !(data->window = rtbuf_glfw3_keyboard_window(rtb)))
+    return -1;
+  
   return 0;
 }
 
@@ -103,7 +189,12 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb)
 {
   s_rtbuf_glfw3_keyboard_data *data;
   data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
-  memcpy(&data->notes, &g_rtbuf_glfw3_keyboard,
-         sizeof(s_rtbuf_music_notes));
+  glfwPollEvents();
   return 0;
+}
+
+int rtbuf_lib_init (s_rtbuf_lib *lib)
+{
+  (void) lib;
+  glfwInit();
 }
