@@ -85,7 +85,7 @@ deps_sources = \
 
 dependencies.mk: ${deps_headers} ${deps_sources}
 	${CC} ${CPPFLAGS} ${CFLAGS} -M ${deps_sources} > dependencies.mk.1
-	sed -e 's/[.]o:/.$$(OBJEXT):/' dependencies.mk.1 > dependencies.mk.2
+	sed -e 's/^\(.*\)[.]o:/\1.$$(OBJEXT) \1.lo:/' dependencies.mk.1 > dependencies.mk.2
 	rm dependencies.mk.1
 	mv dependencies.mk.2 dependencies.mk
 CLEANFILES += dependencies.mk.1 dependencies.mk.2
