@@ -84,5 +84,8 @@ deps_sources = \
 	${librtbuf_glfw3_la_SOURCES}
 
 dependencies.mk: ${deps_headers} ${deps_sources}
-	${CC} ${CPPFLAGS} ${CFLAGS} -M ${deps_sources} > dependencies.mk.tmp
-	mv dependencies.mk.tmp dependencies.mk
+	${CC} ${CPPFLAGS} ${CFLAGS} -M ${deps_sources} > dependencies.mk.1
+	sed -e 's/[.]o:/.$$(OBJEXT):/' dependencies.mk.1 > dependencies.mk.2
+	rm dependencies.mk.1
+	mv dependencies.mk.2 dependencies.mk
+CLEANFILES += dependencies.mk.1 dependencies.mk.2

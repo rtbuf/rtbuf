@@ -374,7 +374,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I build-aux/m4
 CLEANFILES = rtbuf_signal_type rtbuf_signal_type.h rtbuf_sndio_type \
-	rtbuf_sndio_type.h
+	rtbuf_sndio_type.h dependencies.mk.1 dependencies.mk.2
 include_HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_fun.h \
 	rtbuf.h rtbuf_lib.h rtbuf_music.h rtbuf_signal.h \
 	rtbuf_signal_type.h rtbuf_sndio.h rtbuf_sndio_type.h \
@@ -1025,8 +1025,10 @@ rtbuf_sndio_type.h: rtbuf_sndio_type
 	./rtbuf_sndio_type > rtbuf_sndio_type.h
 
 dependencies.mk: ${deps_headers} ${deps_sources}
-	${CC} ${CPPFLAGS} ${CFLAGS} -M ${deps_sources} > dependencies.mk.tmp
-	mv dependencies.mk.tmp dependencies.mk
+	${CC} ${CPPFLAGS} ${CFLAGS} -M ${deps_sources} > dependencies.mk.1
+	sed -e 's/[.]o:/.$$(OBJEXT):/' dependencies.mk.1 > dependencies.mk.2
+	rm dependencies.mk.1
+	mv dependencies.mk.2 dependencies.mk
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
