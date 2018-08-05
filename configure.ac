@@ -23,6 +23,8 @@ AC_CHECK_LIB([sndio], [sio_open],,
 AC_CHECK_LIB([glfw], [glfwSwapBuffers],,
              AC_MSG_ERROR(missing glfw3 library))
 
+AC_PREFIX_DEFAULT([~/.rtbuf])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 

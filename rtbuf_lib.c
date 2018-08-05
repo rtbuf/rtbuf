@@ -29,9 +29,10 @@ unsigned int g_rtbuf_lib_n = 0;
 
 char g_rtbuf_lib_user_dir[1024];
 char *g_rtbuf_lib_path[] = { "./",
+                             "./.libs/",
                              g_rtbuf_lib_user_dir,
-                             "/usr/local/lib/rtbuf/",
-                             "/usr/lib/rtbuf/",
+                             "/usr/local/lib/",
+                             "/usr/lib/",
                              0 };
 
 void rtbuf_lib_init_ ()
@@ -125,6 +126,9 @@ void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
   while (*path && !lib->lib) {
     const char *in = *path++;
     lib->path = &g_string[g_string_n];
+    while (*in)
+      g_string[g_string_n++] = *in++;
+    in = "librtbuf_";
     while (*in)
       g_string[g_string_n++] = *in++;
     in = name;
