@@ -17,6 +17,12 @@ AC_CHECK_LIB([cli], [cli_init],,
 AC_CHECK_LIB([pthread], [pthread_create],,
              AC_MSG_ERROR(missing pthread library))
 
+AC_CHECK_LIB([sndio], [sio_open],,
+             AC_MSG_ERROR(missing sndio library))
+
+AC_CHECK_LIB([glfw], [glfwSwapBuffers],,
+             AC_MSG_ERROR(missing glfw3 library))
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
