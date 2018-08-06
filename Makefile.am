@@ -6,10 +6,13 @@ CLEANFILES =
 include_HEADERS =
 lib_LTLIBRARIES =
 
+AM_CPPFLAGS = ${local_cppflags}
+AM_LDFLAGS = ${local_ldflags}
+
 if DEBUG
-AM_CFLAGS = -O0 -ggdb -pipe -W -Wall -Werror
+AM_CFLAGS = -O0 -ggdb -W -Wall -Werror
 else
-AM_CFLAGS = -O2 -pipe -W -Wall -Werror
+AM_CFLAGS = -O2 -DNDEBUG -W -Wall -Werror
 endif
 
 lib_LTLIBRARIES += librtbuf.la
@@ -25,15 +28,17 @@ include_HEADERS += \
 	rtbuf_fun.h \
 	rtbuf.h
 
+if ENABLE_RTBUF
 bin_PROGRAMS += rtbuf
-rtbuf_LDADD = -lrtbuf
+rtbuf_LDADD = ${RTBUF_LIBS} librtbuf.la
 rtbuf_SOURCES = \
 	rtbuf_lib.c \
 	rtbuf_cli.c
 include_HEADERS += \
 	rtbuf_lib.h
-rtbuf: librtbuf.la
+endif
 
+if ENABLE_SIGNAL
 rtbuf_signal_type: rtbuf_signal_type.c rtbuf_signal.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_signal_type rtbuf_signal_type.c
 rtbuf_signal_type.h: rtbuf_signal_type
@@ -41,7 +46,7 @@ rtbuf_signal_type.h: rtbuf_signal_type
 CLEANFILES += rtbuf_signal_type rtbuf_signal_type.h
 
 lib_LTLIBRARIES += librtbuf_signal.la
-librtbuf_signal_la_LIBADD = -lm
+librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS}
 librtbuf_signal_la_SOURCES = \
 	rtbuf_music.c \
 	rtbuf_signal.c \
@@ -54,7 +59,9 @@ include_HEADERS += \
 	rtbuf_music.h \
 	rtbuf_signal.h \
 	rtbuf_signal_type.h
+endif
 
+if ENABLE_SNDIO
 rtbuf_sndio_type: rtbuf_sndio_type.c rtbuf_sndio.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_sndio_type rtbuf_sndio_type.c
 rtbuf_sndio_type.h: rtbuf_sndio_type
@@ -62,7 +69,7 @@ rtbuf_sndio_type.h: rtbuf_sndio_type
 CLEANFILES += rtbuf_sndio_type rtbuf_sndio_type.h
 
 lib_LTLIBRARIES += librtbuf_sndio.la
-librtbuf_sndio_la_LIBADD = -lsndio
+librtbuf_sndio_la_LIBADD = ${SNDIO_LIBS}
 librtbuf_sndio_la_SOURCES = \
 	rtbuf_sndio.c \
 	rtbuf_sndio_input.c \
@@ -71,14 +78,19 @@ librtbuf_sndio_la_SOURCES = \
 include_HEADERS += \
 	rtbuf_sndio.h \
 	rtbuf_sndio_type.h
+endif
 
+if ENABLE_GLFW
 lib_LTLIBRARIES += librtbuf_glfw3.la
-librtbuf_glfw3_la_LIBADD = -lglfw
+librtbuf_glfw3_la_CPPFLAGS = ${X11_CPPFLAGS}
+librtbuf_glfw3_la_LDFLAGS = ${X11_LDFLAGS}
+librtbuf_glfw3_la_LIBADD = ${GLFW_LIBS}
 librtbuf_glfw3_la_SOURCES = \
 	rtbuf_glfw3.c \
 	rtbuf_music.c
 include_HEADERS += \
 	rtbuf_glfw3.h
+endif
 
 deps_headers = ${include_HEADERS}
 deps_sources = \

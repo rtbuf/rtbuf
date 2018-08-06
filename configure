@@ -638,6 +638,18 @@ LTLIBOBJS
 LIBOBJS
 DEBUG_FALSE
 DEBUG_TRUE
+ENABLE_GLFW_FALSE
+ENABLE_GLFW_TRUE
+GLFW_LIBS
+ENABLE_SNDIO_FALSE
+ENABLE_SNDIO_TRUE
+SNDIO_LIBS
+ENABLE_SIGNAL_FALSE
+ENABLE_SIGNAL_TRUE
+SIGNAL_LIBS
+ENABLE_RTBUF_FALSE
+ENABLE_RTBUF_TRUE
+RTBUF_LIBS
 CPP
 OTOOL64
 OTOOL
@@ -762,6 +774,7 @@ enable_fast_install
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
+enable_signal
 enable_debug
 '
       ac_precious_vars='build_alias
@@ -1402,6 +1415,7 @@ Optional Features:
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
+  --enable-signal         enable building librtbuf_signal, default: yes
   --enable-debug          enable debugging, default: yes
 
 Optional Packages:
@@ -12250,6 +12264,14 @@ CC="$lt_save_CC"
 
 
 
+if test -d /usr/local/include; then
+  CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+fi
+if test -d /usr/local/lib; then
+  LDFLAGS="$LDFLAGS -L/usr/local/lib"
+fi
+
+enable_rtbuf=true
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cli_init in -lcli" >&5
 $as_echo_n "checking for cli_init in -lcli... " >&6; }
 if ${ac_cv_lib_cli_cli_init+:} false; then :
@@ -12287,14 +12309,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cli_cli_init" >&5
 $as_echo "$ac_cv_lib_cli_cli_init" >&6; }
 if test "x$ac_cv_lib_cli_cli_init" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBCLI 1
-_ACEOF
-
-  LIBS="-lcli $LIBS"
-
+  RTBUF_LIBS="$RTBUF_LIBS -lcli"
 else
-  as_fn_error $? "missing cli library" "$LINENO" 5
+  if test x"$enable_rtbuf" = x"true"; then
+                as_fn_error $? "missing libcli for rtbuf\"" "$LINENO" 5
+              fi
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_create in -lpthread" >&5
@@ -12334,17 +12353,84 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pthread_pthread_create" >&5
 $as_echo "$ac_cv_lib_pthread_pthread_create" >&6; }
 if test "x$ac_cv_lib_pthread_pthread_create" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPTHREAD 1
-_ACEOF
-
-  LIBS="-lpthread $LIBS"
-
+  RTBUF_LIBS="$RTBUF_LIBS -lpthread"
 else
-  as_fn_error $? "missing pthread library" "$LINENO" 5
+  if test x"$enable_rtbuf" = x"true"; then
+                as_fn_error $? "missing libpthread for rtbuf\"" "$LINENO" 5
+              fi
 fi
 
 
+ if test x"$enable_rtbuf" = x"true"; then
+  ENABLE_RTBUF_TRUE=
+  ENABLE_RTBUF_FALSE='#'
+else
+  ENABLE_RTBUF_TRUE='#'
+  ENABLE_RTBUF_FALSE=
+fi
+
+
+enable_signal=true
+SIGNAL_LIBS=
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sin in -lm" >&5
+$as_echo_n "checking for sin in -lm... " >&6; }
+if ${ac_cv_lib_m_sin+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lm  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char sin ();
+int
+main ()
+{
+return sin ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_m_sin=yes
+else
+  ac_cv_lib_m_sin=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_sin" >&5
+$as_echo "$ac_cv_lib_m_sin" >&6; }
+if test "x$ac_cv_lib_m_sin" = xyes; then :
+  SIGNAL_LIBS="$SIGNAL_LIBS -lm"
+fi
+
+# Check whether --enable-signal was given.
+if test "${enable_signal+set}" = set; then :
+  enableval=$enable_signal; case "${enableval}" in
+     no)  enable_signal=false ;;
+   esac
+fi
+
+
+ if test x"$enable_signal" = x"true"; then
+  ENABLE_SIGNAL_TRUE=
+  ENABLE_SIGNAL_FALSE='#'
+else
+  ENABLE_SIGNAL_TRUE='#'
+  ENABLE_SIGNAL_FALSE=
+fi
+
+
+enable_sndio=false
+SNDIO_LIBS=
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sio_open in -lsndio" >&5
 $as_echo_n "checking for sio_open in -lsndio... " >&6; }
 if ${ac_cv_lib_sndio_sio_open+:} false; then :
@@ -12382,17 +12468,29 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sndio_sio_open" >&5
 $as_echo "$ac_cv_lib_sndio_sio_open" >&6; }
 if test "x$ac_cv_lib_sndio_sio_open" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSNDIO 1
-_ACEOF
-
-  LIBS="-lsndio $LIBS"
-
-else
-  as_fn_error $? "missing sndio library" "$LINENO" 5
+  enable_sndio=true
+              SNDIO_LIBS=-lsndio
 fi
 
 
+ if test x"$enable_sndio" = x"true"; then
+  ENABLE_SNDIO_TRUE=
+  ENABLE_SNDIO_FALSE='#'
+else
+  ENABLE_SNDIO_TRUE='#'
+  ENABLE_SNDIO_FALSE=
+fi
+
+
+if test -d /usr/X11R6/include; then
+  CPPFLAGS="$CPPFLAGS -I/usr/X11R6/include"
+fi
+if test -d /usr/X11R6/lib; then
+  LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
+fi
+
+enable_glfw=false
+GLFW_LIBS=
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for glfwSwapBuffers in -lglfw" >&5
 $as_echo_n "checking for glfwSwapBuffers in -lglfw... " >&6; }
 if ${ac_cv_lib_glfw_glfwSwapBuffers+:} false; then :
@@ -12430,14 +12528,17 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_glfw_glfwSwapBuffers" >&5
 $as_echo "$ac_cv_lib_glfw_glfwSwapBuffers" >&6; }
 if test "x$ac_cv_lib_glfw_glfwSwapBuffers" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBGLFW 1
-_ACEOF
+  enable_glfw=true
+              GLFW_LIBS=-lglfw
+fi
 
-  LIBS="-lglfw $LIBS"
 
+ if test x"$enable_glfw" = x"true"; then
+  ENABLE_GLFW_TRUE=
+  ENABLE_GLFW_FALSE='#'
 else
-  as_fn_error $? "missing glfw3 library" "$LINENO" 5
+  ENABLE_GLFW_TRUE='#'
+  ENABLE_GLFW_FALSE=
 fi
 
 
@@ -12446,10 +12547,10 @@ fi
 # Check whether --enable-debug was given.
 if test "${enable_debug+set}" = set; then :
   enableval=$enable_debug; case "${enableval}" in
-                  yes) debug=true ;;
-                  no)  debug=false ;;
-                  *)   as_fn_error $? "bad value ${enableval} for --enable-debug" "$LINENO" 5;;
-                esac
+     yes) debug=true ;;
+      no) debug=false ;;
+       *) as_fn_error $? "bad value ${enableval} for --enable-debug" "$LINENO" 5;;
+   esac
 else
   debug=true
 fi
@@ -12600,6 +12701,22 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_RTBUF_TRUE}" && test -z "${ENABLE_RTBUF_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_RTBUF\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_SIGNAL_TRUE}" && test -z "${ENABLE_SIGNAL_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_SIGNAL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_SNDIO_TRUE}" && test -z "${ENABLE_SNDIO_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_SNDIO\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_GLFW_TRUE}" && test -z "${ENABLE_GLFW_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_GLFW\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${DEBUG_TRUE}" && test -z "${DEBUG_FALSE}"; then
@@ -14838,3 +14955,9 @@ fi
 
 
 cat dependencies.mk >> Makefile
+
+echo "Building status :"
+echo "  rtbuf           $enable_rtbuf"
+echo "  signal          $enable_signal"
+echo "  sndio           $enable_sndio"
+echo "  glfw            $enable_glfw"
