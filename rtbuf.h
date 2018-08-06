@@ -55,11 +55,12 @@ int  rtbuf_new (s_rtbuf_fun *rf);
 void rtbuf_delete (s_rtbuf *rtb);
 int  rtbuf_clone (s_rtbuf *rtb);
 int  rtbuf_find (symbol sym);
-int  rtbuf_out_find (s_rtbuf *rtb, symbol sym);
 void rtbuf_unbind (s_rtbuf *rtb);
+int  rtbuf_var_find (s_rtbuf *rtb, const char *x);
 void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var);
 void rtbuf_var_bind (s_rtbuf *rtb, unsigned int var,
                      unsigned int target, unsigned int target_out);
+int  rtbuf_out_find (s_rtbuf *rtb, symbol sym);
 int  rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                      unsigned int size);
 void rtbuf_sort ();

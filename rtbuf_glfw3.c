@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -25,6 +26,8 @@
 
 s_rtbuf_lib_fun_out g_rtbuf_glfw3_keyboard_out[] = {
   { "notes", RTBUF_MUSIC_NOTES_TYPE },
+  { "octave", "int" },
+  { "window", "void*" },
   { 0, 0 } };
 
 const char     *rtbuf_lib_name = "glfw3";
@@ -36,14 +39,38 @@ s_rtbuf_lib_fun rtbuf_lib_fun[] = {
 
 s_rtbuf_music_notes g_rtbuf_glfw3_keyboard;
 
-double scancode_frequency (int scancode)
+double scancode_frequency (int scancode, unsigned int octave)
 {
+  int note = -1;
+  double freq = 0.0;
   printf("scancode %i\n", scancode);
   switch (scancode) {
-  case 0:
-    break;
+  case 52: note =  0; break; /* C */
+  case 39: note =  1; break;
+  case 53: note =  2; break; /* D */
+  case 40: note =  3; break;
+  case 54: note =  4; break; /* E */
+  case 55: note =  5; break; /* F */
+  case 42: note =  6; break;
+  case 56: note =  7; break; /* G */
+  case 43: note =  8; break;
+  case 57: note =  9; break; /* A */
+  case 44: note = 10; break;
+  case 58: note = 11; break; /* B */
+  case 24: note = 12; break; /* C */
+  case 25: note = 14; break;
+  case 26: note = 16; break; /* D */
+  case 27: note = 17; break;
+  case 28: note = 19; break; /* E */
+  case 29: note = 21; break; /* F */
+  case 30: note = 23; break;
+  case 31: note = 24; break; /* G */
+  case 32: note = 26; break;
+  case 33: note = 21; break; /* A */
   }
-  return 220;
+  if (note > 0)
+    freq = exp2(octave + note / 12);
+  return freq;
 }
 
 static int find_note (s_rtbuf_music_notes *notes, double freq)
@@ -77,12 +104,12 @@ void rtbuf_glfw3_keyboard_window_key (GLFWwindow *w, int key,
   (void) mods;
   switch (action) {
   case GLFW_RELEASE:
-    freq = scancode_frequency(scancode);
+    freq = scancode_frequency(scancode, data->octave);
     if ((i = find_note(notes, freq)) >= 0)
       notes->note[i].stop = 0.0;
     break;
   case GLFW_PRESS:
-    freq = scancode_frequency(scancode);
+    freq = scancode_frequency(scancode, data->octave);
     if ((i = rtbuf_music_notes_new(notes)) < 0)
       break;
     note = &notes->note[i];
@@ -99,6 +126,7 @@ void rtbuf_glfw3_keyboard_window_key (GLFWwindow *w, int key,
 void rtbuf_glfw3_keyboard_window_size (GLFWwindow *w, int width,
                                        int height)
 {
+  (void) w;
   printf("size\n");
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
@@ -197,4 +225,5 @@ int rtbuf_lib_init (s_rtbuf_lib *lib)
 {
   (void) lib;
   glfwInit();
+  return 0;
 }

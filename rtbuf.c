@@ -345,19 +345,43 @@ int rtbuf_find (const char *x)
   return -1;
 }
 
-int rtbuf_out_find (s_rtbuf *rtb, const char *x)
+int rtbuf_var_find (s_rtbuf *rtb, const char *x)
 {
-  const char *sym;
+  s_rtbuf_fun *fun = rtb->fun;
+  symbol sym;
+  printf("rtbuf_var_find %s\n", x);
   if ('0' <= x[0] && x[0] <= '9') {
     int i = atoi(x);
-    if (0 <= i && (unsigned int) i < rtb->fun->out_n)
+    if (0 <= i && (unsigned int) i < fun->var_n)
       return i;
   }
   if ((sym = symbol_find(x))) {
-    s_rtbuf_fun_out *out = rtb->fun->out;
-    int i = 0;
-    while (i < RTBUF_FUN_OUT_MAX) {
-      if (sym == out->name)
+    unsigned int i = 0;
+    printf("rtbuf_var_find sym %s\n", sym);
+    while (i < fun->var_n) {
+      if (sym == fun->var[i].name)
+        return i;
+      i++;
+    }
+  }
+  return -1;
+}
+
+int rtbuf_out_find (s_rtbuf *rtb, const char *x)
+{
+  s_rtbuf_fun *fun = rtb->fun;
+  symbol sym;
+  printf("rtbuf_out_find %s\n", x);
+  if ('0' <= x[0] && x[0] <= '9') {
+    int i = atoi(x);
+    if (0 <= i && (unsigned int) i < fun->out_n)
+      return i;
+  }
+  if ((sym = symbol_find(x))) {
+    unsigned int i = 0;
+    printf("rtbuf_out_find sym %s\n", sym);
+    while (i < fun->out_n) {
+      if (sym == fun->out[i].name)
         return i;
       i++;
     }

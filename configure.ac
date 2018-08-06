@@ -25,6 +25,17 @@ AC_CHECK_LIB([glfw], [glfwSwapBuffers],,
 
 AC_PREFIX_DEFAULT([~/.rtbuf])
 
+AC_ARG_ENABLE(debug,
+AS_HELP_STRING([--enable-debug],
+               [enable debugging, default: yes]),
+               [case "${enableval}" in
+                  yes) debug=true ;;
+                  no)  debug=false ;;
+                  *)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]);;
+                esac],
+               [debug=true])
+AM_CONDITIONAL(DEBUG, test x"$debug" = x"true")
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 

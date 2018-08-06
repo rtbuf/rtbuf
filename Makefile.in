@@ -381,6 +381,8 @@ include_HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_fun.h \
 	rtbuf_glfw3.h
 lib_LTLIBRARIES = librtbuf.la librtbuf_signal.la librtbuf_sndio.la \
 	librtbuf_glfw3.la
+@DEBUG_FALSE@AM_CFLAGS = -O2 -pipe -W -Wall -Werror
+@DEBUG_TRUE@AM_CFLAGS = -O0 -ggdb -pipe -W -Wall -Werror
 librtbuf_la_SOURCES = \
 	symbol.c \
 	rtbuf_type.c \
@@ -573,10 +575,6 @@ clean-binPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-
-rtbuf$(EXEEXT): $(rtbuf_OBJECTS) $(rtbuf_DEPENDENCIES) $(EXTRA_rtbuf_DEPENDENCIES) 
-	@rm -f rtbuf$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(rtbuf_OBJECTS) $(rtbuf_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1013,6 +1011,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-includeHEADERS \
 
 .PRECIOUS: Makefile
 
+rtbuf: librtbuf.la
 
 rtbuf_signal_type: rtbuf_signal_type.c rtbuf_signal.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_signal_type rtbuf_signal_type.c

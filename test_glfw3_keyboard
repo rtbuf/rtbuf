@@ -1,4 +1,13 @@
 load signal
+load sndio
 load glfw3
 new glfw3 keyboard
+new signal adsr
+new signal sinus
+new signal synth
+bind 0 notes  3 keyboard
+bind 1 signal 3 envelope
+bind 2 signal 3 oscillator
+new sndio output
+bind 3 signal 4 left
 start

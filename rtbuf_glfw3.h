@@ -23,6 +23,7 @@
 typedef struct rtbuf_glfw3_keyboard_data {
   s_rtbuf_music_notes notes;
   GLFWwindow *window;
+  int octave;
 } s_rtbuf_glfw3_keyboard_data;
 
 s_rtbuf_music_notes g_rtbuf_glfw3_keyboard;

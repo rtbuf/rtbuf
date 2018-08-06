@@ -77,13 +77,21 @@ s_rtbuf_fun * rtbuf_fun_find (const char *x)
 }
 
 s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,
-                                      symbol name)
+                                      const char *x)
 {
-  unsigned int i = 0;
-  while (i < fun->out_n) {
-    if (name == fun->out[i].name)
+  symbol sym;
+  if (x && '0' <= x[0] && x[0] <= '9') {
+    int i = atoi(x);
+    if (0 <= i && (unsigned int) i < fun->out_n)
       return &fun->out[i];
-    i++;
+  }
+  if ((sym = symbol_find(x))) {
+    unsigned int i = 0;
+    while (i < fun->out_n) {
+      if (sym == fun->out[i].name)
+        return &fun->out[i];
+      i++;
+    }
   }
   return 0;
 }

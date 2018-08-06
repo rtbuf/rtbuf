@@ -6,6 +6,12 @@ CLEANFILES =
 include_HEADERS =
 lib_LTLIBRARIES =
 
+if DEBUG
+AM_CFLAGS = -O0 -ggdb -pipe -W -Wall -Werror
+else
+AM_CFLAGS = -O2 -pipe -W -Wall -Werror
+endif
+
 lib_LTLIBRARIES += librtbuf.la
 librtbuf_la_SOURCES = \
 	symbol.c \
@@ -26,6 +32,7 @@ rtbuf_SOURCES = \
 	rtbuf_cli.c
 include_HEADERS += \
 	rtbuf_lib.h
+rtbuf: librtbuf.la
 
 rtbuf_signal_type: rtbuf_signal_type.c rtbuf_signal.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_signal_type rtbuf_signal_type.c

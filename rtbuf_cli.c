@@ -84,26 +84,34 @@ void print_rtbuf (unsigned int i)
 void print_rtbuf_long (unsigned int i)
 {
   s_rtbuf *rtb;
+  s_rtbuf_fun *fun;
   unsigned int j = 0;
   assert(i < RTBUF_MAX);
   rtb = &g_rtbuf[i];
+  fun = rtb->fun;
   printf("#<rtbuf %i", i);
-  printf(" %p", rtb->data);
+  printf(" %s %s", fun->lib->name, fun->name);
   if (rtb->data) {
-    printf(" %x", rtb->flags);
     printf(" %d", rtb->refc);
   }
-  while (j < rtb->fun->var_n) {
+  while (j < fun->var_n) {
+    s_rtbuf *target = &g_rtbuf[rtb->var[j].rtb];
+    unsigned int target_out = rtb->var[j].out;
+    printf("\n  var %i %s:%s", j, fun->var[j].name,
+           fun->var[j].type->name);
     if (rtb->var[j].rtb >= 0) {
-      s_rtbuf *target = &g_rtbuf[rtb->var[j].rtb];
-      unsigned int target_out = rtb->var[j].out;
-      printf("\n  %i %s:%s = ", j, rtb->fun->var[j].name,
-             rtb->fun->var[j].type->name);
+      printf (" = ");
       print_rtbuf(rtb->var[j].rtb);
-      printf(" %u %s:%s", target_out,
+      printf(" out %u %s:%s", target_out,
              target->fun->out[target_out].name,
              target->fun->out[target_out].type->name);
     }
+    j++;
+  }
+  j = 0;
+  while (j < fun->out_n) {
+    printf("\n  out %i %s:%s", j, fun->out[j].name,
+           fun->out[j].type->name);
     j++;
   }
   printf(">\n");
@@ -218,23 +226,22 @@ int rtbuf_cli_delete (int argc, const char *argv[])
 
 int rtbuf_cli_bind (int argc, const char *argv[])
 {
-  int rtb;
+  int src;
+  int out;
+  int dest;
   int var;
-  int target;
-  int target_out;
   if (argc != 4)
-    return rtbuf_err("usage: bind BUFFER VARIABLE TARGET OUTPUT");
-  if ((rtb = rtbuf_find(argv[1])) < 0)
-    return rtbuf_err("buffer not found");
-  var = atoi(argv[2]);
-  if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->var_n)
+    return rtbuf_err("usage: bind SOURCE OUT DEST VAR");
+  if ((src = rtbuf_find(argv[1])) < 0)
+    return rtbuf_err("source buffer not found");
+  if ((out = rtbuf_out_find(&g_rtbuf[src], argv[2])) < 0)
+    return rtbuf_err("output not found");
+  if ((dest = rtbuf_find(argv[3])) < 0)
+    return rtbuf_err("destination buffer not found");
+  if ((var = rtbuf_var_find(&g_rtbuf[dest], argv[4])) < 0)
     return rtbuf_err("variable not found");
-  if ((target = rtbuf_find(argv[3])) < 0)
-    return rtbuf_err("target not found");
-  if ((target_out = rtbuf_out_find(&g_rtbuf[rtb], argv[4])) < 0)
-    return rtbuf_err("target output not found");
-  rtbuf_var_bind(&g_rtbuf[rtb], var, target, target_out);
-  print_rtbuf_long(rtb);
+  rtbuf_var_bind(&g_rtbuf[dest], var, src, out);
+  print_rtbuf_long(dest);
   return 0;
 }
 
@@ -306,8 +313,8 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " buffer N                    Show buffer N.\n"
          " new LIB FUN                 Instanciate library function.\n"
          " delete BUFFER               Unlink and delete RTBUF.\n"
-         " bind BUFFER VAR TARGET OUT  Bind BUFFER VAR to TARGET OUT.\n"
-         " unbind RTBUF VAR            Unbind RTBUF VAR.\n"
+         " bind SOURCE OUT DEST VAR    Bind SOURCE OUT to DEST VAR.\n"
+         " unbind BUFFER VAR           Unbind BUFFER VAR.\n"
          " help                        Show this help message.\n"
          " exit                        Quit RTBUF.\n");
   return 0;
