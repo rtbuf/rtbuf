@@ -1,0 +1,2 @@
+export PATH="$HOME/.rtbuf/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/.rtbuf/lib:$LD_LIBRARY_PATH"

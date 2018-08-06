@@ -98,7 +98,6 @@ bin_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_SIGNAL_TRUE@am__append_3 = rtbuf_signal_type rtbuf_signal_type.h
 @ENABLE_SIGNAL_TRUE@am__append_4 = librtbuf_signal.la
 @ENABLE_SIGNAL_TRUE@am__append_5 = \
-@ENABLE_SIGNAL_TRUE@	rtbuf_music.h \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal.h \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_type.h
 
@@ -170,30 +169,35 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 am__DEPENDENCIES_1 =
 @ENABLE_GLFW_TRUE@librtbuf_glfw3_la_DEPENDENCIES =  \
-@ENABLE_GLFW_TRUE@	$(am__DEPENDENCIES_1)
-am__librtbuf_glfw3_la_SOURCES_DIST = rtbuf_glfw3.c rtbuf_music.c
+@ENABLE_GLFW_TRUE@	$(am__DEPENDENCIES_1) librtbuf_music.la \
+@ENABLE_GLFW_TRUE@	librtbuf.la
+am__librtbuf_glfw3_la_SOURCES_DIST = rtbuf_glfw3.c
 @ENABLE_GLFW_TRUE@am_librtbuf_glfw3_la_OBJECTS =  \
-@ENABLE_GLFW_TRUE@	librtbuf_glfw3_la-rtbuf_glfw3.lo \
-@ENABLE_GLFW_TRUE@	librtbuf_glfw3_la-rtbuf_music.lo
+@ENABLE_GLFW_TRUE@	librtbuf_glfw3_la-rtbuf_glfw3.lo
 librtbuf_glfw3_la_OBJECTS = $(am_librtbuf_glfw3_la_OBJECTS)
 librtbuf_glfw3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(librtbuf_glfw3_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @ENABLE_GLFW_TRUE@am_librtbuf_glfw3_la_rpath = -rpath $(libdir)
+librtbuf_music_la_LIBADD =
+am_librtbuf_music_la_OBJECTS = rtbuf_music.lo
+librtbuf_music_la_OBJECTS = $(am_librtbuf_music_la_OBJECTS)
 @ENABLE_SIGNAL_TRUE@librtbuf_signal_la_DEPENDENCIES =  \
-@ENABLE_SIGNAL_TRUE@	$(am__DEPENDENCIES_1)
-am__librtbuf_signal_la_SOURCES_DIST = rtbuf_music.c rtbuf_signal.c \
+@ENABLE_SIGNAL_TRUE@	$(am__DEPENDENCIES_1) librtbuf_music.la \
+@ENABLE_SIGNAL_TRUE@	librtbuf.la
+am__librtbuf_signal_la_SOURCES_DIST = rtbuf_signal.c \
 	rtbuf_signal_sinus.c rtbuf_signal_square.c rtbuf_signal_adsr.c \
 	rtbuf_signal_synth.c rtbuf_signal_type.h
-@ENABLE_SIGNAL_TRUE@am_librtbuf_signal_la_OBJECTS = rtbuf_music.lo \
-@ENABLE_SIGNAL_TRUE@	rtbuf_signal.lo rtbuf_signal_sinus.lo \
+@ENABLE_SIGNAL_TRUE@am_librtbuf_signal_la_OBJECTS = rtbuf_signal.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_sinus.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_square.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_adsr.lo rtbuf_signal_synth.lo
 librtbuf_signal_la_OBJECTS = $(am_librtbuf_signal_la_OBJECTS)
 @ENABLE_SIGNAL_TRUE@am_librtbuf_signal_la_rpath = -rpath $(libdir)
 @ENABLE_SNDIO_TRUE@librtbuf_sndio_la_DEPENDENCIES =  \
-@ENABLE_SNDIO_TRUE@	$(am__DEPENDENCIES_1)
+@ENABLE_SNDIO_TRUE@	$(am__DEPENDENCIES_1) librtbuf_signal.la \
+@ENABLE_SNDIO_TRUE@	librtbuf.la
 am__librtbuf_sndio_la_SOURCES_DIST = rtbuf_sndio.c rtbuf_sndio_input.c \
 	rtbuf_sndio_output.c rtbuf_sndio_type.h
 @ENABLE_SNDIO_TRUE@am_librtbuf_sndio_la_OBJECTS = rtbuf_sndio.lo \
@@ -243,10 +247,11 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(librtbuf_la_SOURCES) $(librtbuf_glfw3_la_SOURCES) \
-	$(librtbuf_signal_la_SOURCES) $(librtbuf_sndio_la_SOURCES) \
-	$(rtbuf_SOURCES)
+	$(librtbuf_music_la_SOURCES) $(librtbuf_signal_la_SOURCES) \
+	$(librtbuf_sndio_la_SOURCES) $(rtbuf_SOURCES)
 DIST_SOURCES = $(librtbuf_la_SOURCES) \
 	$(am__librtbuf_glfw3_la_SOURCES_DIST) \
+	$(librtbuf_music_la_SOURCES) \
 	$(am__librtbuf_signal_la_SOURCES_DIST) \
 	$(am__librtbuf_sndio_la_SOURCES_DIST) \
 	$(am__rtbuf_SOURCES_DIST)
@@ -432,14 +437,14 @@ ACLOCAL_AMFLAGS = -I build-aux/m4
 CLEANFILES = $(am__append_3) $(am__append_6) dependencies.mk.1 \
 	dependencies.mk.2
 include_HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_fun.h \
-	rtbuf.h $(am__append_2) $(am__append_5) $(am__append_8) \
-	$(am__append_10)
-lib_LTLIBRARIES = librtbuf.la $(am__append_4) $(am__append_7) \
-	$(am__append_9)
+	rtbuf.h $(am__append_2) rtbuf_music.h $(am__append_5) \
+	$(am__append_8) $(am__append_10)
+lib_LTLIBRARIES = librtbuf.la librtbuf_music.la $(am__append_4) \
+	$(am__append_7) $(am__append_9)
 AM_CPPFLAGS = ${local_cppflags}
-AM_LDFLAGS = ${local_ldflags}
-@DEBUG_FALSE@AM_CFLAGS = -O2 -DNDEBUG -W -Wall -Werror
-@DEBUG_TRUE@AM_CFLAGS = -O0 -ggdb -W -Wall -Werror
+AM_LDFLAGS = ${local_ldflags} -L./.libs
+@DEBUG_FALSE@AM_CFLAGS = -DNDEBUG -O2
+@DEBUG_TRUE@AM_CFLAGS = -DDEBUG -O0 -ggdb
 librtbuf_la_SOURCES = \
 	symbol.c \
 	rtbuf_type.c \
@@ -451,9 +456,11 @@ librtbuf_la_SOURCES = \
 @ENABLE_RTBUF_TRUE@	rtbuf_lib.c \
 @ENABLE_RTBUF_TRUE@	rtbuf_cli.c
 
-@ENABLE_SIGNAL_TRUE@librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS}
+librtbuf_music_la_SOURCES = \
+	rtbuf_music.c
+
+@ENABLE_SIGNAL_TRUE@librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS} librtbuf_music.la librtbuf.la
 @ENABLE_SIGNAL_TRUE@librtbuf_signal_la_SOURCES = \
-@ENABLE_SIGNAL_TRUE@	rtbuf_music.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_sinus.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_square.c \
@@ -461,7 +468,7 @@ librtbuf_la_SOURCES = \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_synth.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_type.h
 
-@ENABLE_SNDIO_TRUE@librtbuf_sndio_la_LIBADD = ${SNDIO_LIBS}
+@ENABLE_SNDIO_TRUE@librtbuf_sndio_la_LIBADD = ${SNDIO_LIBS} librtbuf_signal.la librtbuf.la
 @ENABLE_SNDIO_TRUE@librtbuf_sndio_la_SOURCES = \
 @ENABLE_SNDIO_TRUE@	rtbuf_sndio.c \
 @ENABLE_SNDIO_TRUE@	rtbuf_sndio_input.c \
@@ -470,10 +477,9 @@ librtbuf_la_SOURCES = \
 
 @ENABLE_GLFW_TRUE@librtbuf_glfw3_la_CPPFLAGS = ${X11_CPPFLAGS}
 @ENABLE_GLFW_TRUE@librtbuf_glfw3_la_LDFLAGS = ${X11_LDFLAGS}
-@ENABLE_GLFW_TRUE@librtbuf_glfw3_la_LIBADD = ${GLFW_LIBS}
+@ENABLE_GLFW_TRUE@librtbuf_glfw3_la_LIBADD = ${GLFW_LIBS} librtbuf_music.la librtbuf.la
 @ENABLE_GLFW_TRUE@librtbuf_glfw3_la_SOURCES = \
-@ENABLE_GLFW_TRUE@	rtbuf_glfw3.c \
-@ENABLE_GLFW_TRUE@	rtbuf_music.c
+@ENABLE_GLFW_TRUE@	rtbuf_glfw3.c
 
 deps_headers = ${include_HEADERS}
 deps_sources = \
@@ -580,6 +586,9 @@ librtbuf.la: $(librtbuf_la_OBJECTS) $(librtbuf_la_DEPENDENCIES) $(EXTRA_librtbuf
 librtbuf_glfw3.la: $(librtbuf_glfw3_la_OBJECTS) $(librtbuf_glfw3_la_DEPENDENCIES) $(EXTRA_librtbuf_glfw3_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(librtbuf_glfw3_la_LINK) $(am_librtbuf_glfw3_la_rpath) $(librtbuf_glfw3_la_OBJECTS) $(librtbuf_glfw3_la_LIBADD) $(LIBS)
 
+librtbuf_music.la: $(librtbuf_music_la_OBJECTS) $(librtbuf_music_la_DEPENDENCIES) $(EXTRA_librtbuf_music_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(librtbuf_music_la_OBJECTS) $(librtbuf_music_la_LIBADD) $(LIBS)
+
 librtbuf_signal.la: $(librtbuf_signal_la_OBJECTS) $(librtbuf_signal_la_DEPENDENCIES) $(EXTRA_librtbuf_signal_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_librtbuf_signal_la_rpath) $(librtbuf_signal_la_OBJECTS) $(librtbuf_signal_la_LIBADD) $(LIBS)
 
@@ -646,7 +655,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_music.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_cli.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_fun.Plo@am__quote@
@@ -690,13 +698,6 @@ librtbuf_glfw3_la-rtbuf_glfw3.lo: rtbuf_glfw3.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rtbuf_glfw3.c' object='librtbuf_glfw3_la-rtbuf_glfw3.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(librtbuf_glfw3_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o librtbuf_glfw3_la-rtbuf_glfw3.lo `test -f 'rtbuf_glfw3.c' || echo '$(srcdir)/'`rtbuf_glfw3.c
-
-librtbuf_glfw3_la-rtbuf_music.lo: rtbuf_music.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(librtbuf_glfw3_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT librtbuf_glfw3_la-rtbuf_music.lo -MD -MP -MF $(DEPDIR)/librtbuf_glfw3_la-rtbuf_music.Tpo -c -o librtbuf_glfw3_la-rtbuf_music.lo `test -f 'rtbuf_music.c' || echo '$(srcdir)/'`rtbuf_music.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/librtbuf_glfw3_la-rtbuf_music.Tpo $(DEPDIR)/librtbuf_glfw3_la-rtbuf_music.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rtbuf_music.c' object='librtbuf_glfw3_la-rtbuf_music.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(librtbuf_glfw3_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o librtbuf_glfw3_la-rtbuf_music.lo `test -f 'rtbuf_music.c' || echo '$(srcdir)/'`rtbuf_music.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

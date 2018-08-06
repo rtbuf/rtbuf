@@ -25,7 +25,8 @@ symbol g_sym_stop = 0;
 void rtbuf_signal_synth_delete_note (s_rtbuf_signal_synth_data *data,
                                      unsigned int i)
 {
-  s_rtbuf_signal_synth_note *sn = &data->notes.note[i];
+  s_rtbuf_signal_synth_note *sn;
+  sn = &data->notes.note[i];
   if (sn->envelope || sn->oscillator) {
     if (sn->envelope) {
       rtbuf_delete(sn->envelope);
@@ -76,7 +77,8 @@ void rtbuf_signal_synth_update_note (s_rtbuf *rtb,
                                      unsigned int i,
                                      s_rtbuf_music_note *note)
 {
-  s_rtbuf_signal_synth_note *sn = &data->notes.note[i];
+  s_rtbuf_signal_synth_note *sn;
+  sn = &data->notes.note[i];
   if (rtbuf_music_note_p(note)) {
     if (!sn->envelope || !sn->oscillator) {
       if (!sn->envelope)
@@ -119,5 +121,6 @@ int rtbuf_signal_synth_start (s_rtbuf *rtb)
     g_sym_start = symbol_intern("start");
   if (!g_sym_stop)
     g_sym_stop = symbol_intern("stop");
+  bzero(rtb->data, rtb->fun->out_bytes);
   return 0;
 }

@@ -68,6 +68,7 @@ int rtbuf_new (s_rtbuf_fun *rf)
   data = malloc(rf->out_bytes);
   if (!data)
     return rtbuf_err("malloc failed");
+  bzero(data, rf->out_bytes);
   if ((i = rtbuf_new_(data)) < 0)
     return -1;
   rtb = &g_rtbuf[i];

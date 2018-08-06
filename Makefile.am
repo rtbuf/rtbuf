@@ -7,12 +7,12 @@ include_HEADERS =
 lib_LTLIBRARIES =
 
 AM_CPPFLAGS = ${local_cppflags}
-AM_LDFLAGS = ${local_ldflags}
+AM_LDFLAGS = ${local_ldflags} -L./.libs
 
 if DEBUG
-AM_CFLAGS = -O0 -ggdb -W -Wall -Werror
+AM_CFLAGS = -DDEBUG -O0 -ggdb
 else
-AM_CFLAGS = -O2 -DNDEBUG -W -Wall -Werror
+AM_CFLAGS = -DNDEBUG -O2
 endif
 
 lib_LTLIBRARIES += librtbuf.la
@@ -38,6 +38,12 @@ include_HEADERS += \
 	rtbuf_lib.h
 endif
 
+lib_LTLIBRARIES += librtbuf_music.la
+librtbuf_music_la_SOURCES = \
+	rtbuf_music.c
+include_HEADERS += \
+	rtbuf_music.h
+
 if ENABLE_SIGNAL
 rtbuf_signal_type: rtbuf_signal_type.c rtbuf_signal.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_signal_type rtbuf_signal_type.c
@@ -46,9 +52,8 @@ rtbuf_signal_type.h: rtbuf_signal_type
 CLEANFILES += rtbuf_signal_type rtbuf_signal_type.h
 
 lib_LTLIBRARIES += librtbuf_signal.la
-librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS}
+librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS} librtbuf_music.la librtbuf.la
 librtbuf_signal_la_SOURCES = \
-	rtbuf_music.c \
 	rtbuf_signal.c \
 	rtbuf_signal_sinus.c \
 	rtbuf_signal_square.c \
@@ -56,7 +61,6 @@ librtbuf_signal_la_SOURCES = \
 	rtbuf_signal_synth.c \
 	rtbuf_signal_type.h
 include_HEADERS += \
-	rtbuf_music.h \
 	rtbuf_signal.h \
 	rtbuf_signal_type.h
 endif
@@ -69,7 +73,7 @@ rtbuf_sndio_type.h: rtbuf_sndio_type
 CLEANFILES += rtbuf_sndio_type rtbuf_sndio_type.h
 
 lib_LTLIBRARIES += librtbuf_sndio.la
-librtbuf_sndio_la_LIBADD = ${SNDIO_LIBS}
+librtbuf_sndio_la_LIBADD = ${SNDIO_LIBS} librtbuf_signal.la librtbuf.la
 librtbuf_sndio_la_SOURCES = \
 	rtbuf_sndio.c \
 	rtbuf_sndio_input.c \
@@ -84,10 +88,9 @@ if ENABLE_GLFW
 lib_LTLIBRARIES += librtbuf_glfw3.la
 librtbuf_glfw3_la_CPPFLAGS = ${X11_CPPFLAGS}
 librtbuf_glfw3_la_LDFLAGS = ${X11_LDFLAGS}
-librtbuf_glfw3_la_LIBADD = ${GLFW_LIBS}
+librtbuf_glfw3_la_LIBADD = ${GLFW_LIBS} librtbuf_music.la librtbuf.la
 librtbuf_glfw3_la_SOURCES = \
-	rtbuf_glfw3.c \
-	rtbuf_music.c
+	rtbuf_glfw3.c
 include_HEADERS += \
 	rtbuf_glfw3.h
 endif

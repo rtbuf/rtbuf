@@ -29,7 +29,7 @@ int main ()
          RTBUF_SNDIO_SAMPLES);
   printf("#define RTBUF_SNDIO_OUTPUT_RESERVED_TYPE"
          " \"char[%u]\"\n",
-         RTBUF_SNDIO_OUTPUT_RESERVED_SIZE);
+         (unsigned int) RTBUF_SNDIO_OUTPUT_RESERVED_SIZE);
   printf("\n"
          "#endif\n");
   return 0;

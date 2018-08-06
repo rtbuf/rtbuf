@@ -49,21 +49,25 @@ int rtbuf_sndio_output_check_parameters (struct sio_par *have)
 int rtbuf_sndio_output_start (s_rtbuf *rtb)
 {
   s_rtbuf_sndio_output_data *data;
+  s_rtbuf_sndio_output_reserved *res;
   int err = 0;
   data = (s_rtbuf_sndio_output_data*) rtb->data;
-  if (!data->sio_hdl) {
-    data->sio_hdl = sio_open(SIO_DEVANY, SIO_PLAY, 0);
-    if (!data->sio_hdl)
+  res = &data->reserved;
+  if (!res->sio_hdl) {
+    res->sio_hdl = sio_open(SIO_DEVANY, SIO_PLAY, 0);
+    if (!res->sio_hdl)
       err = rtbuf_err("sndio_output_start: sio_open failed");
     else {
-      rtbuf_sndio_output_parameters(&data->want);
-      if (sio_setpar(data->sio_hdl, &data->want) != 1)
+      rtbuf_sndio_output_parameters(&res->want);
+      if (sio_setpar(res->sio_hdl,
+                     &res->want) != 1)
         err = rtbuf_err("sndio_output_start: sio_setpar failed");
-      else if (sio_getpar(data->sio_hdl, &data->have) != 1)
+      else if (sio_getpar(res->sio_hdl,
+                          &res->have) != 1)
         err = rtbuf_err("sndio_output_start: sio_getpar failed");
-      else if (!rtbuf_sndio_output_check_parameters(&data->have))
+      else if (!rtbuf_sndio_output_check_parameters(&res->have))
         err = rtbuf_err("sndio_output_start: check_parameters failed");
-      else if (sio_start(data->sio_hdl) != 1)
+      else if (sio_start(res->sio_hdl) != 1)
         err = rtbuf_err("sndio_output_start: sio_start failed");
     }
   }
@@ -74,9 +78,9 @@ int rtbuf_sndio_output_stop (s_rtbuf *rtb)
 {
   s_rtbuf_sndio_output_data *data;
   data = (s_rtbuf_sndio_output_data*) rtb->data;
-  if (data->sio_hdl) {
-    sio_close(data->sio_hdl);
-    data->sio_hdl = 0;
+  if (data->reserved.sio_hdl) {
+    sio_close(data->reserved.sio_hdl);
+    data->reserved.sio_hdl = 0;
   }
   return 0;
 }
@@ -95,14 +99,18 @@ int rtbuf_sndio_output (s_rtbuf *rtb)
     while (j < RTBUF_SNDIO_CHANNELS) {
       double in = rtbuf_signal_sample(rtb, j, i, 0.0);
       in = clamp(-1.0, in, 1.0);
-      *sample = (short) (in < 0 ? in * -SHRT_MIN : in * SHRT_MAX);
-      //printf(" %i", *sample);
+      if (in < 0.0)
+        in *= -SHRT_MIN;
+      else
+        in *= SHRT_MAX;
+      *sample = (short) in;
       sample++;
       j++;
     }
     i++;
   }
-  sio_write(data->sio_hdl, data->samples, sizeof(data->samples));
+  sio_write(data->reserved.sio_hdl, data->samples,
+            sizeof(t_rtbuf_sndio_samples));
   //printf("\n");
   return 0;
 }
