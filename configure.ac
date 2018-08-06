@@ -11,7 +11,7 @@ AM_PROG_AR
 
 AC_PROG_CC
 
-LT_INIT
+LT_INIT([disable-static])
 
 if test -d /usr/local/include; then
   CPPFLAGS="$CPPFLAGS -I/usr/local/include"
