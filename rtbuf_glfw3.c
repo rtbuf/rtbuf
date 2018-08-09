@@ -231,13 +231,10 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb)
   while (i < RTBUF_MUSIC_NOTE_MAX && n > 0) {
     s_rtbuf_music_note *note = &data->notes.note[i];
     if (note->velocity > 0.0) {
-      if (note->start < 0.0)
+      assert(note->start >= 0.0);
+      rtbuf_music_note_dt(note, RTBUF_SIGNAL_DT);
+      if (note->stop > RTBUF_MUSIC_RELEASE_MAX)
         rtbuf_music_notes_delete(&data->notes, i);
-      else {
-        rtbuf_music_note_dt(note, RTBUF_SIGNAL_DT);
-        if (note->stop > RTBUF_MUSIC_RELEASE_MAX)
-          rtbuf_music_notes_delete(&data->notes, i);
-      }
       n--;
     }
     i++;

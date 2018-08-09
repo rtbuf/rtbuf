@@ -52,16 +52,24 @@ void rtbuf_synth_synth_delete_note (s_rtbuf *rtb,
 {
   s_rtbuf *env = rtbuf_synth_synth_note_envelope(rtb, i);
   s_rtbuf *osc = rtbuf_synth_synth_note_oscillator(rtb, i);
-  if (env) 
-    env->flags |= RTBUF_DELETE;
-  if (osc)
-    rtbuf_delete(osc);
+  s_rtbuf_synth_synth_data *data;
+  data = (s_rtbuf_synth_synth_data*) rtb->data;
+  if (env || osc) {
+    printf("synth_synth_delete_note %u\n", i);
+    if (env) 
+      rtbuf_delete(env);
+    if (osc)
+      rtbuf_delete(osc);
+    data->note_n--;
+  }
 }
 
 void rtbuf_synth_synth_delete_notes (s_rtbuf *rtb)
 {
+  s_rtbuf_synth_synth_data *data;
   unsigned int i = 0;
-  while (i < RTBUF_MUSIC_NOTE_MAX) {
+  data = (s_rtbuf_synth_synth_data*) rtb->data;
+  while (i < RTBUF_MUSIC_NOTE_MAX && data->note_n > 0) {
     rtbuf_synth_synth_delete_note(rtb, i);
     i++;
   }
@@ -95,7 +103,7 @@ s_rtbuf * rtbuf_synth_synth_new_envelope (s_rtbuf *rtb,
   env_start = rtbuf_var_find(env, "start");
   env_stop = rtbuf_var_find(env, "stop");
   rtbuf_bind(kbd_i, note_vel  , env, env_vel);
-  rtbuf_bind(kbd_i, note_freq , env, env_stop);
+  rtbuf_bind(kbd_i, note_freq , env, env_freq);
   rtbuf_bind(kbd_i, note_start, env, env_start);
   rtbuf_bind(kbd_i, note_stop , env, env_stop);
   rtbuf_bind(env_i, 0, rtb, RTBUF_SYNTH_SYNTH_VAR_NOTE_ENVELOPE(i));
@@ -103,7 +111,8 @@ s_rtbuf * rtbuf_synth_synth_new_envelope (s_rtbuf *rtb,
     env->fun->start(env);
   if (env->fun->f)
     env->fun->f(env);
-  rtbuf_print_long(env_i);
+  //rtbuf_print_long(env_i);
+  printf("synth_synth_new_envelope %u\n", i);
   return env;
 }
 
@@ -132,21 +141,27 @@ s_rtbuf * rtbuf_synth_synth_new_oscillator (s_rtbuf *rtb,
     osc->fun->start(osc);
   if (osc->fun->f)
     osc->fun->f(osc);
-  rtbuf_print_long(osc_i);
+  //rtbuf_print_long(osc_i);
   return osc;
 }
 
 void rtbuf_synth_synth_update_note_signal (s_rtbuf *rtb,
-                                           unsigned int i,
-                                           double *signal)
+                                           unsigned int i)
 {
+  s_rtbuf_synth_synth_data *data;
   s_rtbuf_signal_fun env;
   s_rtbuf_signal_fun osc;
   unsigned int j = 0;
+  double *signal;
+  assert(rtb);
+  assert(rtb->data);
+  assert(i < RTBUF_MUSIC_NOTE_MAX);
   rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_VAR_NOTE_ENVELOPE(i), &env,
                    &g_rtbuf_signal_sample_zero);
   rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_VAR_NOTE_ENVELOPE(i), &osc,
                    &g_rtbuf_signal_sample_zero);
+  data = (s_rtbuf_synth_synth_data *) rtb->data;
+  signal = data->signal;
   while (j < RTBUF_SIGNAL_SAMPLES) {
     double e = env.sample_fun(env.signal, j);
     double o = osc.sample_fun(osc.signal, j);
@@ -164,21 +179,30 @@ void rtbuf_synth_synth_update_note (s_rtbuf *rtb,
   s_rtbuf_synth_synth_data *data;
   s_rtbuf_music_notes *notes =
     rtbuf_music_notes(rtb, RTBUF_SYNTH_SYNTH_VAR_NOTES);
-  double velocity;
-  s_rtbuf *env = rtbuf_synth_synth_note_envelope(rtb, i);
-  s_rtbuf *osc = rtbuf_synth_synth_note_oscillator(rtb, i);
+  s_rtbuf_music_note *note;
   assert(notes);
-  velocity = notes->note[i].velocity;
-  data = (s_rtbuf_synth_synth_data *) rtb->data;
-  if (velocity > 0.0) {
-    if (!env)
-      env = rtbuf_synth_synth_new_envelope(rtb, i);
-    if (!osc)
-      osc = rtbuf_synth_synth_new_oscillator(rtb, i);
-    else if (env && osc)
-      rtbuf_synth_synth_update_note_signal(rtb, i, data->signal);
-    else
-      assert(0);
+  assert(i < RTBUF_MUSIC_NOTE_MAX);
+  assert(rtb->data);
+  data = (s_rtbuf_synth_synth_data*) rtb->data;
+  note = &notes->note[i];
+  if (note->velocity > 0.0 && note->start >= 0.0) {
+    s_rtbuf *env = rtbuf_synth_synth_note_envelope(rtb, i);
+    s_rtbuf *osc = rtbuf_synth_synth_note_oscillator(rtb, i);
+    if (!env || !osc) {
+      if (!env)
+        env = rtbuf_synth_synth_new_envelope(rtb, i);
+      if (!osc)
+        osc = rtbuf_synth_synth_new_oscillator(rtb, i);
+      data->note_n++;
+    }
+    if (env && osc) {
+      unsigned int env_state_out = rtbuf_fun_out_find(env->fun,
+                                                      "state");
+      int env_state = rtbuf_out_int(env, env_state_out,
+                                    RTBUF_SYNTH_ENVELOPE_STATE_STARTED);
+      if (env_state == RTBUF_SYNTH_ENVELOPE_STATE_STARTED)
+        rtbuf_synth_synth_update_note_signal(rtb, i);
+    }
   }
   else
     rtbuf_synth_synth_delete_note(rtb, i);

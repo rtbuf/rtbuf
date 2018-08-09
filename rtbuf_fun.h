@@ -56,8 +56,8 @@ int               rtbuf_fun_p (s_rtbuf_fun *fun);
 s_rtbuf_fun *     rtbuf_fun_next ();
 void              rtbuf_fun_delete (s_rtbuf_fun *fun);
 s_rtbuf_fun *     rtbuf_fun_find (const char *x);
-s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,
-                                             symbol name);
+int               rtbuf_fun_out_find (s_rtbuf_fun *fun,
+                                      const char *name);
 void              rtbuf_fun_print (s_rtbuf_fun *fun);
 
 #endif

@@ -193,11 +193,14 @@ void rtbuf_bind (unsigned int src, unsigned int out,
 int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                     unsigned int size)
 {
-  s_rtbuf_fun_out *out = rtbuf_fun_out_find(rtb->fun, name);
-  if (out && out->type->size == size) {
-    void *data = rtb->data + out->offset;
-    memcpy(data, value, size);
-    return size;
+  int out_i = rtbuf_fun_out_find(rtb->fun, name);
+  if (out_i >= 0) {
+    s_rtbuf_fun_out *out = &rtb->fun->out[out_i];
+    if (out->type->size == size) {
+      void *data = rtb->data + out->offset;
+      memcpy(data, value, size);
+      return size;
+    }
   }
   return 0;
 }
@@ -395,7 +398,7 @@ int rtbuf_var_find (s_rtbuf *rtb, const char *x)
 {
   s_rtbuf_fun *fun = rtb->fun;
   symbol sym;
-  printf("rtbuf_var_find %s\n", x);
+  //printf("rtbuf_var_find %s\n", x);
   if ('0' <= x[0] && x[0] <= '9') {
     int i = atoi(x);
     if (0 <= i && (unsigned int) i < fun->var_n)
@@ -403,7 +406,7 @@ int rtbuf_var_find (s_rtbuf *rtb, const char *x)
   }
   if ((sym = symbol_find(x))) {
     unsigned int i = 0;
-    printf("rtbuf_var_find sym %s\n", sym);
+    //printf("rtbuf_var_find sym %s\n", sym);
     while (i < fun->var_n) {
       if (sym == fun->var[i].name)
         return i;
@@ -433,6 +436,22 @@ int rtbuf_out_find (s_rtbuf *rtb, const char *x)
     }
   }
   return -1;
+}
+
+int rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value)
+{
+  s_rtbuf_fun_out *o;
+  assert(rtb);
+  assert(rtb->data);
+  assert(rtb->fun);
+  assert(out < rtb->fun->out_n);
+  o = &rtb->fun->out[out];
+  assert(o->type);
+  if (o->type->size >= sizeof(int)) {
+    int *i = (int*)(rtb->data + o->offset);
+    return *i;
+  }
+  return default_value;
 }
 
 void rtbuf_print (unsigned int i)

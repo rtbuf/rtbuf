@@ -16,6 +16,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include "rtbuf.h"
 #include "rtbuf_music.h"
 
@@ -53,6 +54,7 @@ int rtbuf_music_notes_new (s_rtbuf_music_notes *notes, double velocity)
     if (notes->note[i].velocity == 0.0) {
       notes->note[i].velocity = velocity;
       notes->note_n++;
+      printf("music_notes_new %u\n", i);
       return i;
     }
     i++;
@@ -63,12 +65,18 @@ int rtbuf_music_notes_new (s_rtbuf_music_notes *notes, double velocity)
 void rtbuf_music_notes_delete (s_rtbuf_music_notes *notes,
                                unsigned int i)
 {
+  s_rtbuf_music_note *note;
   assert(notes);
   assert(i < RTBUF_MUSIC_NOTE_MAX);
-  if (notes->note[i].velocity != 0.0) {
-    notes->note[i].velocity = 0.0;
+  note = &notes->note[i];
+  if (note->velocity > 0.0 && note->start >= 0.0) {
+    printf("music_notes_delete %u\n", i);
     notes->note_n--;
   }
+  note->velocity = 0.0;
+  note->freq = 0.0;
+  note->start = -1.0;
+  note->stop = -1.0;
 }
 
 void rtbuf_music_notes_delete_all (s_rtbuf_music_notes *notes)
