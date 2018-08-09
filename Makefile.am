@@ -38,11 +38,19 @@ include_HEADERS += \
 	rtbuf_lib.h
 endif
 
+rtbuf_music_type: rtbuf_music_type.c rtbuf_music.h
+	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_music_type rtbuf_music_type.c
+rtbuf_music_type.h: rtbuf_music_type
+	./rtbuf_music_type > rtbuf_music_type.h
+CLEANFILES += rtbuf_music_type rtbuf_music_type.h
+
 lib_LTLIBRARIES += librtbuf_music.la
+librtbuf_music_la_LIBADD = ${MUSIC_LIBS} librtbuf.la
 librtbuf_music_la_SOURCES = \
 	rtbuf_music.c
 include_HEADERS += \
-	rtbuf_music.h
+	rtbuf_music.h \
+	rtbuf_music_type.h
 
 if ENABLE_SIGNAL
 rtbuf_signal_type: rtbuf_signal_type.c rtbuf_signal.h
@@ -57,13 +65,27 @@ librtbuf_signal_la_SOURCES = \
 	rtbuf_signal.c \
 	rtbuf_signal_sinus.c \
 	rtbuf_signal_square.c \
-	rtbuf_signal_adsr.c \
-	rtbuf_signal_synth.c \
 	rtbuf_signal_type.h
 include_HEADERS += \
 	rtbuf_signal.h \
 	rtbuf_signal_type.h
 endif
+
+rtbuf_synth_type: rtbuf_synth_type.c rtbuf_synth.h
+	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_synth_type rtbuf_synth_type.c
+rtbuf_synth_type.h: rtbuf_synth_type
+	./rtbuf_synth_type > rtbuf_synth_type.h
+CLEANFILES += rtbuf_synth_type rtbuf_synth_type.h
+
+lib_LTLIBRARIES += librtbuf_synth.la
+librtbuf_synth_la_LIBADD = librtbuf_signal.la librtbuf_music.la librtbuf.la
+librtbuf_synth_la_SOURCES = \
+	rtbuf_synth.c \
+	rtbuf_synth_adsr.c \
+	rtbuf_synth_synth.c
+include_HEADERS += \
+	rtbuf_synth.h \
+	rtbuf_synth_type.h
 
 if ENABLE_SNDIO
 rtbuf_sndio_type: rtbuf_sndio_type.c rtbuf_sndio.h
@@ -84,11 +106,10 @@ include_HEADERS += \
 	rtbuf_sndio_type.h
 endif
 
-if ENABLE_GLFW
+if ENABLE_GLFW3
 lib_LTLIBRARIES += librtbuf_glfw3.la
-librtbuf_glfw3_la_CPPFLAGS = ${X11_CPPFLAGS}
-librtbuf_glfw3_la_LDFLAGS = ${X11_LDFLAGS}
-librtbuf_glfw3_la_LIBADD = ${GLFW_LIBS} librtbuf_music.la librtbuf.la
+librtbuf_glfw3_la_CPPFLAGS = ${GLFW3_CFLAGS}
+librtbuf_glfw3_la_LIBADD = ${GLFW3_LIBS} librtbuf_music.la librtbuf.la
 librtbuf_glfw3_la_SOURCES = \
 	rtbuf_glfw3.c
 include_HEADERS += \
@@ -106,7 +127,7 @@ deps_sources = \
 	${librtbuf_glfw3_la_SOURCES}
 
 dependencies.mk: ${deps_headers} ${deps_sources}
-	${CC} ${CPPFLAGS} ${CFLAGS} -M ${deps_sources} > dependencies.mk.1
+	${CC} ${CPPFLAGS} ${CFLAGS} -M *.c > dependencies.mk.1
 	sed -e 's/^\(.*\)[.]o:/\1.$$(OBJEXT) \1.lo:/' dependencies.mk.1 > dependencies.mk.2
 	rm dependencies.mk.1
 	mv dependencies.mk.2 dependencies.mk

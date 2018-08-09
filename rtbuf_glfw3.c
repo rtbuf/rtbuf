@@ -14,7 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -22,19 +21,20 @@
 #include "rtbuf_lib.h"
 #include "rtbuf_signal.h"
 #include "rtbuf_music.h"
+#include "rtbuf_music_type.h"
 #include "rtbuf_glfw3.h"
 
 s_rtbuf_lib_fun_out g_rtbuf_glfw3_keyboard_out[] = {
-  { "notes", RTBUF_MUSIC_NOTES_TYPE },
-  { "octave", "int" },
+  RTBUF_MUSIC_NOTES_OUT("note"),
   { "window", "void*" },
+  { "octave", "unsigned int" },
   { 0, 0 } };
 
 const char     *rtbuf_lib_name = "glfw3";
 unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
 s_rtbuf_lib_fun rtbuf_lib_fun[] = {
-  { "keyboard", rtbuf_glfw3_keyboard, rtbuf_glfw3_keyboard_start, 0,
-    0, g_rtbuf_glfw3_keyboard_out },
+  { "keyboard", rtbuf_glfw3_keyboard, rtbuf_glfw3_keyboard_start,
+    rtbuf_glfw3_keyboard_stop, 0, g_rtbuf_glfw3_keyboard_out },
   { 0, 0, 0, 0, 0, 0 } };
 
 s_rtbuf_music_notes g_rtbuf_glfw3_keyboard;
@@ -68,8 +68,8 @@ double scancode_frequency (int scancode, unsigned int octave)
   case 32: note = 26; break;
   case 33: note = 21; break; /* A */
   }
-  if (note > 0)
-    freq = exp2(octave + note / 12);
+  if (note >= 0)
+    freq = rtbuf_music_note_frequency(octave, note);
   return freq;
 }
 
@@ -110,11 +110,10 @@ void rtbuf_glfw3_keyboard_window_key (GLFWwindow *w, int key,
     break;
   case GLFW_PRESS:
     freq = scancode_frequency(scancode, data->octave);
-    if ((i = rtbuf_music_notes_new(notes)) < 0)
+    if ((i = rtbuf_music_notes_new(notes, 1.0)) < 0)
       break;
     note = &notes->note[i];
     note->freq = freq;
-    note->velocity = 1.0;
     note->start = 0.0;
     note->stop = -1.0;
     break;
@@ -205,18 +204,44 @@ GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
 int rtbuf_glfw3_keyboard_start (s_rtbuf *rtb)
 {
   s_rtbuf_glfw3_keyboard_data *data;
+  assert(rtb->fun->out_bytes == sizeof(*data));
   data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
   if (!data->window &&
       !(data->window = rtbuf_glfw3_keyboard_window(rtb)))
     return -1;
-  
+  data->octave = 3;
+  return 0;
+}
+
+int rtbuf_glfw3_keyboard_stop (s_rtbuf *rtb)
+{
+  s_rtbuf_glfw3_keyboard_data *data;
+  data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
+  rtbuf_music_notes_delete_all(&data->notes);
   return 0;
 }
 
 int rtbuf_glfw3_keyboard (s_rtbuf *rtb)
 {
   s_rtbuf_glfw3_keyboard_data *data;
+  unsigned int i = 0;
+  unsigned int n;
   data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
+  n = data->notes.note_n;
+  while (i < RTBUF_MUSIC_NOTE_MAX && n > 0) {
+    s_rtbuf_music_note *note = &data->notes.note[i];
+    if (note->velocity > 0.0) {
+      if (note->start < 0.0)
+        rtbuf_music_notes_delete(&data->notes, i);
+      else {
+        rtbuf_music_note_dt(note, RTBUF_SIGNAL_DT);
+        if (note->stop > RTBUF_MUSIC_RELEASE_MAX)
+          rtbuf_music_notes_delete(&data->notes, i);
+      }
+      n--;
+    }
+    i++;
+  }
   glfwPollEvents();
   return 0;
 }
@@ -224,6 +249,7 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb)
 int rtbuf_lib_init (s_rtbuf_lib *lib)
 {
   (void) lib;
+  rtbuf_music_init();
   glfwInit();
   return 0;
 }

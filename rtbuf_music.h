@@ -16,33 +16,78 @@
 #ifndef RTBUF_MUSIC_H
 #define RTBUF_MUSIC_H
 
+#include "rtbuf_signal.h"
+
+#define RTBUF_MUSIC_TUNE_A 440.0
+#define RTBUF_MUSIC_BASE_OCTAVE 4
+
+#define RTBUF_MUSIC_RELEASE_MAX 1.0
+
+#define RTBUF_MUSIC_NOTE_SIZE RTBUF_SIGNAL_SAMPLE_SIZE
+#define RTBUF_MUSIC_NOTE_TYPE "music_note"
+
 typedef struct rtbuf_music_note {
-  double freq;
-  double velocity;    /* between 0.0 and 1.0 */
-  double start;       /* time since start in seconds */
-  double stop;        /* time since stop in seconds, or -1.0 */
+  t_rtbuf_signal_sample velocity; /* between 0.0 and 1.0 */
+  t_rtbuf_signal_sample freq;     /* above 0.0 */
+  t_rtbuf_signal_sample start;    /* time since start */
+  t_rtbuf_signal_sample stop;     /* time since stop, or -1.0 */
 } s_rtbuf_music_note;
 
-#define RTBUF_MUSIC_NOTE_MAX 1024
+#define RTBUF_MUSIC_NOTE_VAR(note)                \
+  { note "velocity",  RTBUF_SIGNAL_SAMPLE_TYPE }, \
+  { note "frequency", RTBUF_SIGNAL_SAMPLE_TYPE }, \
+  { note "start",     RTBUF_SIGNAL_SAMPLE_TYPE }, \
+  { note "stop",      RTBUF_SIGNAL_SAMPLE_TYPE }
+
+#define RTBUF_MUSIC_NOTE_VAR_ENUM(note) \
+  note ## _VELOCITY , \
+  note ## _FREQUENCY, \
+  note ## _START    , \
+  note ## _STOP
+
+enum {
+  RTBUF_MUSIC_NOTE_VAR_VELOCITY = 0,
+  RTBUF_MUSIC_NOTE_VAR_FREQUENCY,
+  RTBUF_MUSIC_NOTE_VAR_START,
+  RTBUF_MUSIC_NOTE_VAR_STOP,
+  RTBUF_MUSIC_NOTE_VARS
+};
+
+#define RTBUF_MUSIC_NOTE_VAR_VELOCITY(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + \
+   RTBUF_MUSIC_NOTE_VAR_VELOCITY)
+#define RTBUF_MUSIC_NOTE_VAR_FREQUENCY(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + \
+   RTBUF_MUSIC_NOTE_VAR_FREQUENCY)
+#define RTBUF_MUSIC_NOTE_VAR_START(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + RTBUF_MUSIC_NOTE_VAR_START)
+#define RTBUF_MUSIC_NOTE_VAR_STOP(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + RTBUF_MUSIC_NOTE_VAR_STOP)
+
+#define RTBUF_MUSIC_NOTE_MAX 16
 
 typedef struct rtbuf_music_notes {
-  s_rtbuf_music_note note[RTBUF_MUSIC_NOTE_MAX];
   unsigned int note_n;
+  s_rtbuf_music_note note[RTBUF_MUSIC_NOTE_MAX];
 } s_rtbuf_music_notes;
 
-#define RTBUF_MUSIC_NOTES_SIZE sizeof(s_rtbuf_music_notes)
+#define RTBUF_MUSIC_NOTES_SIZE sizeof(unsigned int)
 #define RTBUF_MUSIC_NOTES_TYPE "music_notes"
 
-extern int  rtbuf_music_init ();
+int  rtbuf_music_init ();
 void rtbuf_music_notes_init (s_rtbuf_music_notes *notes);
-int  rtbuf_music_notes_new (s_rtbuf_music_notes *notes);
+int  rtbuf_music_notes_new (s_rtbuf_music_notes *notes, double velocity);
 void rtbuf_music_notes_delete (s_rtbuf_music_notes *notes,
                                unsigned int i);
+void rtbuf_music_notes_delete_all (s_rtbuf_music_notes *notes);
 void rtbuf_music_notes_dt (s_rtbuf_music_notes *notes, double dt);
 int  rtbuf_music_note_p (s_rtbuf_music_note *note);
 void rtbuf_music_note_dt (s_rtbuf_music_note *note, double dt);
 
 s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
                                          unsigned int var);
+
+t_rtbuf_signal_sample rtbuf_music_note_frequency (unsigned int octave,
+                                                  unsigned int note);
 
 #endif

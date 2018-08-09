@@ -17,6 +17,7 @@
 #define RTBUF_TYPE_H
 
 #include "rtbuf_defs.h"
+#include "symbol.h"
 
 struct rtbuf_type {
   const char *name;     /* symbol */
@@ -29,10 +30,12 @@ s_rtbuf_type g_rtbuf_type[RTBUF_TYPE_MAX];
 unsigned int g_rtbuf_type_n;
 
 void           rtbuf_type_init ();
-extern s_rtbuf_type * rtbuf_type_new (const char *name,
-                                      unsigned int size);
+s_rtbuf_type * rtbuf_type_new (const char *name,
+                               unsigned int size);
 void           rtbuf_type_delete (s_rtbuf_type *rt);
-s_rtbuf_type * rtbuf_type_find (const char *name);
+s_rtbuf_type * rtbuf_type_find (symbol name);
+s_rtbuf_type * rtbuf_type_define (const char *name,
+                                  unsigned int size);
 s_rtbuf_type * rtbuf_type (const char *name);
 s_rtbuf_type * rtbuf_type_array (const char *element_type,
                                  unsigned int size);

@@ -647,9 +647,9 @@ SNDIO_LIBS
 ENABLE_SIGNAL_FALSE
 ENABLE_SIGNAL_TRUE
 SIGNAL_LIBS
+RTBUF_LIBS
 ENABLE_RTBUF_FALSE
 ENABLE_RTBUF_TRUE
-RTBUF_LIBS
 CPP
 OTOOL64
 OTOOL
@@ -12271,14 +12271,28 @@ if test -d /usr/local/lib; then
   LDFLAGS="$LDFLAGS -L/usr/local/lib"
 fi
 
+if test -d /usr/include; then
+  CPPFLAGS="$CPPFLAGS -I/usr/include"
+fi
+if test -d /usr/lib; then
+  LDFLAGS="$LDFLAGS -L/usr/lib"
+fi
+
 enable_rtbuf=true
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for cli_init in -lcli" >&5
-$as_echo_n "checking for cli_init in -lcli... " >&6; }
-if ${ac_cv_lib_cli_cli_init+:} false; then :
+ if test x"$enable_rtbuf" = x"true"; then
+  ENABLE_RTBUF_TRUE=
+  ENABLE_RTBUF_FALSE='#'
+else
+  ENABLE_RTBUF_TRUE='#'
+  ENABLE_RTBUF_FALSE=
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing cli_init" >&5
+$as_echo_n "checking for library containing cli_init... " >&6; }
+if ${ac_cv_search_cli_init+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcli  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12297,32 +12311,48 @@ return cli_init ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_cli_cli_init=yes
-else
-  ac_cv_lib_cli_cli_init=no
+for ac_lib in '' cli; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_cli_init=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_cli_init+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cli_cli_init" >&5
-$as_echo "$ac_cv_lib_cli_cli_init" >&6; }
-if test "x$ac_cv_lib_cli_cli_init" = xyes; then :
+done
+if ${ac_cv_search_cli_init+:} false; then :
+  
+else
+  ac_cv_search_cli_init=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_cli_init" >&5
+$as_echo "$ac_cv_search_cli_init" >&6; }
+ac_res=$ac_cv_search_cli_init
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   RTBUF_LIBS="$RTBUF_LIBS -lcli"
 else
   if test x"$enable_rtbuf" = x"true"; then
-                as_fn_error $? "missing libcli for rtbuf\"" "$LINENO" 5
-              fi
+                  as_fn_error $? "missing libcli for rtbuf\"" "$LINENO" 5
+                fi
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_create in -lpthread" >&5
-$as_echo_n "checking for pthread_create in -lpthread... " >&6; }
-if ${ac_cv_lib_pthread_pthread_create+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing pthread_create" >&5
+$as_echo_n "checking for library containing pthread_create... " >&6; }
+if ${ac_cv_search_pthread_create+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpthread  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12341,44 +12371,59 @@ return pthread_create ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pthread_pthread_create=yes
-else
-  ac_cv_lib_pthread_pthread_create=no
+for ac_lib in '' pthread; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_pthread_create=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_pthread_create+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pthread_pthread_create" >&5
-$as_echo "$ac_cv_lib_pthread_pthread_create" >&6; }
-if test "x$ac_cv_lib_pthread_pthread_create" = xyes; then :
+done
+if ${ac_cv_search_pthread_create+:} false; then :
+  
+else
+  ac_cv_search_pthread_create=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_pthread_create" >&5
+$as_echo "$ac_cv_search_pthread_create" >&6; }
+ac_res=$ac_cv_search_pthread_create
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   RTBUF_LIBS="$RTBUF_LIBS -lpthread"
 else
   if test x"$enable_rtbuf" = x"true"; then
-                as_fn_error $? "missing libpthread for rtbuf\"" "$LINENO" 5
-              fi
+                  as_fn_error $? "missing libpthread for rtbuf\"" "$LINENO" 5
+                fi
 fi
 
-
- if test x"$enable_rtbuf" = x"true"; then
-  ENABLE_RTBUF_TRUE=
-  ENABLE_RTBUF_FALSE='#'
-else
-  ENABLE_RTBUF_TRUE='#'
-  ENABLE_RTBUF_FALSE=
-fi
 
 
 enable_signal=true
+@%:@ Check whether --enable-signal was given.
+if test "${enable_signal+set}" = set; then :
+  enableval=$enable_signal; case "${enableval}" in
+     no)  enable_signal=false ;;
+   esac
+fi
+
 SIGNAL_LIBS=
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sin in -lm" >&5
-$as_echo_n "checking for sin in -lm... " >&6; }
-if ${ac_cv_lib_m_sin+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing sin" >&5
+$as_echo_n "checking for library containing sin... " >&6; }
+if ${ac_cv_search_sin+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lm  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12397,26 +12442,36 @@ return sin ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_m_sin=yes
-else
-  ac_cv_lib_m_sin=no
+for ac_lib in '' m; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_sin=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_sin+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_sin" >&5
-$as_echo "$ac_cv_lib_m_sin" >&6; }
-if test "x$ac_cv_lib_m_sin" = xyes; then :
+done
+if ${ac_cv_search_sin+:} false; then :
+  
+else
+  ac_cv_search_sin=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_sin" >&5
+$as_echo "$ac_cv_search_sin" >&6; }
+ac_res=$ac_cv_search_sin
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   SIGNAL_LIBS="$SIGNAL_LIBS -lm"
-fi
-
-@%:@ Check whether --enable-signal was given.
-if test "${enable_signal+set}" = set; then :
-  enableval=$enable_signal; case "${enableval}" in
-     no)  enable_signal=false ;;
-   esac
 fi
 
 
@@ -12431,13 +12486,12 @@ fi
 
 enable_sndio=false
 SNDIO_LIBS=
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sio_open in -lsndio" >&5
-$as_echo_n "checking for sio_open in -lsndio... " >&6; }
-if ${ac_cv_lib_sndio_sio_open+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing sio_open" >&5
+$as_echo_n "checking for library containing sio_open... " >&6; }
+if ${ac_cv_search_sio_open+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsndio  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12456,20 +12510,37 @@ return sio_open ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_sndio_sio_open=yes
-else
-  ac_cv_lib_sndio_sio_open=no
+for ac_lib in '' sndio; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_sio_open=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_sio_open+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sndio_sio_open" >&5
-$as_echo "$ac_cv_lib_sndio_sio_open" >&6; }
-if test "x$ac_cv_lib_sndio_sio_open" = xyes; then :
+done
+if ${ac_cv_search_sio_open+:} false; then :
+  
+else
+  ac_cv_search_sio_open=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_sio_open" >&5
+$as_echo "$ac_cv_search_sio_open" >&6; }
+ac_res=$ac_cv_search_sio_open
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   enable_sndio=true
-              SNDIO_LIBS=-lsndio
+                SNDIO_LIBS=-lsndio
 fi
 
 
@@ -12491,13 +12562,12 @@ fi
 
 enable_glfw=false
 GLFW_LIBS=
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for glfwSwapBuffers in -lglfw" >&5
-$as_echo_n "checking for glfwSwapBuffers in -lglfw... " >&6; }
-if ${ac_cv_lib_glfw_glfwSwapBuffers+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing glfwSwapBuffers" >&5
+$as_echo_n "checking for library containing glfwSwapBuffers... " >&6; }
+if ${ac_cv_search_glfwSwapBuffers+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lglfw  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12516,20 +12586,37 @@ return glfwSwapBuffers ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_glfw_glfwSwapBuffers=yes
-else
-  ac_cv_lib_glfw_glfwSwapBuffers=no
+for ac_lib in '' glfw; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_glfwSwapBuffers=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_glfwSwapBuffers+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_glfw_glfwSwapBuffers" >&5
-$as_echo "$ac_cv_lib_glfw_glfwSwapBuffers" >&6; }
-if test "x$ac_cv_lib_glfw_glfwSwapBuffers" = xyes; then :
+done
+if ${ac_cv_search_glfwSwapBuffers+:} false; then :
+  
+else
+  ac_cv_search_glfwSwapBuffers=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_glfwSwapBuffers" >&5
+$as_echo "$ac_cv_search_glfwSwapBuffers" >&6; }
+ac_res=$ac_cv_search_glfwSwapBuffers
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   enable_glfw=true
-              GLFW_LIBS=-lglfw
+                GLFW_LIBS=-lglfw
 fi
 
 
@@ -12541,6 +12628,8 @@ else
   ENABLE_GLFW_FALSE=
 fi
 
+
+LIBS=
 
 
 
@@ -14957,7 +15046,7 @@ fi
 cat dependencies.mk >> Makefile
 
 echo "Building status :"
-echo "  rtbuf           $enable_rtbuf"
-echo "  signal          $enable_signal"
-echo "  sndio           $enable_sndio"
-echo "  glfw            $enable_glfw"
+echo "  rtbuf  : $enable_rtbuf $RTBUF_LIBS"
+echo "  signal : $enable_signal $SIGNAL_LIBS"
+echo "  sndio  : $enable_sndio $SNDIO_LIBS"
+echo "  glfw   : $enable_glfw $GLFW_LIBS"

@@ -13,6 +13,8 @@ AC_PROG_CC
 
 LT_INIT([disable-static])
 
+PKG_PROG_PKG_CONFIG([0.25])
+
 if test -d /usr/local/include; then
   CPPFLAGS="$CPPFLAGS -I/usr/local/include"
 fi
@@ -20,54 +22,55 @@ if test -d /usr/local/lib; then
   LDFLAGS="$LDFLAGS -L/usr/local/lib"
 fi
 
+if test -d /usr/include; then
+  CPPFLAGS="$CPPFLAGS -I/usr/include"
+fi
+if test -d /usr/lib; then
+  LDFLAGS="$LDFLAGS -L/usr/lib"
+fi
+
 enable_rtbuf=true
-AC_CHECK_LIB([cli], [cli_init],
-             [RTBUF_LIBS="$RTBUF_LIBS -lcli"],
-             [if test x"$enable_rtbuf" = x"true"; then
-                AC_MSG_ERROR([missing libcli for rtbuf"])
-              fi])
-AC_CHECK_LIB([pthread], [pthread_create],
-             [RTBUF_LIBS="$RTBUF_LIBS -lpthread"],
-             [if test x"$enable_rtbuf" = x"true"; then
-                AC_MSG_ERROR([missing libpthread for rtbuf"])
-              fi])
-AC_SUBST([RTBUF_LIBS])
 AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
+AC_SEARCH_LIBS([cli_init], [cli],
+               [RTBUF_LIBS="$RTBUF_LIBS -lcli"],
+               [if test x"$enable_rtbuf" = x"true"; then
+                  AC_MSG_ERROR([missing libcli for rtbuf"])
+                fi])
+AC_SEARCH_LIBS([pthread_create], [pthread],
+               [RTBUF_LIBS="$RTBUF_LIBS -lpthread"],
+               [if test x"$enable_rtbuf" = x"true"; then
+                  AC_MSG_ERROR([missing libpthread for rtbuf"])
+                fi])
+AC_SUBST([RTBUF_LIBS])
+
+MUSIC_LIBS="-lm"
+AC_SUBST([MUSIC_LIBS])
 
 enable_signal=true
-SIGNAL_LIBS=
-AC_CHECK_LIB([m], [sin], [SIGNAL_LIBS="$SIGNAL_LIBS -lm"])
 AC_ARG_ENABLE(signal,
   AS_HELP_STRING([--enable-signal],
                  [enable building librtbuf_signal, default: yes]),
   [case "${enableval}" in
      no)  enable_signal=false ;;
    esac])
+SIGNAL_LIBS="-lm"
 AC_SUBST([SIGNAL_LIBS])
 AM_CONDITIONAL([ENABLE_SIGNAL], [test x"$enable_signal" = x"true"])
 
 enable_sndio=false
 SNDIO_LIBS=
-AC_CHECK_LIB([sndio], [sio_open],
-             [enable_sndio=true
-              SNDIO_LIBS=-lsndio])
+AC_SEARCH_LIBS([sio_open], [sndio],
+               [enable_sndio=true
+                SNDIO_LIBS=-lsndio])
 AC_SUBST([SNDIO_LIBS])
 AM_CONDITIONAL([ENABLE_SNDIO], [test x"$enable_sndio" = x"true"])
 
-if test -d /usr/X11R6/include; then
-  CPPFLAGS="$CPPFLAGS -I/usr/X11R6/include"
-fi
-if test -d /usr/X11R6/lib; then
-  LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
-fi
+PKG_CHECK_MODULES([GLFW3], [glfw3],
+                  [enable_glfw3=true],
+                  [enable_glfw3=false])
+AM_CONDITIONAL([ENABLE_GLFW3], [test x"$enable_glfw3" = x"true"])
 
-enable_glfw=false
-GLFW_LIBS=
-AC_CHECK_LIB([glfw], [glfwSwapBuffers],
-             [enable_glfw=true
-              GLFW_LIBS=-lglfw])
-AC_SUBST([GLFW_LIBS])
-AM_CONDITIONAL([ENABLE_GLFW], [test x"$enable_glfw" = x"true"])
+LIBS=
 
 AC_PREFIX_DEFAULT([~/.rtbuf])
 
@@ -88,7 +91,7 @@ AC_OUTPUT
 cat dependencies.mk >> Makefile
 
 echo "Building status :"
-echo "  rtbuf           $enable_rtbuf"
-echo "  signal          $enable_signal"
-echo "  sndio           $enable_sndio"
-echo "  glfw            $enable_glfw"
+echo "  rtbuf  : $enable_rtbuf $RTBUF_LIBS"
+echo "  signal : $enable_signal $SIGNAL_LIBS"
+echo "  sndio  : $enable_sndio $SNDIO_LIBS"
+echo "  glfw   : $enable_glfw $GLFW_LIBS"

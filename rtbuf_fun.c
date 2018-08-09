@@ -95,3 +95,28 @@ s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,
   }
   return 0;
 }
+
+void rtbuf_fun_print (s_rtbuf_fun *fun)
+{
+  unsigned int i = 0;
+  printf("#<fun %i %s (", fun->lib_fun, fun->name);
+  while (i < fun->var_n) {
+    if (i > 0)
+      fputs(" ", stdout);
+    fputs(fun->var[i].name, stdout);
+    fputs(":", stdout);
+    fputs(fun->var[i].type->name, stdout);
+    i++;
+  }
+  printf(") -> (");
+  i = 0;
+  while (i < fun->out_n) {
+    if (i > 0)
+      fputs(" ", stdout);
+    fputs(fun->out[i].name, stdout);
+    fputs(":", stdout);
+    fputs(fun->out[i].type->name, stdout);
+    i++;
+  }
+  fputs(")>", stdout);
+}

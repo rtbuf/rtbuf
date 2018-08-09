@@ -21,35 +21,33 @@
 
 int rtbuf_signal_sinus (s_rtbuf *rtb)
 {
-  unsigned int i = 0;
+  s_rtbuf_signal_fun freq;
+  s_rtbuf_signal_fun amp;
   s_rtbuf_signal_sinus_data *data;
-  double phase;
+  unsigned int i = 0;
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SINUS_VAR_FREQUENCY, &freq,
+                   &g_rtbuf_signal_default_frequency);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SINUS_VAR_AMPLITUDE, &amp,
+                   &g_rtbuf_signal_sample_one);
   data = (s_rtbuf_signal_sinus_data*) rtb->data;
-  phase = data->phase;
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    double f = rtbuf_signal_sample(rtb,
-                                   RTBUF_SIGNAL_SINUS_VAR_FREQUENCY,
-                                   i, 220.0);
-    double a = rtbuf_signal_sample(rtb,
-                                   RTBUF_SIGNAL_SINUS_VAR_AMPLITUDE,
-                                   i, 1.0);
+    double f = freq.sample_fun(freq.signal, i);
+    double a = amp.sample_fun(amp.signal, i);
     f = max(0.0, f);
     a = max(0.0, a);
     f /= (double) RTBUF_SIGNAL_SAMPLERATE;
-    phase = phase + 2.0 * M_PI * f;
-    while (phase >= 2.0 * M_PI)
-      phase -= 2.0 * M_PI;
-    data->signal[i] = a * sin(phase);
+    data->phase = fmod(data->phase + 2.0 * M_PI * f, 2.0 * M_PI);
+    data->signal[i] = a * sin(data->phase);
     //printf(" i=%u f=%f a=%f %f", i, f, a, data->samples[i]);
     i++;
   }
-  data->phase = phase;
   return 0;
 }
 
 int rtbuf_signal_sinus_start (s_rtbuf *rtb)
 {
   s_rtbuf_signal_sinus_data *data;
+  assert(rtb->fun->out_bytes == sizeof(*data));
   data = (s_rtbuf_signal_sinus_data*) rtb->data;
   data->phase = 0;
   return 0;

@@ -27,11 +27,17 @@ unsigned int g_rtbuf_type_n = 0;
 void rtbuf_type_init ()
 {
   bzero(g_rtbuf_type, sizeof(g_rtbuf_type));
-  rtbuf_type_new("char", sizeof(char));
-  rtbuf_type_new("short", sizeof(short));
-  rtbuf_type_new("int", sizeof(int));
-  rtbuf_type_new("long", sizeof(long));
-  rtbuf_type_new("double", sizeof(double));
+  g_rtbuf_type_n = 0;
+  rtbuf_type_define("char"          , sizeof(char));
+  rtbuf_type_define("unsigned char" , sizeof(unsigned char));
+  rtbuf_type_define("short"         , sizeof(short));
+  rtbuf_type_define("unsigned short", sizeof(unsigned short));
+  rtbuf_type_define("int"           , sizeof(int));
+  rtbuf_type_define("unsigned int"  , sizeof(unsigned int));
+  rtbuf_type_define("long"          , sizeof(long));
+  rtbuf_type_define("unsigned long" , sizeof(unsigned long));
+  rtbuf_type_define("float"         , sizeof(float));
+  rtbuf_type_define("double"        , sizeof(double));
 }
 
 s_rtbuf_type * rtbuf_type_new (const char *name, unsigned int size)
@@ -58,7 +64,7 @@ void rtbuf_type_delete (s_rtbuf_type *rt)
   }
 }
 
-s_rtbuf_type * rtbuf_type_find (const char *name)
+s_rtbuf_type * rtbuf_type_find (symbol name)
 {
   unsigned int i = 0;
   unsigned int n = g_rtbuf_type_n;
@@ -71,6 +77,14 @@ s_rtbuf_type * rtbuf_type_find (const char *name)
     i++;
   }
   return 0;
+}
+
+s_rtbuf_type * rtbuf_type_define (const char *name, unsigned int size)
+{
+  s_rtbuf_type *found = rtbuf_type_find(name);
+  if (found && found->size == size)
+    return found;
+  return rtbuf_type_new(name, size);
 }
 
 s_rtbuf_type * rtbuf_type_parse_array (const char *name)

@@ -27,39 +27,39 @@ double square (double amp, double phase, double pulse)
 
 int rtbuf_signal_square (s_rtbuf *rtb)
 {
-  double phase;
-  unsigned int i = 0;
+  s_rtbuf_signal_fun freq;
+  s_rtbuf_signal_fun amp;
+  s_rtbuf_signal_fun pulse;
   s_rtbuf_signal_square_data *data;
+  unsigned int i = 0;
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_VAR_FREQUENCY, &freq,
+                   &g_rtbuf_signal_default_frequency);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_VAR_AMPLITUDE, &amp,
+                   &g_rtbuf_signal_sample_one);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_VAR_PULSE, &pulse,
+                   &g_rtbuf_signal_sample_half);
   data = (s_rtbuf_signal_square_data*) rtb->data;
-  phase = data->phase;
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    double f = rtbuf_signal_sample(rtb,
-                                   RTBUF_SIGNAL_SQUARE_VAR_FREQUENCY,
-                                   i, 220.0);
-    double a = rtbuf_signal_sample(rtb,
-                                   RTBUF_SIGNAL_SQUARE_VAR_AMPLITUDE,
-                                   i, 1.0);
-    double p = rtbuf_signal_sample(rtb,
-                                   RTBUF_SIGNAL_SQUARE_VAR_PULSE,
-                                   i, 0.5);
+    double f = freq.sample_fun(freq.signal, i);
+    double a = amp.sample_fun(amp.signal, i);
+    double p = pulse.sample_fun(pulse.signal, i);
     f = max(0.0, f);
     a = max(0.0, a);
     p = clamp(0.0, p, 1.0);
     //printf(" i=%u freq=%f amp=%f pulse=%f", i, f, a, p);
     f /= (double) RTBUF_SIGNAL_SAMPLERATE;
-    phase += f;
-    phase -= floor(phase);
-    data->signal[i] = square(a, phase, p);
+    data->phase = fmod(data->phase + f, 1.0);
+    data->signal[i] = square(a, data->phase, p);
     //printf(" f=%f a=%f p=%f square=%f", f, a, p, data->samples[i]);
     i++;
   }
-  data->phase = phase;
   return 0;
 }
 
 int rtbuf_signal_square_start (s_rtbuf *rtb)
 {
   s_rtbuf_signal_square_data *data;
+  assert(rtb->fun->out_bytes == sizeof(*data));
   data = (s_rtbuf_signal_square_data*) rtb->data;
   data->phase = 0;
   return 0;

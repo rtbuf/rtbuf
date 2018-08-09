@@ -51,6 +51,7 @@ int rtbuf_sndio_output_start (s_rtbuf *rtb)
   s_rtbuf_sndio_output_data *data;
   s_rtbuf_sndio_output_reserved *res;
   int err = 0;
+  assert(rtb->fun->out_bytes == sizeof(*data));
   data = (s_rtbuf_sndio_output_data*) rtb->data;
   res = &data->reserved;
   if (!res->sio_hdl) {
@@ -87,23 +88,31 @@ int rtbuf_sndio_output_stop (s_rtbuf *rtb)
 
 int rtbuf_sndio_output (s_rtbuf *rtb)
 {
+  s_rtbuf_signal_fun in[RTBUF_SNDIO_CHANNELS];
   s_rtbuf_sndio_output_data *data;
   short *sample;
   unsigned int i = 0;
   unsigned int j = 0;
+  assert(rtb);
+  assert(rtb->data);
+  assert(rtb->fun);
+  while (j < RTBUF_SNDIO_CHANNELS) {
+    rtbuf_signal_fun(rtb, j, &in[j], &g_rtbuf_signal_sample_zero);
+    j++;
+  }
   data = (s_rtbuf_sndio_output_data*) rtb->data;
   sample = data->samples;
   //printf("sndio_output");
   while (i < RTBUF_SIGNAL_SAMPLES) {
     j = 0;
     while (j < RTBUF_SNDIO_CHANNELS) {
-      double in = rtbuf_signal_sample(rtb, j, i, 0.0);
-      in = clamp(-1.0, in, 1.0);
-      if (in < 0.0)
-        in *= -SHRT_MIN;
+      double in_ = in[j].sample_fun(in[j].signal, i);
+      in_ = clamp(-1.0, in_, 1.0);
+      if (in_ < 0.0)
+        in_ *= -SHRT_MIN;
       else
-        in *= SHRT_MAX;
-      *sample = (short) in;
+        in_ *= SHRT_MAX;
+      *sample = (short) in_;
       sample++;
       j++;
     }

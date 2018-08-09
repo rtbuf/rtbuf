@@ -26,98 +26,6 @@
 
 pthread_t g_rtbuf_cli_thread = 0;
 
-void print_lib (unsigned int i)
-{
-  assert(i < RTBUF_LIB_MAX);
-  printf("#<lib %i %s>\n", i, g_rtbuf_lib[i].name);
-}
-
-void print_rtbuf_fun (s_rtbuf_fun *fun)
-{
-  unsigned int i = 0;
-  printf("#<fun %i %s (", fun->lib_fun, fun->name);
-  while (i < fun->var_n) {
-    if (i > 0)
-      fputs(" ", stdout);
-    fputs(fun->var[i].name, stdout);
-    fputs(":", stdout);
-    fputs(fun->var[i].type->name, stdout);
-    i++;
-  }
-  printf(") -> (");
-  i = 0;
-  while (i < fun->out_n) {
-    if (i > 0)
-      fputs(" ", stdout);
-    fputs(fun->out[i].name, stdout);
-    fputs(":", stdout);
-    fputs(fun->out[i].type->name, stdout);
-    i++;
-  }
-  fputs(")>", stdout);
-}
-
-void print_lib_long (unsigned int i)
-{
-  s_rtbuf_lib *lib;
-  unsigned int j = 0;
-  assert(i < RTBUF_LIB_MAX);
-  lib = &g_rtbuf_lib[i];
-  printf("#<lib %i %s", i, lib->name);
-  printf("\n  %s", lib->path);
-  while (j < lib->fun_n) {
-    printf("\n  ");
-    print_rtbuf_fun(lib->fun[j]);
-    j++;
-  }
-  printf(">\n");
-  fflush(stdout);
-}
-
-void print_rtbuf (unsigned int i)
-{
-  assert(i < RTBUF_MAX);
-  printf("#<rtbuf %u>", i);
-  fflush(stdout);
-}
-
-void print_rtbuf_long (unsigned int i)
-{
-  s_rtbuf *rtb;
-  s_rtbuf_fun *fun;
-  unsigned int j = 0;
-  assert(i < RTBUF_MAX);
-  rtb = &g_rtbuf[i];
-  fun = rtb->fun;
-  printf("#<rtbuf %i", i);
-  printf(" %s %s", fun->lib->name, fun->name);
-  if (rtb->data) {
-    printf(" %d", rtb->refc);
-  }
-  while (j < fun->var_n) {
-    s_rtbuf *target = &g_rtbuf[rtb->var[j].rtb];
-    unsigned int target_out = rtb->var[j].out;
-    printf("\n  var %i %s:%s", j, fun->var[j].name,
-           fun->var[j].type->name);
-    if (rtb->var[j].rtb >= 0) {
-      printf (" = ");
-      print_rtbuf(rtb->var[j].rtb);
-      printf(" out %u %s:%s", target_out,
-             target->fun->out[target_out].name,
-             target->fun->out[target_out].type->name);
-    }
-    j++;
-  }
-  j = 0;
-  while (j < fun->out_n) {
-    printf("\n  out %i %s:%s", j, fun->out[j].name,
-           fun->out[j].type->name);
-    j++;
-  }
-  printf(">\n");
-  fflush(stdout);
-}
-
 int rtbuf_cli_libs (int argc, const char *argv[])
 {
   unsigned int i = 0;
@@ -127,7 +35,7 @@ int rtbuf_cli_libs (int argc, const char *argv[])
   printf("Listing %i libraries :\n", n);
   while (i < RTBUF_LIB_MAX && n > 0) {
     if (g_rtbuf_lib[i].path[0]) {
-      print_lib(i);
+      rtbuf_lib_print(i);
       n--;
     }
     i++;
@@ -142,7 +50,7 @@ int rtbuf_cli_lib (int argc, const char *argv[])
     return rtbuf_err("usage: lib LIBRARY");
   i = rtbuf_lib_find(argv[1]);
   if (0 <= i && i < RTBUF_LIB_MAX) {
-    print_lib_long(i);
+    rtbuf_lib_print_long(i);
     return 0;
   }
   return rtbuf_err("library not found");
@@ -159,7 +67,7 @@ int rtbuf_cli_load (int argc, const char *argv[])
     return -1;
   }
   i = ((void*) lib - (void*) g_rtbuf_lib) / sizeof(s_rtbuf_lib);
-  print_lib(i);
+  rtbuf_lib_print(i);
   return 0;
 }
 
@@ -172,7 +80,7 @@ int rtbuf_cli_buffers (int argc, const char *argv[])
   printf("Listing %i buffers :\n", n);
   while (i < RTBUF_MAX && n > 0) {
     if (g_rtbuf[i].data) {
-      print_rtbuf(i);
+      rtbuf_print(i);
       printf("\n");
       n--;
     }
@@ -188,7 +96,7 @@ int rtbuf_cli_buffer (int argc, const char *argv[])
     return rtbuf_err("usage: buffer N");
   if ((i = rtbuf_find(argv[1])) < 0)
     return rtbuf_err("buffer not found");
-  print_rtbuf_long(i);
+  rtbuf_print_long(i);
   return 0;
 }
 
@@ -205,7 +113,7 @@ int rtbuf_cli_new (int argc, const char *argv[])
     return rtbuf_err("function not found");
   if ((rtb = rtbuf_new(g_rtbuf_lib[rl].fun[rf])) < 0)
     return rtbuf_err("buffer not created");
-  print_rtbuf(rtb);
+  rtbuf_print(rtb);
   printf("\n");
   return 0;
 }
@@ -219,7 +127,7 @@ int rtbuf_cli_delete (int argc, const char *argv[])
   if (i < 0)
     return rtbuf_err("buffer not found\n");
   rtbuf_delete(&g_rtbuf[i]);
-  print_rtbuf(i);
+  rtbuf_print(i);
   printf("\n");
   return 0;
 }
@@ -240,8 +148,8 @@ int rtbuf_cli_bind (int argc, const char *argv[])
     return rtbuf_err("destination buffer not found");
   if ((var = rtbuf_var_find(&g_rtbuf[dest], argv[4])) < 0)
     return rtbuf_err("variable not found");
-  rtbuf_var_bind(&g_rtbuf[dest], var, src, out);
-  print_rtbuf_long(dest);
+  rtbuf_bind(src, out, &g_rtbuf[dest], var);
+  rtbuf_print_long(dest);
   return 0;
 }
 
@@ -259,8 +167,8 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
     rtbuf_var_unbind(&g_rtbuf[rtb], var);
   }
   else
-    rtbuf_unbind(&g_rtbuf[rtb]);
-  print_rtbuf_long(rtb);
+    rtbuf_unbind_all(&g_rtbuf[rtb]);
+  rtbuf_print_long(rtb);
   return 0;
 }
 

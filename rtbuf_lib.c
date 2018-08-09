@@ -201,14 +201,16 @@ void rtbuf_lib_fun_var_init_fun (s_rtbuf_fun *fun,
 {
   unsigned int i = 0;
   bzero(fun->var, sizeof(fun->var));
-  if (var)
-    while (var->name) {
+  if (var) {
+    while (var->name && i < RTBUF_FUN_VAR_MAX) {
       s_rtbuf_fun_var *v = &fun->var[i];
       v->name = symbol_intern(var->name);
       v->type = rtbuf_type(var->type);
       var++;
       i++;
     }
+    assert(i < RTBUF_FUN_VAR_MAX);
+  }
   fun->var_n = i;
 }
 
@@ -219,7 +221,7 @@ void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
   bzero(fun->out, sizeof(fun->out));
   if (out) {
     unsigned int offset = 0;
-    while (out->name) {
+    while (out->name && i < RTBUF_FUN_OUT_MAX) {
       s_rtbuf_fun_out *o = &fun->out[i];
       o->name = symbol_intern(out->name);
       o->type = rtbuf_type(out->type);
@@ -229,6 +231,7 @@ void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
       out++;
       i++;
     }
+    assert(i < RTBUF_FUN_OUT_MAX);
     fun->out_bytes = offset;
   }
   fun->out_n = i;
@@ -242,4 +245,27 @@ void rtbuf_lib_fun_init_fun (s_rtbuf_fun *fun, s_rtbuf_lib_fun *x)
   fun->stop = x->stop;
   rtbuf_lib_fun_var_init_fun(fun, x->var);
   rtbuf_lib_fun_out_init_fun(fun, x->out);
+}
+
+void rtbuf_lib_print (unsigned int i)
+{
+  assert(i < RTBUF_LIB_MAX);
+  printf("#<lib %i %s>\n", i, g_rtbuf_lib[i].name);
+}
+
+void rtbuf_lib_print_long (unsigned int i)
+{
+  s_rtbuf_lib *lib;
+  unsigned int j = 0;
+  assert(i < RTBUF_LIB_MAX);
+  lib = &g_rtbuf_lib[i];
+  printf("#<lib %i %s", i, lib->name);
+  printf("\n  %s", lib->path);
+  while (j < lib->fun_n) {
+    printf("\n  ");
+    rtbuf_fun_print(lib->fun[j]);
+    j++;
+  }
+  printf(">\n");
+  fflush(stdout);
 }

@@ -638,18 +638,23 @@ LTLIBOBJS
 LIBOBJS
 DEBUG_FALSE
 DEBUG_TRUE
-ENABLE_GLFW_FALSE
-ENABLE_GLFW_TRUE
-GLFW_LIBS
+ENABLE_GLFW3_FALSE
+ENABLE_GLFW3_TRUE
+GLFW3_LIBS
+GLFW3_CFLAGS
 ENABLE_SNDIO_FALSE
 ENABLE_SNDIO_TRUE
 SNDIO_LIBS
 ENABLE_SIGNAL_FALSE
 ENABLE_SIGNAL_TRUE
 SIGNAL_LIBS
+MUSIC_LIBS
+RTBUF_LIBS
 ENABLE_RTBUF_FALSE
 ENABLE_RTBUF_TRUE
-RTBUF_LIBS
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
+PKG_CONFIG
 CPP
 OTOOL64
 OTOOL
@@ -785,7 +790,12 @@ CFLAGS
 LDFLAGS
 LIBS
 CPPFLAGS
-CPP'
+CPP
+PKG_CONFIG
+PKG_CONFIG_PATH
+PKG_CONFIG_LIBDIR
+GLFW3_CFLAGS
+GLFW3_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1436,6 +1446,14 @@ Some influential environment variables:
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
   CPP         C preprocessor
+  PKG_CONFIG  path to pkg-config utility
+  PKG_CONFIG_PATH
+              directories to add to pkg-config's search path
+  PKG_CONFIG_LIBDIR
+              path overriding pkg-config's built-in search path
+  GLFW3_CFLAGS
+              C compiler flags for GLFW3, overriding pkg-config
+  GLFW3_LIBS  linker flags for GLFW3, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -12264,6 +12282,127 @@ CC="$lt_save_CC"
 
 
 
+
+
+
+
+
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.25
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+fi
+
 if test -d /usr/local/include; then
   CPPFLAGS="$CPPFLAGS -I/usr/local/include"
 fi
@@ -12271,14 +12410,28 @@ if test -d /usr/local/lib; then
   LDFLAGS="$LDFLAGS -L/usr/local/lib"
 fi
 
+if test -d /usr/include; then
+  CPPFLAGS="$CPPFLAGS -I/usr/include"
+fi
+if test -d /usr/lib; then
+  LDFLAGS="$LDFLAGS -L/usr/lib"
+fi
+
 enable_rtbuf=true
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for cli_init in -lcli" >&5
-$as_echo_n "checking for cli_init in -lcli... " >&6; }
-if ${ac_cv_lib_cli_cli_init+:} false; then :
+ if test x"$enable_rtbuf" = x"true"; then
+  ENABLE_RTBUF_TRUE=
+  ENABLE_RTBUF_FALSE='#'
+else
+  ENABLE_RTBUF_TRUE='#'
+  ENABLE_RTBUF_FALSE=
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing cli_init" >&5
+$as_echo_n "checking for library containing cli_init... " >&6; }
+if ${ac_cv_search_cli_init+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcli  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12297,32 +12450,48 @@ return cli_init ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_cli_cli_init=yes
-else
-  ac_cv_lib_cli_cli_init=no
+for ac_lib in '' cli; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_cli_init=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_cli_init+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cli_cli_init" >&5
-$as_echo "$ac_cv_lib_cli_cli_init" >&6; }
-if test "x$ac_cv_lib_cli_cli_init" = xyes; then :
+done
+if ${ac_cv_search_cli_init+:} false; then :
+
+else
+  ac_cv_search_cli_init=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_cli_init" >&5
+$as_echo "$ac_cv_search_cli_init" >&6; }
+ac_res=$ac_cv_search_cli_init
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   RTBUF_LIBS="$RTBUF_LIBS -lcli"
 else
   if test x"$enable_rtbuf" = x"true"; then
-                as_fn_error $? "missing libcli for rtbuf\"" "$LINENO" 5
-              fi
+                  as_fn_error $? "missing libcli for rtbuf\"" "$LINENO" 5
+                fi
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_create in -lpthread" >&5
-$as_echo_n "checking for pthread_create in -lpthread... " >&6; }
-if ${ac_cv_lib_pthread_pthread_create+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing pthread_create" >&5
+$as_echo_n "checking for library containing pthread_create... " >&6; }
+if ${ac_cv_search_pthread_create+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpthread  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12341,77 +12510,48 @@ return pthread_create ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pthread_pthread_create=yes
-else
-  ac_cv_lib_pthread_pthread_create=no
+for ac_lib in '' pthread; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_pthread_create=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_pthread_create+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pthread_pthread_create" >&5
-$as_echo "$ac_cv_lib_pthread_pthread_create" >&6; }
-if test "x$ac_cv_lib_pthread_pthread_create" = xyes; then :
+done
+if ${ac_cv_search_pthread_create+:} false; then :
+
+else
+  ac_cv_search_pthread_create=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_pthread_create" >&5
+$as_echo "$ac_cv_search_pthread_create" >&6; }
+ac_res=$ac_cv_search_pthread_create
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   RTBUF_LIBS="$RTBUF_LIBS -lpthread"
 else
   if test x"$enable_rtbuf" = x"true"; then
-                as_fn_error $? "missing libpthread for rtbuf\"" "$LINENO" 5
-              fi
+                  as_fn_error $? "missing libpthread for rtbuf\"" "$LINENO" 5
+                fi
 fi
 
 
- if test x"$enable_rtbuf" = x"true"; then
-  ENABLE_RTBUF_TRUE=
-  ENABLE_RTBUF_FALSE='#'
-else
-  ENABLE_RTBUF_TRUE='#'
-  ENABLE_RTBUF_FALSE=
-fi
+
+MUSIC_LIBS="-lm"
 
 
 enable_signal=true
-SIGNAL_LIBS=
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sin in -lm" >&5
-$as_echo_n "checking for sin in -lm... " >&6; }
-if ${ac_cv_lib_m_sin+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lm  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char sin ();
-int
-main ()
-{
-return sin ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_m_sin=yes
-else
-  ac_cv_lib_m_sin=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_sin" >&5
-$as_echo "$ac_cv_lib_m_sin" >&6; }
-if test "x$ac_cv_lib_m_sin" = xyes; then :
-  SIGNAL_LIBS="$SIGNAL_LIBS -lm"
-fi
-
 # Check whether --enable-signal was given.
 if test "${enable_signal+set}" = set; then :
   enableval=$enable_signal; case "${enableval}" in
@@ -12419,6 +12559,7 @@ if test "${enable_signal+set}" = set; then :
    esac
 fi
 
+SIGNAL_LIBS="-lm"
 
  if test x"$enable_signal" = x"true"; then
   ENABLE_SIGNAL_TRUE=
@@ -12431,13 +12572,12 @@ fi
 
 enable_sndio=false
 SNDIO_LIBS=
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sio_open in -lsndio" >&5
-$as_echo_n "checking for sio_open in -lsndio... " >&6; }
-if ${ac_cv_lib_sndio_sio_open+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing sio_open" >&5
+$as_echo_n "checking for library containing sio_open... " >&6; }
+if ${ac_cv_search_sio_open+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsndio  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -12456,20 +12596,37 @@ return sio_open ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_sndio_sio_open=yes
-else
-  ac_cv_lib_sndio_sio_open=no
+for ac_lib in '' sndio; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_sio_open=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_sio_open+:} false; then :
+  break
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sndio_sio_open" >&5
-$as_echo "$ac_cv_lib_sndio_sio_open" >&6; }
-if test "x$ac_cv_lib_sndio_sio_open" = xyes; then :
+done
+if ${ac_cv_search_sio_open+:} false; then :
+
+else
+  ac_cv_search_sio_open=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_sio_open" >&5
+$as_echo "$ac_cv_search_sio_open" >&6; }
+ac_res=$ac_cv_search_sio_open
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   enable_sndio=true
-              SNDIO_LIBS=-lsndio
+                SNDIO_LIBS=-lsndio
 fi
 
 
@@ -12482,65 +12639,87 @@ else
 fi
 
 
-if test -d /usr/X11R6/include; then
-  CPPFLAGS="$CPPFLAGS -I/usr/X11R6/include"
-fi
-if test -d /usr/X11R6/lib; then
-  LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
-fi
 
-enable_glfw=false
-GLFW_LIBS=
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for glfwSwapBuffers in -lglfw" >&5
-$as_echo_n "checking for glfwSwapBuffers in -lglfw... " >&6; }
-if ${ac_cv_lib_glfw_glfwSwapBuffers+:} false; then :
-  $as_echo_n "(cached) " >&6
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GLFW3" >&5
+$as_echo_n "checking for GLFW3... " >&6; }
+
+if test -n "$GLFW3_CFLAGS"; then
+    pkg_cv_GLFW3_CFLAGS="$GLFW3_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glfw3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "glfw3") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GLFW3_CFLAGS=`$PKG_CONFIG --cflags "glfw3" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lglfw  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char glfwSwapBuffers ();
-int
-main ()
-{
-return glfwSwapBuffers ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_glfw_glfwSwapBuffers=yes
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$GLFW3_LIBS"; then
+    pkg_cv_GLFW3_LIBS="$GLFW3_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glfw3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "glfw3") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GLFW3_LIBS=`$PKG_CONFIG --libs "glfw3" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
 else
-  ac_cv_lib_glfw_glfwSwapBuffers=no
+  pkg_failed=yes
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_glfw_glfwSwapBuffers" >&5
-$as_echo "$ac_cv_lib_glfw_glfwSwapBuffers" >&6; }
-if test "x$ac_cv_lib_glfw_glfwSwapBuffers" = xyes; then :
-  enable_glfw=true
-              GLFW_LIBS=-lglfw
+ else
+    pkg_failed=untried
 fi
 
 
- if test x"$enable_glfw" = x"true"; then
-  ENABLE_GLFW_TRUE=
-  ENABLE_GLFW_FALSE='#'
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
 else
-  ENABLE_GLFW_TRUE='#'
-  ENABLE_GLFW_FALSE=
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GLFW3_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "glfw3" 2>&1`
+        else
+	        GLFW3_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "glfw3" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GLFW3_PKG_ERRORS" >&5
+
+	enable_glfw3=false
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	enable_glfw3=false
+else
+	GLFW3_CFLAGS=$pkg_cv_GLFW3_CFLAGS
+	GLFW3_LIBS=$pkg_cv_GLFW3_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	enable_glfw3=true
+fi
+ if test x"$enable_glfw3" = x"true"; then
+  ENABLE_GLFW3_TRUE=
+  ENABLE_GLFW3_FALSE='#'
+else
+  ENABLE_GLFW3_TRUE='#'
+  ENABLE_GLFW3_FALSE=
 fi
 
+
+LIBS=
 
 
 
@@ -12715,8 +12894,8 @@ if test -z "${ENABLE_SNDIO_TRUE}" && test -z "${ENABLE_SNDIO_FALSE}"; then
   as_fn_error $? "conditional \"ENABLE_SNDIO\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${ENABLE_GLFW_TRUE}" && test -z "${ENABLE_GLFW_FALSE}"; then
-  as_fn_error $? "conditional \"ENABLE_GLFW\" was never defined.
+if test -z "${ENABLE_GLFW3_TRUE}" && test -z "${ENABLE_GLFW3_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_GLFW3\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${DEBUG_TRUE}" && test -z "${DEBUG_FALSE}"; then
@@ -14957,7 +15136,7 @@ fi
 cat dependencies.mk >> Makefile
 
 echo "Building status :"
-echo "  rtbuf           $enable_rtbuf"
-echo "  signal          $enable_signal"
-echo "  sndio           $enable_sndio"
-echo "  glfw            $enable_glfw"
+echo "  rtbuf  : $enable_rtbuf $RTBUF_LIBS"
+echo "  signal : $enable_signal $SIGNAL_LIBS"
+echo "  sndio  : $enable_sndio $SNDIO_LIBS"
+echo "  glfw   : $enable_glfw $GLFW_LIBS"

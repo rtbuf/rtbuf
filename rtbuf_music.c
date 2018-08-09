@@ -14,26 +14,44 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
+#include <math.h>
 #include "rtbuf.h"
 #include "rtbuf_music.h"
 
+int    g_rtbuf_music_init = 0;
+double g_rtbuf_music_tune = 0.0;
+
 int rtbuf_music_init ()
 {
-  rtbuf_type_new(RTBUF_MUSIC_NOTES_TYPE,
-                 RTBUF_MUSIC_NOTES_SIZE);
+  double tune_c;
+  if (g_rtbuf_music_init)
+    return 0;
+  rtbuf_type_define(RTBUF_MUSIC_NOTE_TYPE, RTBUF_MUSIC_NOTE_SIZE);
+  rtbuf_type_define(RTBUF_MUSIC_NOTES_TYPE, RTBUF_MUSIC_NOTES_SIZE);
+  tune_c = fmod(log2(RTBUF_MUSIC_TUNE_A) - 9.0 / 12.0, 1.0);
+  g_rtbuf_music_tune = RTBUF_MUSIC_BASE_OCTAVE + tune_c;
+  g_rtbuf_music_init = 1;
   return 0;
 }
 
-int rtbuf_music_notes_new (s_rtbuf_music_notes *notes)
+double rtbuf_music_note_frequency (unsigned int octave,
+                                   unsigned int note)
+{
+  return exp2(octave + note / 12.0 + g_rtbuf_music_tune);
+}
+
+int rtbuf_music_notes_new (s_rtbuf_music_notes *notes, double velocity)
 {
   unsigned int i = 0;
-  if (!notes)
-    return -1;
+  assert(notes);
+  if (velocity == 0.0)
+    return rtbuf_err("music_notes_new: zero velocity");
   if (notes->note_n >= RTBUF_MUSIC_NOTE_MAX)
-    return -1;
+    return rtbuf_err("RTBUF_MUSIC_NOTE_MAX exhausted");
   while (i < RTBUF_MUSIC_NOTE_MAX) {
-    if (notes->note[i].freq == 0.0) {
-      notes->note[i].freq = 0.1;
+    if (notes->note[i].velocity == 0.0) {
+      notes->note[i].velocity = velocity;
       notes->note_n++;
       return i;
     }
@@ -45,18 +63,29 @@ int rtbuf_music_notes_new (s_rtbuf_music_notes *notes)
 void rtbuf_music_notes_delete (s_rtbuf_music_notes *notes,
                                unsigned int i)
 {
-  if (notes && i < RTBUF_MUSIC_NOTE_MAX &&
-      notes->note[i].freq != 0.0) {
-    notes->note[i].freq = 0.0;
+  assert(notes);
+  assert(i < RTBUF_MUSIC_NOTE_MAX);
+  if (notes->note[i].velocity != 0.0) {
+    notes->note[i].velocity = 0.0;
     notes->note_n--;
+  }
+}
+
+void rtbuf_music_notes_delete_all (s_rtbuf_music_notes *notes)
+{
+  unsigned int i = 0;
+  while (i < RTBUF_MUSIC_NOTE_MAX && notes->note_n > 0) {
+    rtbuf_music_notes_delete(notes, i);
+    i++;
   }
 }
 
 void rtbuf_music_note_dt (s_rtbuf_music_note *note, double dt)
 {
-  if (note) {
+  assert(note);
+  if (note->start >= 0.0) {
     note->start += dt;
-    if (note->stop >= 0)
+    if (note->stop >= 0.0)
       note->stop += dt;
   }
 }
@@ -67,7 +96,7 @@ void rtbuf_music_notes_dt (s_rtbuf_music_notes *notes, double dt)
   if (notes) {
     unsigned int n = notes->note_n;
     while (i < RTBUF_MUSIC_NOTE_MAX && n > 0) {
-      if (notes->note[i].freq != 0.0) {
+      if (notes->note[i].velocity > 0.0) {
         rtbuf_music_note_dt(&notes->note[i], dt);
         n--;
       }
@@ -79,19 +108,21 @@ void rtbuf_music_notes_dt (s_rtbuf_music_notes *notes, double dt)
 s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
                                          unsigned int var)
 {
-  s_rtbuf_binding *v = &rtb->var[var];
+  s_rtbuf_binding *v;
   s_rtbuf *target;
-  void *data;
+  unsigned int offset;
+  v = &rtb->var[var];
   if (v->rtb < 0)
     return 0;
+  assert(v->rtb < RTBUF_MAX);
   target = &g_rtbuf[v->rtb];
-  //if (v->out >= target->fun->out_n)
-  data = target->data + target->fun->out[v->out].offset;
-  return (s_rtbuf_music_notes*) data;
+  assert(target->fun);
+  assert(v->out < target->fun->out_n);
+  offset = target->fun->out[v->out].offset;
+  return (s_rtbuf_music_notes*) (target->data + offset);
 }
 
 int rtbuf_music_note_p (s_rtbuf_music_note *note)
 {
-  return (note && note->freq > 0.0 && note->velocity > 0.0 &&
-          note->start >= 0.0);
+  return (note && note->velocity > 0.0);
 }

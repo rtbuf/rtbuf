@@ -30,8 +30,8 @@ struct rtbuf_fun_out {
   unsigned int offset;
 };
 
-#define RTBUF_FUN_VAR_MAX 32
-#define RTBUF_FUN_OUT_MAX 32
+#define RTBUF_FUN_VAR_MAX 128
+#define RTBUF_FUN_OUT_MAX 128
 
 struct rtbuf_fun {
   symbol          name;
@@ -51,12 +51,13 @@ struct rtbuf_fun {
 extern s_rtbuf_fun g_rtbuf_fun[RTBUF_FUN_MAX];
 extern unsigned int g_rtbuf_fun_n;
 
-extern void              rtbuf_fun_init ();
-extern int               rtbuf_fun_p (s_rtbuf_fun *fun);
-extern s_rtbuf_fun *     rtbuf_fun_next ();
-extern void              rtbuf_fun_delete (s_rtbuf_fun *fun);
-extern s_rtbuf_fun *     rtbuf_fun_find (const char *x);
-extern s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,
+void              rtbuf_fun_init ();
+int               rtbuf_fun_p (s_rtbuf_fun *fun);
+s_rtbuf_fun *     rtbuf_fun_next ();
+void              rtbuf_fun_delete (s_rtbuf_fun *fun);
+s_rtbuf_fun *     rtbuf_fun_find (const char *x);
+s_rtbuf_fun_out * rtbuf_fun_out_find (s_rtbuf_fun *fun,
                                              symbol name);
+void              rtbuf_fun_print (s_rtbuf_fun *fun);
 
 #endif

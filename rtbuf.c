@@ -20,6 +20,7 @@
 #include <string.h>
 #include <strings.h>
 #include "rtbuf.h"
+#include "rtbuf_lib.h"
 #include "symbol.h"
 
 s_rtbuf      g_rtbuf[RTBUF_MAX];
@@ -29,9 +30,7 @@ int          g_rtbuf_run = 0;
 unsigned int g_rtbuf_sort = 0;
 int          g_rtbuf_sorted[RTBUF_MAX];
 unsigned int g_rtbuf_sorted_n = 0;
-
-void print_rtbuf (unsigned int i);
-void print_rtbuf_fun (s_rtbuf_fun *fun);
+int          g_rtbuf_delete = 0;
 
 int rtbuf_init ()
 {
@@ -82,58 +81,113 @@ int rtbuf_new (s_rtbuf_fun *rf)
   return i;
 }
 
+void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var)
+{
+  s_rtbuf_binding *v = &rtb->var[var];
+  if (v->rtb >= 0) {
+    s_rtbuf *src = &g_rtbuf[v->rtb];
+    src->refc--;
+    v->rtb = -1;
+    v->out = 0;
+    rtb->var_n--;
+  }
+}
+
+static
+void rtbuf_unbind_all_out_rtbuf (s_rtbuf *rtb, unsigned int rtb_i,
+                                 s_rtbuf *dest)
+{
+  unsigned int i = 0;
+  unsigned int n;
+  assert(dest);
+  n = dest->var_n;
+  while (i < dest->fun->var_n && n > 0 && rtb->refc) {
+    s_rtbuf_binding *v = &dest->var[i];
+    if (v->rtb >= 0) {
+      if ((unsigned int) v->rtb == rtb_i)
+        rtbuf_var_unbind(dest, i);
+      n--;
+    }
+    i++;
+  }
+}
+
+void rtbuf_unbind_all_out (s_rtbuf *rtb)
+{
+  unsigned int rtb_i;
+  unsigned int i = 0;
+  unsigned int n = g_rtbuf_n;
+  assert(rtb);
+  assert(g_rtbuf <= rtb);
+  assert(rtb < g_rtbuf + RTBUF_MAX);
+  rtb_i = rtb - g_rtbuf;
+  while (i < RTBUF_MAX && n > 0 && rtb->refc) {
+    if (g_rtbuf[i].data) {
+      rtbuf_unbind_all_out_rtbuf(rtb, rtb_i, &g_rtbuf[i]);
+      n--;
+    }
+    i++;
+  }
+}
+
+void rtbuf_unbind_all (s_rtbuf *rtb)
+{
+  unsigned int i = 0;
+  assert(rtb);
+  assert(rtb->fun);
+  while (i < rtb->fun->var_n && rtb->var_n > 0) {
+    rtbuf_var_unbind(rtb, i);
+    i++;
+  }
+  rtbuf_unbind_all_out(rtb);
+}
+
+void rtbuf_delete_ (s_rtbuf *rtb)
+{
+  assert(rtb);
+  rtbuf_unbind_all(rtb);
+  bzero(rtb->data, rtb->fun->out_bytes);
+  free(rtb->data);
+  bzero(rtb, sizeof(s_rtbuf));
+  g_rtbuf_n--;
+}
+
 void rtbuf_delete (s_rtbuf *rtb)
 {
-  rtbuf_unbind(rtb);
-  free(rtb->data);
-  rtb->data = 0;
-  g_rtbuf_n--;
+  assert(rtb);
+  rtb->flags |= RTBUF_DELETE;
   g_rtbuf_sort = 1;
 }
 
 int rtbuf_clone (s_rtbuf *rtb)
 {
-  int i = rtbuf_new(rtb->fun);
+  int new_i;
+  s_rtbuf *new;
   unsigned int j = 0;
-  if (i < 0)
+  assert(rtb);
+  if ((new_i = rtbuf_new(rtb->fun)) < 0)
     return -1;
+  new = &g_rtbuf[new_i];
   while (j < rtb->fun->var_n) {
-    g_rtbuf[i].var[j] = rtb->var[j];
+    new->var[j] = rtb->var[j];
     j++;
   }
-  g_rtbuf[i].var_n = rtb->var_n;
-  return i;
+  new->var_n = rtb->var_n;
+  return new_i;
 }
 
-void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var)
+void rtbuf_bind (unsigned int src, unsigned int out,
+                 s_rtbuf *dest, unsigned int var)
 {
-  s_rtbuf_binding *rb = &rtb->var[var];
-  if (rb->rtb >= 0) {
-    g_rtbuf[rb->rtb].refc--;
-    rb->rtb = -1;
-    rtb->var_n--;
-  }
-}
-
-void rtbuf_var_bind (s_rtbuf *rtb, unsigned int var,
-                     unsigned int target, unsigned int target_out)
-{
-  s_rtbuf_binding *rb = &rtb->var[var];
-  if ((unsigned int) rb->rtb == target && rb->out == target_out)
+  s_rtbuf_binding *v = &dest->var[var];
+  if ((unsigned int) v->rtb == src && v->out == out)
     return;
-  rtbuf_var_unbind(rtb, var);
-  rb->rtb = target;
-  rb->out = target_out;
-  rtb->var_n++;
-  g_rtbuf[target].refc++;
+  rtbuf_var_unbind(dest, var);
+  v->rtb = src;
+  v->out = out;
+  dest->var_n++;
+  g_rtbuf[src].refc++;
   g_rtbuf_sort = 1;
-}
-
-void rtbuf_unbind (s_rtbuf *rtb)
-{
-  unsigned int i = rtb->fun->var_n;
-  while (i--)
-    rtbuf_var_unbind(rtb, i);
 }
 
 int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
@@ -212,7 +266,7 @@ void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
     //printf(" rtbuf_find_roots %u %u\n", i, n);
     if (rtb->data) {
       if (rtb->flags & RTBUF_DELETE)
-        rtbuf_delete(rtb);
+        rtbuf_delete_(rtb);
       else {
         if (rtb->refc == 0) {
           rtbuf_var_stack_push(rvs, i, 0);
@@ -253,18 +307,6 @@ void rtbuf_sort_push_child (s_rtbuf_var_stack *rvs,
   }
 }
 
-void print_rtbuf_sorted ()
-{
-  unsigned int i = 0;
-  while (i < g_rtbuf_sorted_n) {
-    if (i)
-      printf(" ");
-    print_rtbuf(g_rtbuf_sorted[i]);
-    i++;
-  }
-  printf("\n");
-}
-
 void rtbuf_sort ()
 {
   s_rtbuf_var_stack rvs;
@@ -283,7 +325,7 @@ void rtbuf_sort ()
       rtbuf_sort_push_child(&rvs, ptr);
   }
   g_rtbuf_sort = 0;
-  print_rtbuf_sorted();
+  rtbuf_print_sorted();
 }
 
 void rtbuf_start ()
@@ -294,11 +336,12 @@ void rtbuf_start ()
     rtbuf_sort();
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
+    assert(rtb->data);
     if (rtb->fun->start) {
       printf(" start ");
-      print_rtbuf(g_rtbuf_sorted[i]);
+      rtbuf_print(g_rtbuf_sorted[i]);
       printf(" ");
-      print_rtbuf_fun(rtb->fun);
+      rtbuf_fun_print(rtb->fun);
       printf("\n");
       rtb->fun->start(rtb);
     }
@@ -315,8 +358,9 @@ void rtbuf_run ()
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
     //printf(" rtbuf_run %i ", i);
-    //print_rtbuf(g_rtbuf_sorted[i]);
+    //rtbuf_print(g_rtbuf_sorted[i]);
     //printf("\n");
+    assert(rtb->data);
     if (rtb->fun->f)
       rtb->fun->f(rtb);
     i++;
@@ -332,6 +376,7 @@ void rtbuf_stop ()
     rtbuf_sort();
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
+    assert(rtb->data);
     if (rtb->fun->stop)
       rtb->fun->stop(rtb);
     i++;
@@ -388,4 +433,69 @@ int rtbuf_out_find (s_rtbuf *rtb, const char *x)
     }
   }
   return -1;
+}
+
+void rtbuf_print (unsigned int i)
+{
+  assert(i < RTBUF_MAX);
+  printf("#<rtbuf %u>", i);
+  fflush(stdout);
+}
+
+void rtbuf_print_long_var (s_rtbuf *rtb, unsigned int j)
+{
+  assert(rtb);
+  assert(rtb->fun);
+  assert(j < rtb->fun->var_n);
+  assert(rtb->fun->var[j].name);
+  assert(rtb->fun->var[j].type);
+  assert(rtb->fun->var[j].type->name);
+  printf("\n  var %i %s:%s", j, rtb->fun->var[j].name,
+         rtb->fun->var[j].type->name);
+  if (rtb->var[j].rtb >= 0) {
+    s_rtbuf *target = &g_rtbuf[rtb->var[j].rtb];
+    unsigned int target_out = rtb->var[j].out;
+    printf (" = ");
+    rtbuf_print(rtb->var[j].rtb);
+    printf(" out %u %s:%s", target_out,
+           target->fun->out[target_out].name,
+           target->fun->out[target_out].type->name);
+  }
+}
+
+void rtbuf_print_long (unsigned int i)
+{
+  s_rtbuf *rtb;
+  s_rtbuf_fun *fun;
+  unsigned int j = 0;
+  assert(i < RTBUF_MAX);
+  rtb = &g_rtbuf[i];
+  fun = rtb->fun;
+  printf("#<rtbuf %i", i);
+  printf(" %s %s", fun->lib->name, fun->name);
+  if (rtb->data) {
+    printf(" %d", rtb->refc);
+    while (j < fun->var_n)
+      rtbuf_print_long_var(rtb, j++);
+    j = 0;
+    while (j < fun->out_n) {
+      printf("\n  out %i %s:%s", j, fun->out[j].name,
+             fun->out[j].type->name);
+      j++;
+    }
+  }
+  printf(">\n");
+  fflush(stdout);
+}
+
+void rtbuf_print_sorted ()
+{
+  unsigned int i = 0;
+  while (i < g_rtbuf_sorted_n) {
+    if (i)
+      printf(" ");
+    rtbuf_print(g_rtbuf_sorted[i]);
+    i++;
+  }
+  printf("\n");
 }

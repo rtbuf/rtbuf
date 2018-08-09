@@ -57,6 +57,8 @@ int           rtbuf_lib_find_fun (s_rtbuf_lib *rl, const char *str);
 void          rtbuf_lib_init_ ();
 s_rtbuf_lib * rtbuf_lib_load (const char *path);
 s_rtbuf_lib * rtbuf_lib_new ();
+void          rtbuf_lib_print (unsigned int i);
+void          rtbuf_lib_print_long (unsigned int i);
 
 void rtbuf_lib_fun_var_init_fun (s_rtbuf_fun *fun,
                                  s_rtbuf_lib_fun_var *var);

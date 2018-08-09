@@ -52,33 +52,39 @@ extern unsigned int g_rtbuf_sorted_n;
 int  rtbuf_err (const char *msg);
 int  rtbuf_init ();
 int  rtbuf_new (s_rtbuf_fun *rf);
+void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var);
+void rtbuf_unbind_all (s_rtbuf *rtb);
 void rtbuf_delete (s_rtbuf *rtb);
 int  rtbuf_clone (s_rtbuf *rtb);
 int  rtbuf_find (symbol sym);
-void rtbuf_unbind (s_rtbuf *rtb);
 int  rtbuf_var_find (s_rtbuf *rtb, const char *x);
-void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var);
-void rtbuf_var_bind (s_rtbuf *rtb, unsigned int var,
-                     unsigned int target, unsigned int target_out);
+void rtbuf_bind (unsigned int src, unsigned int out,
+                 s_rtbuf *dest, unsigned int var);
 int  rtbuf_out_find (s_rtbuf *rtb, symbol sym);
 int  rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                      unsigned int size);
 void rtbuf_sort ();
-void rtbuf_start();
+void rtbuf_start ();
 void rtbuf_run ();
-void rtbuf_stop();
+void rtbuf_stop ();
+void rtbuf_print (unsigned int i);
+void rtbuf_print_long (unsigned int i);
+void rtbuf_print_sorted ();
 
-static inline double min (double a, double b)
+static inline
+double min (double a, double b)
 {
   return a < b ? a : b;
 }
 
-static inline double max (double a, double b)
+static inline
+double max (double a, double b)
 {
   return a < b ? b : a;
 }
 
-static inline double clamp (double inf, double x, double sup)
+static inline
+double clamp (double inf, double x, double sup)
 {
   return max(inf, min(x, sup));
 }
