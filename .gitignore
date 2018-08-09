@@ -7,10 +7,14 @@
 /config.status
 /libtool
 /rtbuf
+/rtbuf_music_type
+/rtbuf_music_type.h
 /rtbuf_signal_type
 /rtbuf_signal_type.h
 /rtbuf_sndio_type
 /rtbuf_sndio_type.h
+/rtbuf_synth_type
+/rtbuf_synth_type.h
 /stamp-*
 *.la
 *.lo
