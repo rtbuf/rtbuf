@@ -30,4 +30,6 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb);
 int rtbuf_glfw3_keyboard_start (s_rtbuf *rtb);
 int rtbuf_glfw3_keyboard_stop (s_rtbuf *rtb);
 
+int rtbuf_glfw3_oscilloscope (s_rtbuf *rtb);
+
 #endif
