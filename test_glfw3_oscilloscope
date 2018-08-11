@@ -1,0 +1,8 @@
+load signal
+load glfw3
+new signal sinus
+new signal square
+new glfw3 oscilloscope
+bind 0 0 2 0
+bind 1 0 2 1
+start

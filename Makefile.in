@@ -170,12 +170,13 @@ am__v_lt_1 =
 am__DEPENDENCIES_1 =
 @ENABLE_GLFW3_TRUE@librtbuf_glfw3_la_DEPENDENCIES =  \
 @ENABLE_GLFW3_TRUE@	$(am__DEPENDENCIES_1) librtbuf_music.la \
-@ENABLE_GLFW3_TRUE@	librtbuf.la
+@ENABLE_GLFW3_TRUE@	librtbuf_signal.la librtbuf.la
 am__librtbuf_glfw3_la_SOURCES_DIST = rtbuf_glfw3.c \
-	rtbuf_glfw3_keyboard.c
+	rtbuf_glfw3_keyboard.c rtbuf_glfw3_oscilloscope.c
 @ENABLE_GLFW3_TRUE@am_librtbuf_glfw3_la_OBJECTS =  \
 @ENABLE_GLFW3_TRUE@	librtbuf_glfw3_la-rtbuf_glfw3.lo \
-@ENABLE_GLFW3_TRUE@	librtbuf_glfw3_la-rtbuf_glfw3_keyboard.lo
+@ENABLE_GLFW3_TRUE@	librtbuf_glfw3_la-rtbuf_glfw3_keyboard.lo \
+@ENABLE_GLFW3_TRUE@	librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo
 librtbuf_glfw3_la_OBJECTS = $(am_librtbuf_glfw3_la_OBJECTS)
 @ENABLE_GLFW3_TRUE@am_librtbuf_glfw3_la_rpath = -rpath $(libdir)
 librtbuf_music_la_DEPENDENCIES = $(am__DEPENDENCIES_1) librtbuf.la
@@ -491,10 +492,11 @@ librtbuf_synth_la_SOURCES = \
 @ENABLE_SNDIO_TRUE@	rtbuf_sndio_type.h
 
 @ENABLE_GLFW3_TRUE@librtbuf_glfw3_la_CPPFLAGS = ${GLFW3_CFLAGS}
-@ENABLE_GLFW3_TRUE@librtbuf_glfw3_la_LIBADD = ${GLFW3_LIBS} librtbuf_music.la librtbuf.la
+@ENABLE_GLFW3_TRUE@librtbuf_glfw3_la_LIBADD = ${GLFW3_LIBS} librtbuf_music.la librtbuf_signal.la librtbuf.la
 @ENABLE_GLFW3_TRUE@librtbuf_glfw3_la_SOURCES = \
 @ENABLE_GLFW3_TRUE@	rtbuf_glfw3.c \
-@ENABLE_GLFW3_TRUE@	rtbuf_glfw3_keyboard.c
+@ENABLE_GLFW3_TRUE@	rtbuf_glfw3_keyboard.c \
+@ENABLE_GLFW3_TRUE@	rtbuf_glfw3_oscilloscope.c
 
 deps_headers = ${include_HEADERS}
 deps_sources = \
@@ -674,6 +676,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3_keyboard.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_cli.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_fun.Plo@am__quote@
@@ -725,6 +728,13 @@ librtbuf_glfw3_la-rtbuf_glfw3_keyboard.lo: rtbuf_glfw3_keyboard.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rtbuf_glfw3_keyboard.c' object='librtbuf_glfw3_la-rtbuf_glfw3_keyboard.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(librtbuf_glfw3_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o librtbuf_glfw3_la-rtbuf_glfw3_keyboard.lo `test -f 'rtbuf_glfw3_keyboard.c' || echo '$(srcdir)/'`rtbuf_glfw3_keyboard.c
+
+librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo: rtbuf_glfw3_oscilloscope.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(librtbuf_glfw3_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo -MD -MP -MF $(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.Tpo -c -o librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo `test -f 'rtbuf_glfw3_oscilloscope.c' || echo '$(srcdir)/'`rtbuf_glfw3_oscilloscope.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.Tpo $(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rtbuf_glfw3_oscilloscope.c' object='librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(librtbuf_glfw3_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo `test -f 'rtbuf_glfw3_oscilloscope.c' || echo '$(srcdir)/'`rtbuf_glfw3_oscilloscope.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

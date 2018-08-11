@@ -185,6 +185,7 @@ void rtbuf_synth_synth_update_note (s_rtbuf *rtb,
   assert(rtb->data);
   data = (s_rtbuf_synth_synth_data*) rtb->data;
   note = &notes->note[i];
+  rtbuf_signal_zero(data->signal);
   if (note->velocity > 0.0 && note->start >= 0.0) {
     s_rtbuf *env = rtbuf_synth_synth_note_envelope(rtb, i);
     s_rtbuf *osc = rtbuf_synth_synth_note_oscillator(rtb, i);

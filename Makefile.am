@@ -109,10 +109,11 @@ endif
 if ENABLE_GLFW3
 lib_LTLIBRARIES += librtbuf_glfw3.la
 librtbuf_glfw3_la_CPPFLAGS = ${GLFW3_CFLAGS}
-librtbuf_glfw3_la_LIBADD = ${GLFW3_LIBS} librtbuf_music.la librtbuf.la
+librtbuf_glfw3_la_LIBADD = ${GLFW3_LIBS} librtbuf_music.la librtbuf_signal.la librtbuf.la
 librtbuf_glfw3_la_SOURCES = \
 	rtbuf_glfw3.c \
-	rtbuf_glfw3_keyboard.c
+	rtbuf_glfw3_keyboard.c \
+	rtbuf_glfw3_oscilloscope.c
 include_HEADERS += \
 	rtbuf_glfw3.h
 endif

@@ -110,7 +110,6 @@ void rtbuf_glfw3_keyboard_window_size (GLFWwindow *w, int width,
                                        int height)
 {
   (void) w;
-  printf("size\n");
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -126,7 +125,6 @@ void rtbuf_glfw3_keyboard_window_draw (GLFWwindow *w)
   unsigned int octaves = 4;
   unsigned int i = 0;
   unsigned int j = 0;
-  printf("draw\n");
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   glColor3f(0.5f, 0.5f, 0.5f);
@@ -171,7 +169,7 @@ GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
                                         "rtbuf_glfw3_keyboard",
                                         NULL, NULL);
   if (!window) {
-    rtbuf_err("glfwCreateWindow failed");
+    rtbuf_err("glfw3_keyboard: glfwCreateWindow failed");
     return 0;
   }
   glfwMakeContextCurrent(window);
@@ -181,7 +179,6 @@ GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
   glfwSetWindowRefreshCallback(window,
                                rtbuf_glfw3_keyboard_window_draw);
   glfwShowWindow(window);
-  printf("created glfw3 keyboard window\n");
   return window;
 }
 

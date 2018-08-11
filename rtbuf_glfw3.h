@@ -30,6 +30,19 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb);
 int rtbuf_glfw3_keyboard_start (s_rtbuf *rtb);
 int rtbuf_glfw3_keyboard_stop (s_rtbuf *rtb);
 
+enum {
+  RTBUF_GLFW3_OSCILLOSCOPE_VAR_BLACK,
+  RTBUF_GLFW3_OSCILLOSCOPE_VAR_RED,
+  RTBUF_GLFW3_OSCILLOSCOPE_VAR_GREEN,
+  RTBUF_GLFW3_OSCILLOSCOPE_VAR_BLUE,
+  RTBUF_GLFW3_SCIILLOSCOPE_VAR_N
+};
+
+typedef struct rtbuf_glfw3_oscilloscope_data {
+  GLFWwindow *window;
+} s_rtbuf_glfw3_oscilloscope_data;
+
 int rtbuf_glfw3_oscilloscope (s_rtbuf *rtb);
+int rtbuf_glfw3_oscilloscope_start (s_rtbuf *rtb);
 
 #endif
