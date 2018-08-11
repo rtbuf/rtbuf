@@ -48,6 +48,9 @@ void rtbuf_synth_adsr_signal (s_rtbuf *rtb, double *signal,
   double s =
     rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_SUSTAIN, 0.666);
   unsigned int i = 0;
+  (void) velocity;
+  (void) start;
+  (void) stop;
   while (i < RTBUF_SIGNAL_SAMPLES) {
     double dt = (double) i / RTBUF_SIGNAL_SAMPLERATE;
     double start_i = start + dt;
@@ -57,6 +60,7 @@ void rtbuf_synth_adsr_signal (s_rtbuf *rtb, double *signal,
     s = max(0.0, s);
     r = max(0.0, r);
     *signal = velocity * adsr(a, d, s, r, start_i, stop_i);
+    //*signal = 1.0;
     signal++;
     i++;
   }
