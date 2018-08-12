@@ -71,7 +71,7 @@ static int find_note (s_rtbuf_music_notes *notes, double freq)
   unsigned int n = notes->note_n;
   while (i < RTBUF_MUSIC_NOTE_MAX && n > 0) {
     s_rtbuf_music_note *note = &notes->note[i];
-    if (note->velocity > 0.0 && note->start >= 0.0) {
+    if (note->velocity > 0.0 && note->start >= 0.0 && note->stop < 0.0) {
       if (freq == notes->note[i].freq)
         return i;
       n--;
