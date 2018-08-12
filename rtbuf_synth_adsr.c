@@ -42,11 +42,11 @@ void rtbuf_synth_adsr_signal (s_rtbuf *rtb, double *signal,
                               double stop, double r)
 {
   double a =
-    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_ATTACK,  0.1);
+    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_ATTACK,  0.02);
   double d =
-    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_DECAY,   0.1);
+    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_DECAY,   0.03);
   double s =
-    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_SUSTAIN, 0.666);
+    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_SUSTAIN, 0.5);
   unsigned int i = 0;
   (void) velocity;
   (void) start;
@@ -60,7 +60,6 @@ void rtbuf_synth_adsr_signal (s_rtbuf *rtb, double *signal,
     s = max(0.0, s);
     r = max(0.0, r);
     *signal = velocity * adsr(a, d, s, r, start_i, stop_i);
-    //*signal = 1.0;
     signal++;
     i++;
   }
