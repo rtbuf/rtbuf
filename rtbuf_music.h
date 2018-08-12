@@ -64,7 +64,7 @@ enum {
 #define RTBUF_MUSIC_NOTE_VAR_STOP(notes, i) \
   (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + RTBUF_MUSIC_NOTE_VAR_STOP)
 
-#define RTBUF_MUSIC_NOTE_MAX 16
+#define RTBUF_MUSIC_NOTE_MAX 128
 
 typedef struct rtbuf_music_notes {
   unsigned int note_n;

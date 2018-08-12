@@ -30,8 +30,8 @@ struct rtbuf_fun_out {
   unsigned int offset;
 };
 
-#define RTBUF_FUN_VAR_MAX 128
-#define RTBUF_FUN_OUT_MAX 128
+#define RTBUF_FUN_VAR_MAX 1024
+#define RTBUF_FUN_OUT_MAX 1024
 
 struct rtbuf_fun {
   symbol          name;
