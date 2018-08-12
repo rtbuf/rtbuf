@@ -24,11 +24,14 @@ static inline
 double adsr (double attack, double decay, double sustain,
              double release, double start, double stop)
 {
+  double t = start;
   double x;
-  if (start < attack)
-    x = start / attack;
-  else if (start < attack + decay)
-    x = 1.0 + (sustain - 1.0) * (start - attack);
+  if (stop >= 0.0)
+    t = start - stop;
+  if (t < attack)
+    x = t / attack;
+  else if (t - attack < decay)
+    x = 1.0 + (sustain - 1.0) * (t - attack) / decay;
   else
     x = sustain;
   if (stop < 0.0)
