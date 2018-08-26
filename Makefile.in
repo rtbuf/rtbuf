@@ -167,6 +167,10 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+librtbuf_dynamic_la_DEPENDENCIES = librtbuf_signal.la librtbuf.la
+am_librtbuf_dynamic_la_OBJECTS = rtbuf_dynamic.lo \
+	rtbuf_dynamic_limiter.lo
+librtbuf_dynamic_la_OBJECTS = $(am_librtbuf_dynamic_la_OBJECTS)
 am__DEPENDENCIES_1 =
 @ENABLE_GLFW3_TRUE@librtbuf_glfw3_la_DEPENDENCIES =  \
 @ENABLE_GLFW3_TRUE@	$(am__DEPENDENCIES_1) librtbuf_music.la \
@@ -248,11 +252,11 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(librtbuf_la_SOURCES) $(librtbuf_glfw3_la_SOURCES) \
-	$(librtbuf_music_la_SOURCES) $(librtbuf_signal_la_SOURCES) \
-	$(librtbuf_sndio_la_SOURCES) $(librtbuf_synth_la_SOURCES) \
-	$(rtbuf_SOURCES)
-DIST_SOURCES = $(librtbuf_la_SOURCES) \
+SOURCES = $(librtbuf_la_SOURCES) $(librtbuf_dynamic_la_SOURCES) \
+	$(librtbuf_glfw3_la_SOURCES) $(librtbuf_music_la_SOURCES) \
+	$(librtbuf_signal_la_SOURCES) $(librtbuf_sndio_la_SOURCES) \
+	$(librtbuf_synth_la_SOURCES) $(rtbuf_SOURCES)
+DIST_SOURCES = $(librtbuf_la_SOURCES) $(librtbuf_dynamic_la_SOURCES) \
 	$(am__librtbuf_glfw3_la_SOURCES_DIST) \
 	$(librtbuf_music_la_SOURCES) \
 	$(am__librtbuf_signal_la_SOURCES_DIST) \
@@ -266,7 +270,7 @@ am__can_run_installinfo = \
 am__include_HEADERS_DIST = symbol.h rtbuf_defs.h rtbuf_type.h \
 	rtbuf_fun.h rtbuf.h rtbuf_lib.h rtbuf_music.h \
 	rtbuf_music_type.h rtbuf_signal.h rtbuf_signal_type.h \
-	rtbuf_synth.h rtbuf_synth_type.h rtbuf_sndio.h \
+	rtbuf_dynamic.h rtbuf_synth.h rtbuf_synth_type.h rtbuf_sndio.h \
 	rtbuf_sndio_type.h rtbuf_glfw3.h
 HEADERS = $(include_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) \
@@ -448,10 +452,11 @@ CLEANFILES = rtbuf_music_type rtbuf_music_type.h $(am__append_3) \
 	dependencies.mk.1 dependencies.mk.2
 include_HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_fun.h \
 	rtbuf.h $(am__append_2) rtbuf_music.h rtbuf_music_type.h \
-	$(am__append_5) rtbuf_synth.h rtbuf_synth_type.h \
-	$(am__append_8) $(am__append_10)
+	$(am__append_5) rtbuf_dynamic.h rtbuf_synth.h \
+	rtbuf_synth_type.h $(am__append_8) $(am__append_10)
 lib_LTLIBRARIES = librtbuf.la librtbuf_music.la $(am__append_4) \
-	librtbuf_synth.la $(am__append_7) $(am__append_9)
+	librtbuf_dynamic.la librtbuf_synth.la $(am__append_7) \
+	$(am__append_9)
 AM_CPPFLAGS = ${local_cppflags}
 AM_LDFLAGS = ${local_ldflags} -L./.libs
 @DEBUG_FALSE@AM_CFLAGS = -DNDEBUG -O2
@@ -477,6 +482,11 @@ librtbuf_music_la_SOURCES = \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_sinus.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_square.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_type.h
+
+librtbuf_dynamic_la_LIBADD = -lm librtbuf_signal.la librtbuf.la
+librtbuf_dynamic_la_SOURCES = \
+	rtbuf_dynamic.c \
+	rtbuf_dynamic_limiter.c
 
 librtbuf_synth_la_LIBADD = librtbuf_signal.la librtbuf_music.la librtbuf.la
 librtbuf_synth_la_SOURCES = \
@@ -600,6 +610,9 @@ clean-libLTLIBRARIES:
 librtbuf.la: $(librtbuf_la_OBJECTS) $(librtbuf_la_DEPENDENCIES) $(EXTRA_librtbuf_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(librtbuf_la_OBJECTS) $(librtbuf_la_LIBADD) $(LIBS)
 
+librtbuf_dynamic.la: $(librtbuf_dynamic_la_OBJECTS) $(librtbuf_dynamic_la_DEPENDENCIES) $(EXTRA_librtbuf_dynamic_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(librtbuf_dynamic_la_OBJECTS) $(librtbuf_dynamic_la_LIBADD) $(LIBS)
+
 librtbuf_glfw3.la: $(librtbuf_glfw3_la_OBJECTS) $(librtbuf_glfw3_la_DEPENDENCIES) $(EXTRA_librtbuf_glfw3_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_librtbuf_glfw3_la_rpath) $(librtbuf_glfw3_la_OBJECTS) $(librtbuf_glfw3_la_LIBADD) $(LIBS)
 
@@ -679,6 +692,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_cli.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_dynamic.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_dynamic_limiter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_fun.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_lib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_music.Plo@am__quote@
