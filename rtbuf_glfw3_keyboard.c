@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -58,7 +59,7 @@ double scancode_frequency (int scancode, unsigned int octave)
   case 32: note = 26; break; /* D */
   case 19: note = 27; break;
   case 33: note = 28; break; /* E */
-  case 34: note = 30; break; /* F */
+  case 34: note = 29; break; /* F */
   }
   if (note >= 0)
     freq = rtbuf_music_note_frequency(octave, note);
@@ -81,7 +82,7 @@ static int find_note (s_rtbuf_music_notes *notes, double freq)
   return -1;
 }
 
-void rtbuf_glfw3_keyboard_window_key (GLFWwindow *w, int key,
+void rtbuf_glfw3_keyboard_key (GLFWwindow *w, int key,
                                       int scancode, int action,
                                       int mods)
 {
@@ -115,7 +116,7 @@ void rtbuf_glfw3_keyboard_window_key (GLFWwindow *w, int key,
   }
 }
 
-void rtbuf_glfw3_keyboard_window_size (GLFWwindow *w, int width,
+void rtbuf_glfw3_keyboard_size (GLFWwindow *w, int width,
                                        int height)
 {
   (void) w;
@@ -127,46 +128,65 @@ void rtbuf_glfw3_keyboard_window_size (GLFWwindow *w, int width,
   glLoadIdentity();
 }
 
-void rtbuf_glfw3_keyboard_window_draw (GLFWwindow *w)
+static inline
+void rtbuf_glfw3_keyboard_draw_panel (float y1, float y2)
+{
+  glColor3f(0.5f, 0.5f, 0.5f);
+  glBegin(GL_QUAD_STRIP);
+  glVertex2f(0.0f, y1);
+  glVertex2f(0.0f, y2);
+  glVertex2f(1.0f, y1);
+  glVertex2f(1.0f, y2);
+  glEnd();
+}
+
+static inline
+void rtbuf_glfw3_keyboard_draw_white (unsigned int i, float n,
+                                      float y1, float y2)
+{
+  float x = (float) i / n;
+  glBegin(GL_LINE_STRIP);
+  glVertex2f(x, y1);
+  glVertex2f(x, y2);
+  i++;
+  x = (float) i / n;
+  glVertex2f(x, y2);
+  glVertex2f(x, y1);
+  glEnd();
+}
+
+static inline
+void rtbuf_glfw3_keyboard_draw_black (unsigned int i, float n,
+                                      float y1, float y2)
+{
+  float x1 = (i - 1.0f / 3.0f) / n;
+  float x2 = (i + 1.0f / 3.0f) / n;
+  glBegin(GL_QUAD_STRIP);
+  glVertex2f(x1, y1);
+  glVertex2f(x1, y2);
+  glVertex2f(x2, y1);
+  glVertex2f(x2, y2);
+  glEnd();
+}
+
+void rtbuf_glfw3_keyboard_draw (GLFWwindow *w)
 {
   float y_buttons = 0.75f;
   float y_black = 0.36f;
-  unsigned int octaves = 4;
+  unsigned int notes = 30;
+  float n = ceilf((notes + 1) * 7 / 12);
   unsigned int i = 0;
   unsigned int j = 0;
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
-  glColor3f(0.5f, 0.5f, 0.5f);
-  glBegin(GL_QUAD_STRIP);
-  glVertex2f(0.0f, 1.0f);
-  glVertex2f(0.0f, y_buttons);
-  glVertex2f(1.0f, 1.0f);
-  glVertex2f(1.0f, y_buttons);
-  glEnd();
+  rtbuf_glfw3_keyboard_draw_panel(1.0f, y_buttons);
   glColor3f(0.0f, 0.0f, 0.0f);
-  while (i < 12 * octaves) {
+  while (i < notes) {
     int k = i % 12;
-    if (k == 1 || k == 3 || k == 6 || k == 8 || k == 10) {
-      float x1 = (j - 1.0f / 3.0f) / (octaves * 7);
-      float x2 = (j + 1.0f / 3.0f) / (octaves * 7);
-      glBegin(GL_QUAD_STRIP);
-      glVertex2f(x1, y_buttons);
-      glVertex2f(x1, y_black);
-      glVertex2f(x2, y_buttons);
-      glVertex2f(x2, y_black);
-      glEnd();
-    }
-    else {
-      float x = (float) j / (octaves * 7);
-      glBegin(GL_LINE_STRIP);
-      glVertex2f(x, y_buttons);
-      glVertex2f(x,      0.0f);
-      j++;
-      x = (float) j / (octaves * 7);
-      glVertex2f(x,      0.0f);
-      glVertex2f(x, y_buttons);
-      glEnd();
-    }
+    if (k == 1 || k == 3 || k == 6 || k == 8 || k == 10)
+      rtbuf_glfw3_keyboard_draw_black(j, n, y_buttons, y_black);
+    else
+      rtbuf_glfw3_keyboard_draw_white(j++, n, y_buttons, 0.0f);
     i++;
   }
   glfwSwapBuffers(w);
@@ -183,10 +203,10 @@ GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
   }
   glfwMakeContextCurrent(window);
   glfwSetWindowUserPointer(window, rtb);
-  glfwSetKeyCallback(window, rtbuf_glfw3_keyboard_window_key);
-  glfwSetWindowSizeCallback(window, rtbuf_glfw3_keyboard_window_size);
+  glfwSetKeyCallback(window, rtbuf_glfw3_keyboard_key);
+  glfwSetWindowSizeCallback(window, rtbuf_glfw3_keyboard_size);
   glfwSetWindowRefreshCallback(window,
-                               rtbuf_glfw3_keyboard_window_draw);
+                               rtbuf_glfw3_keyboard_draw);
   glfwShowWindow(window);
   return window;
 }
