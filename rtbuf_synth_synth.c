@@ -166,7 +166,7 @@ void rtbuf_synth_synth_update_note_signal (s_rtbuf *rtb,
     double e = env.sample_fun(env.signal, j);
     double o = osc.sample_fun(osc.signal, j);
     e = max(0.0, e);
-    *signal += e * o * 0.1;
+    *signal += e * o;
     //printf(" e=%f o=%f s=%f", e, o, *signal);
     signal++;
     j++;
