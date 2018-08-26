@@ -71,6 +71,14 @@ include_HEADERS += \
 	rtbuf_signal_type.h
 endif
 
+lib_LTLIBRARIES += librtbuf_dynamic.la
+librtbuf_dynamic_la_LIBADD = -lm librtbuf_signal.la librtbuf.la
+librtbuf_dynamic_la_SOURCES = \
+	rtbuf_dynamic.c \
+	rtbuf_dynamic_limiter.c
+include_HEADERS += \
+	rtbuf_dynamic.h
+
 rtbuf_synth_type: rtbuf_synth_type.c rtbuf_synth.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_synth_type rtbuf_synth_type.c
 rtbuf_synth_type.h: rtbuf_synth_type
