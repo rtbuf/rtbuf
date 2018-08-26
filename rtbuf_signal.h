@@ -43,9 +43,9 @@ typedef struct rtbuf_signal_fun {
 
 void rtbuf_signal_zero (t_rtbuf_signal_sample *signal);
 t_rtbuf_signal_sample
-     rtbuf_signal_sample (s_rtbuf *rtb,
-                          unsigned int var,
-                          t_rtbuf_signal_sample default_value);
+rtbuf_signal_sample (s_rtbuf *rtb,
+                     unsigned int var,
+                     t_rtbuf_signal_sample default_value);
 void rtbuf_signal_fun (s_rtbuf *rtb,
                        unsigned int var,
                        s_rtbuf_signal_fun *data,
