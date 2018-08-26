@@ -89,5 +89,6 @@ s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
 
 t_rtbuf_signal_sample rtbuf_music_note_frequency (unsigned int octave,
                                                   unsigned int note);
+double rtbuf_music_frequency_note (double f);
 
 #endif

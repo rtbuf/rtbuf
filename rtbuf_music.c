@@ -42,6 +42,11 @@ double rtbuf_music_note_frequency (unsigned int octave,
   return exp2(octave + note / 12.0 + g_rtbuf_music_tune);
 }
 
+double rtbuf_music_frequency_note (double f)
+{
+  return log2(f) * 12.0 - g_rtbuf_music_tune;
+}
+
 int rtbuf_music_notes_new (s_rtbuf_music_notes *notes, double velocity)
 {
   unsigned int i = 0;
