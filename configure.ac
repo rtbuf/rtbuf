@@ -31,6 +31,11 @@ fi
 
 enable_rtbuf=true
 AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
+AC_SEARCH_LIBS([data_init], [data],
+               [RTBUF_LIBS="$RTBUF_LIBS -ldata"],
+               [if test x"$enable_rtbuf" = x"true"; then
+                  AC_MSG_ERROR([missing libdata for rtbuf"])
+                fi])
 AC_SEARCH_LIBS([cli_init], [cli],
                [RTBUF_LIBS="$RTBUF_LIBS -lcli"],
                [if test x"$enable_rtbuf" = x"true"; then
