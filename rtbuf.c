@@ -107,12 +107,12 @@ void rtbuf_unbind_all_out (s_rtbuf *rtb)
 {
   unsigned int rtb_i;
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_alloc.n;
+  unsigned int n = g_rtbuf_alloc.n - g_rtbuf_alloc.free_n;
   assert(rtb);
   assert(g_rtbuf <= rtb);
   assert(rtb < g_rtbuf + RTBUF_MAX);
   rtb_i = rtb - g_rtbuf;
-  while (i < RTBUF_MAX && n > 0 && rtb->refc) {
+  while (i < g_rtbuf_alloc.n && rtb->refc) {
     if (g_rtbuf[i].data) {
       rtbuf_unbind_all_out_rtbuf(rtb, rtb_i, &g_rtbuf[i]);
       n--;
@@ -253,10 +253,10 @@ void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
 {
   s_rtbuf *rtb = g_rtbuf;
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_alloc.n;
+  unsigned int n = g_rtbuf_alloc.n - g_rtbuf_alloc.free_n;
   unsigned int c = 0;
   //printf("rtbuf_find_roots\n");
-  while (i < RTBUF_MAX && n > 0) {
+  while (i < g_rtbuf_alloc.n && n > 0) {
     //printf(" rtbuf_find_roots %u %u\n", i, n);
     if (rtb->data) {
       if (rtb->flags & RTBUF_DELETE)
