@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,13 +22,18 @@
 #include "rtbuf_type.h"
 #include "symbol.h"
 
-s_rtbuf_type g_rtbuf_type[RTBUF_TYPE_MAX];
-unsigned int g_rtbuf_type_n = 0;
+s_data_type   g_rtbuf_data_type_type = {
+  sizeof(s_rtbuf_type) * 8,
+  DATA_TYPE_BITS
+};
+s_data_alloc  g_rtbuf_data_type_alloc;
+s_rtbuf_type *g_rtbuf_data_type;
 
 void rtbuf_type_init ()
 {
-  bzero(g_rtbuf_type, sizeof(g_rtbuf_type));
-  g_rtbuf_type_n = 0;
+  data_alloc_init(&g_rtbuf_data_type_alloc, &g_rtbuf_data_type_type,
+                  RTBUF_TYPE_MAX, 0, 0);
+  g_rtbuf_data_type = g_rtbuf_data_type_alloc.mem;
   rtbuf_type_define("char"          , sizeof(char));
   rtbuf_type_define("unsigned char" , sizeof(unsigned char));
   rtbuf_type_define("short"         , sizeof(short));
@@ -42,36 +48,29 @@ void rtbuf_type_init ()
 
 s_rtbuf_type * rtbuf_type_new (const char *name, unsigned int size)
 {
-  unsigned int i = 0;
-  while (i < RTBUF_TYPE_MAX) {
-    if (g_rtbuf_type[i].name == 0) {
-      g_rtbuf_type[i].name = symbol_intern(name);
-      g_rtbuf_type[i].size = size;
-      g_rtbuf_type_n++;
-      return &g_rtbuf_type[i];
-    }
-    i++;
-  }
-  return 0;
+  s_rtbuf_type *rt = data_new(&g_rtbuf_data_type_alloc);
+  if (!rt)
+    return 0;
+  rt->name = symbol_intern(name);
+  rt->t.bits = size * 8;
+  rt->t.type = DATA_TYPE_BITS;
+  return rt;
 }
 
 void rtbuf_type_delete (s_rtbuf_type *rt)
 {
-  if (rt->name) {
-    rt->name = 0;
-    rt->size = 0;
-    g_rtbuf_type_n--;
-  }
+  assert(rt);
+  data_delete(&g_rtbuf_data_type_alloc, rt);
 }
 
 s_rtbuf_type * rtbuf_type_find (symbol name)
 {
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_type_n;
-  while (i < RTBUF_TYPE_MAX && n > 0) {
-    if (g_rtbuf_type[i].name) {
-      if (name == g_rtbuf_type[i].name)
-        return &g_rtbuf_type[i];
+  unsigned int n = g_rtbuf_data_type_alloc.n;
+  while (i < g_rtbuf_data_type_alloc.max && n > 0) {
+    if (g_rtbuf_data_type[i].name) {
+      if (name == g_rtbuf_data_type[i].name)
+        return &g_rtbuf_data_type[i];
       n--;
     }
     i++;
@@ -82,7 +81,7 @@ s_rtbuf_type * rtbuf_type_find (symbol name)
 s_rtbuf_type * rtbuf_type_define (const char *name, unsigned int size)
 {
   s_rtbuf_type *found = rtbuf_type_find(name);
-  if (found && found->size == size)
+  if (found && found->t.bits == size * 8)
     return found;
   return rtbuf_type_new(name, size);
 }
@@ -103,7 +102,7 @@ s_rtbuf_type * rtbuf_type_parse_array (const char *name)
       return 0;
     buf[rb] = 0;
     size = atoi(&buf[lb + 1]);
-    return rtbuf_type_new(name, element_type->size * size);
+    return rtbuf_type_new(name, element_type->t.bits / 8 * size);
   }
   return 0;
 }

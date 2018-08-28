@@ -15,6 +15,7 @@
  */
 
 #include <assert.h>
+#include <data.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,38 +24,27 @@
 #include "rtbuf_lib.h"
 #include "symbol.h"
 
-s_rtbuf      g_rtbuf[RTBUF_MAX];
-unsigned int g_rtbuf_max = RTBUF_MAX;
-unsigned int g_rtbuf_n = 0;
-int          g_rtbuf_run = 0;
-unsigned int g_rtbuf_sort = 0;
-int          g_rtbuf_sorted[RTBUF_MAX];
-unsigned int g_rtbuf_sorted_n = 0;
-int          g_rtbuf_delete = 0;
+s_data_type   g_rtbuf_type = {
+  sizeof(s_rtbuf) * 8,
+  DATA_TYPE_BITS
+};
+s_data_alloc  g_rtbuf_alloc;
+s_rtbuf      *g_rtbuf;
+int           g_rtbuf_run = 0;
+unsigned int  g_rtbuf_sort = 0;
+unsigned int  g_rtbuf_sorted[RTBUF_MAX];
+unsigned int  g_rtbuf_sorted_n = 0;
 
-int rtbuf_init ()
+int librtbuf_init ()
 {
-  bzero(g_rtbuf, sizeof(g_rtbuf));
+  libdata_init();
   bzero(g_rtbuf_sorted, sizeof(g_rtbuf_sorted));
+  data_alloc_init(&g_rtbuf_alloc, &g_rtbuf_type, RTBUF_MAX, 0, 0);
+  g_rtbuf = g_rtbuf_alloc.mem;
+  rtbuf_type_init();
+  rtbuf_fun_init();
+  rtbuf_lib_init_();
   return 0;
-}
-
-int rtbuf_new_ (void *data)
-{
-  s_rtbuf *rtb = g_rtbuf;
-  unsigned int i = 0;
-  if (g_rtbuf_n == RTBUF_MAX)
-    return rtbuf_err("RTBUF_MAX exhausted");
-  while (i < RTBUF_MAX) {
-    if (rtb->data == 0) {
-      rtb->data = data;
-      g_rtbuf_n++;
-      return i;
-    }
-    rtb++;
-    i++;
-  }
-  return -1;
 }
 
 int rtbuf_new (s_rtbuf_fun *rf)
@@ -68,9 +58,10 @@ int rtbuf_new (s_rtbuf_fun *rf)
   if (!data)
     return rtbuf_err("malloc failed");
   bzero(data, rf->out_bytes);
-  if ((i = rtbuf_new_(data)) < 0)
+  if ((i = data_new_i(&g_rtbuf_alloc)) < 0)
     return -1;
   rtb = &g_rtbuf[i];
+  rtb->data = data;
   rtb->flags = 0;
   rtb->fun = rf;
   while (j < RTBUF_FUN_VAR_MAX) {
@@ -116,7 +107,7 @@ void rtbuf_unbind_all_out (s_rtbuf *rtb)
 {
   unsigned int rtb_i;
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_n;
+  unsigned int n = g_rtbuf_alloc.n;
   assert(rtb);
   assert(g_rtbuf <= rtb);
   assert(rtb < g_rtbuf + RTBUF_MAX);
@@ -149,7 +140,7 @@ void rtbuf_delete_ (s_rtbuf *rtb)
   bzero(rtb->data, rtb->fun->out_bytes);
   free(rtb->data);
   bzero(rtb, sizeof(s_rtbuf));
-  g_rtbuf_n--;
+  data_delete(&g_rtbuf_alloc, rtb);
 }
 
 void rtbuf_delete (s_rtbuf *rtb)
@@ -196,7 +187,7 @@ int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
   int out_i = rtbuf_fun_out_find(rtb->fun, name);
   if (out_i >= 0) {
     s_rtbuf_fun_out *out = &rtb->fun->out[out_i];
-    if (out->type->size == size) {
+    if (out->type->t.bits == size * 8) {
       void *data = rtb->data + out->offset;
       memcpy(data, value, size);
       return size;
@@ -262,7 +253,7 @@ void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
 {
   s_rtbuf *rtb = g_rtbuf;
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_n;
+  unsigned int n = g_rtbuf_alloc.n;
   unsigned int c = 0;
   //printf("rtbuf_find_roots\n");
   while (i < RTBUF_MAX && n > 0) {
@@ -295,7 +286,7 @@ void rtbuf_sort_push_child (s_rtbuf_var_stack *rvs,
   ptr->var++;
   if (rtb >= 0) {
     while (i < g_rtbuf_sorted_n && !found) {
-      if (g_rtbuf_sorted[i] == rtb)
+      if (g_rtbuf_sorted[i] == (unsigned) rtb)
         found = 1;
       i++;
     }
@@ -315,7 +306,7 @@ void rtbuf_sort ()
   s_rtbuf_var_stack rvs;
   s_rtbuf_var_ptr *ptr;
   printf("rtbuf_sort\n");
-  if (g_rtbuf_n == 0)
+  if (g_rtbuf_alloc.n == 0)
     return;
   rtbuf_var_stack_init(&rvs);
   rtbuf_find_roots(&rvs);
@@ -389,7 +380,8 @@ void rtbuf_stop ()
 int rtbuf_find (const char *x)
 {
   int i = atoi(x);
-  if (0 <= i && i < RTBUF_MAX && g_rtbuf[i].data && g_rtbuf[i].fun)
+  if (0 <= i && (unsigned int) i < g_rtbuf_alloc.n &&
+      g_rtbuf[i].data && g_rtbuf[i].fun)
     return i;
   return -1;
 }
@@ -447,7 +439,7 @@ int rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value)
   assert(out < rtb->fun->out_n);
   o = &rtb->fun->out[out];
   assert(o->type);
-  if (o->type->size >= sizeof(int)) {
+  if (o->type->t.bits >= sizeof(int) * 8) {
     int *i = (int*)(rtb->data + o->offset);
     return *i;
   }

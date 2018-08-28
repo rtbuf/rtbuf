@@ -227,7 +227,7 @@ void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
       o->type = rtbuf_type(out->type);
       assert(o->type);
       o->offset = offset;
-      offset += o->type->size;
+      offset += (o->type->t.bits + 7) / 8;
       out++;
       i++;
     }

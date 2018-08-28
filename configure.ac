@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([rtbuf], [0.1.0], [kmx.io], [rtbuf], [http://kmx.io/])
+AC_INIT([rtbuf], [0.2], [kmx.io], [rtbuf], [http://kmx.io/])
 CFLAGS="$CFLAGS -W -Wall -Werror"
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
@@ -29,13 +29,14 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
-enable_rtbuf=true
-AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
-AC_SEARCH_LIBS([data_init], [data],
-               [RTBUF_LIBS="$RTBUF_LIBS -ldata"],
+AC_SEARCH_LIBS([libdata_init], [data],
+               [LIBRTBUF_LIBS="$LIBRTBUF_LIBS -ldata"],
                [if test x"$enable_rtbuf" = x"true"; then
                   AC_MSG_ERROR([missing libdata for rtbuf"])
                 fi])
+
+enable_rtbuf=true
+AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
 AC_SEARCH_LIBS([cli_init], [cli],
                [RTBUF_LIBS="$RTBUF_LIBS -lcli"],
                [if test x"$enable_rtbuf" = x"true"; then

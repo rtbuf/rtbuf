@@ -16,6 +16,7 @@
 #ifndef RTBUF_H
 #define RTBUF_H
 
+#include <data.h>
 #include "rtbuf_defs.h"
 #include "rtbuf_type.h"
 #include "rtbuf_fun.h"
@@ -41,16 +42,13 @@ struct rtbuf
 
 #define RTBUF_MAX 1000
 
-extern s_rtbuf      g_rtbuf[];
-extern unsigned int g_rtbuf_max;
-extern unsigned int g_rtbuf_n;
-extern int          g_rtbuf_run;
-extern unsigned int g_rtbuf_sort;
-extern int          g_rtbuf_sorted[];
-extern unsigned int g_rtbuf_sorted_n;
+s_data_alloc g_rtbuf_alloc;
+s_rtbuf     *g_rtbuf;
+int          g_rtbuf_run;
+
+int   librtbuf_init ();
 
 int   rtbuf_err (const char *msg);
-int   rtbuf_init ();
 int   rtbuf_new (s_rtbuf_fun *rf);
 void  rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var);
 void  rtbuf_unbind_all (s_rtbuf *rtb);

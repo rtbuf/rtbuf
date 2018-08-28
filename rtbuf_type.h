@@ -16,18 +16,17 @@
 #ifndef RTBUF_TYPE_H
 #define RTBUF_TYPE_H
 
+#include <data.h>
 #include "rtbuf_defs.h"
 #include "symbol.h"
 
 struct rtbuf_type {
-  const char *name;     /* symbol */
-  unsigned int size;
+  symbol       name;
+  s_data_type  t;
+  s_data_alloc alloc;
 };
 
 #define RTBUF_TYPE_MAX 1024
-
-s_rtbuf_type g_rtbuf_type[RTBUF_TYPE_MAX];
-unsigned int g_rtbuf_type_n;
 
 void           rtbuf_type_init ();
 s_rtbuf_type * rtbuf_type_new (const char *name,

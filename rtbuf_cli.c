@@ -74,7 +74,7 @@ int rtbuf_cli_load (int argc, const char *argv[])
 int rtbuf_cli_buffers (int argc, const char *argv[])
 {
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_n;
+  unsigned int n = g_rtbuf_alloc.n;
   assert(argc == 0);
   (void) argv;
   printf("Listing %i buffers :\n", n);
@@ -297,9 +297,7 @@ int main (int argc, char *argv[])
   (void) argc;
   (void) argv;
   symbols_init();
-  rtbuf_type_init();
-  rtbuf_fun_init();
-  rtbuf_lib_init_();
+  librtbuf_init();
   return repl();
 }
 
