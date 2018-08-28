@@ -160,7 +160,7 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-librtbuf_la_LIBADD =
+librtbuf_la_DEPENDENCIES =
 am_librtbuf_la_OBJECTS = symbol.lo rtbuf_type.lo rtbuf_fun.lo rtbuf.lo
 librtbuf_la_OBJECTS = $(am_librtbuf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -461,6 +461,7 @@ AM_CPPFLAGS = ${local_cppflags}
 AM_LDFLAGS = ${local_ldflags} -L./.libs
 @DEBUG_FALSE@AM_CFLAGS = -DNDEBUG -O2
 @DEBUG_TRUE@AM_CFLAGS = -DDEBUG -O0 -ggdb
+librtbuf_la_LIBADD = -ldata
 librtbuf_la_SOURCES = \
 	symbol.c \
 	rtbuf_type.c \
