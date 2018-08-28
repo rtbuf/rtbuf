@@ -66,8 +66,9 @@ void rtbuf_type_delete (s_rtbuf_type *rt)
 s_rtbuf_type * rtbuf_type_find (symbol name)
 {
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_data_type_alloc.n;
-  while (i < g_rtbuf_data_type_alloc.max && n > 0) {
+  unsigned int n =
+    g_rtbuf_data_type_alloc.n - g_rtbuf_data_type_alloc.free_n;
+  while (i < g_rtbuf_data_type_alloc.n && n > 0) {
     if (g_rtbuf_data_type[i].name) {
       if (name == g_rtbuf_data_type[i].name)
         return &g_rtbuf_data_type[i];
