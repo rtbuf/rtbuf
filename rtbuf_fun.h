@@ -16,6 +16,7 @@
 #ifndef RTBUF_FUN_H
 #define RTBUF_FUN_H
 
+#include <data.h>
 #include "rtbuf_defs.h"
 #include "symbol.h"
 
@@ -48,12 +49,12 @@ struct rtbuf_fun {
 };
 
 #define RTBUF_FUN_MAX 1024
-extern s_rtbuf_fun g_rtbuf_fun[RTBUF_FUN_MAX];
-extern unsigned int g_rtbuf_fun_n;
+s_data_alloc g_rtbuf_fun_alloc;
+s_rtbuf_fun *g_rtbuf_fun;
 
 void              rtbuf_fun_init ();
 int               rtbuf_fun_p (s_rtbuf_fun *fun);
-s_rtbuf_fun *     rtbuf_fun_next ();
+s_rtbuf_fun *     rtbuf_fun_new ();
 void              rtbuf_fun_delete (s_rtbuf_fun *fun);
 s_rtbuf_fun *     rtbuf_fun_find (const char *x);
 int               rtbuf_fun_out_find (s_rtbuf_fun *fun,
