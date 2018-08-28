@@ -24,8 +24,12 @@
 #include "rtbuf_lib.h"
 #include "symbol.h"
 
-s_rtbuf_lib g_rtbuf_lib[RTBUF_LIB_MAX];
-unsigned int g_rtbuf_lib_n = 0;
+s_data_type  g_rtbuf_lib_type = {
+  sizeof(s_rtbuf_lib) * 8,
+  DATA_TYPE_BITS
+};
+s_data_alloc g_rtbuf_lib_alloc;
+s_rtbuf_lib *g_rtbuf_lib;
 
 char g_rtbuf_lib_user_dir[1024];
 char *g_rtbuf_lib_path[] = { "./",
@@ -39,7 +43,9 @@ void rtbuf_lib_init_ ()
 {
   char *in = getenv("HOME");
   char *out = g_rtbuf_lib_user_dir;
-  bzero(g_rtbuf_lib, sizeof(g_rtbuf_lib));
+  data_alloc_init(&g_rtbuf_lib_alloc, &g_rtbuf_lib_type,
+                  RTBUF_LIB_MAX, 0, 0);
+  g_rtbuf_lib = g_rtbuf_lib_alloc.mem;
   if (!in)
     in = ".";
   while (*in)
@@ -60,13 +66,14 @@ int rtbuf_lib_find (const char *str)
   const char *sym;
   if ('0' <= str[0] && str[0] <= '9') {
     int i = atoi(str);
-    if (0 <= i && i < RTBUF_LIB_MAX && rtbuf_lib_p(&g_rtbuf_lib[i]))
+    if (0 <= i && (unsigned int) i < g_rtbuf_lib_alloc.n &&
+        rtbuf_lib_p(&g_rtbuf_lib[i]))
       return i;
   }
   if ((sym = symbol_find(str))) {
     unsigned int i = 0;
-    unsigned int n = g_rtbuf_lib_n;
-    while (i < RTBUF_LIB_MAX && n > 0) {
+    unsigned int n = g_rtbuf_lib_alloc.n - g_rtbuf_lib_alloc.free_n;
+    while (i < g_rtbuf_lib_alloc.n && n > 0) {
       if (rtbuf_lib_p(&g_rtbuf_lib[i])) {
         if (sym == g_rtbuf_lib[i].name)
           return i;
@@ -99,24 +106,13 @@ int rtbuf_lib_find_fun (s_rtbuf_lib *rl, const char *str)
 
 s_rtbuf_lib * rtbuf_lib_new ()
 {
-  unsigned int i = 0;
-  s_rtbuf_lib *lib = g_rtbuf_lib;
-  while (i < RTBUF_LIB_MAX) {
-    if (lib->path == 0) {
-      g_rtbuf_lib_n++;
-      return lib;
-    }
-    i++;
-    lib++;
-  }
-  return 0;
+  s_rtbuf_lib *lib = data_new(&g_rtbuf_lib_alloc);
+  return lib;
 }
 
 void rtbuf_lib_delete (s_rtbuf_lib *rl)
 {
-  if (rl->path[0])
-    g_rtbuf_lib_n--;
-  bzero(rl, sizeof(s_rtbuf_lib));
+  data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
 void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
@@ -185,7 +181,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   }
   lib->fun = malloc(sizeof(s_rtbuf_fun*) * (lib->fun_n + 1));
   while (i < lib->fun_n) {
-    lib->fun[i] = rtbuf_fun_next();
+    lib->fun[i] = rtbuf_fun_new();
     assert(lib->fun[i]);
     rtbuf_lib_fun_init_fun(lib->fun[i], &fun[i]);
     lib->fun[i]->lib = lib;

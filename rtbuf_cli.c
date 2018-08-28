@@ -29,11 +29,11 @@ pthread_t g_rtbuf_cli_thread = 0;
 int rtbuf_cli_libs (int argc, const char *argv[])
 {
   unsigned int i = 0;
-  unsigned int n = g_rtbuf_lib_n;
+  unsigned int n = g_rtbuf_lib_alloc.n - g_rtbuf_lib_alloc.free_n;
   assert(argc == 0);
   (void) argv;
   printf("Listing %i libraries :\n", n);
-  while (i < RTBUF_LIB_MAX && n > 0) {
+  while (i < g_rtbuf_lib_alloc.n && n > 0) {
     if (g_rtbuf_lib[i].path[0]) {
       rtbuf_lib_print(i);
       n--;

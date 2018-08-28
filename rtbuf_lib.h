@@ -48,8 +48,8 @@ struct rtbuf_lib {
   const char *path;
 };
 
-extern s_rtbuf_lib  g_rtbuf_lib[];
-extern unsigned int g_rtbuf_lib_n;
+s_data_alloc g_rtbuf_lib_alloc;
+s_rtbuf_lib *g_rtbuf_lib;
 
 void          rtbuf_lib_delete (s_rtbuf_lib *rl);
 int           rtbuf_lib_find (const char *str);
