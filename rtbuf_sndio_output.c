@@ -31,7 +31,7 @@ void rtbuf_sndio_output_parameters (struct sio_par *want)
   want->pchan = RTBUF_SNDIO_CHANNELS;
   want->rate = RTBUF_SIGNAL_SAMPLERATE;
   want->appbufsz = RTBUF_SIGNAL_SAMPLES;
-  want->xrun = SIO_SYNC;
+  want->xrun = SIO_IGNORE;
   print_sio_par(want); printf("\n");
 }
 

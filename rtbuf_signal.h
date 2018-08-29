@@ -23,8 +23,8 @@ typedef double t_rtbuf_signal_sample;
 #define RTBUF_SIGNAL_SAMPLE_SIZE sizeof(t_rtbuf_signal_sample)
 #define RTBUF_SIGNAL_SAMPLE_TYPE "double"
 
-#define RTBUF_SIGNAL_SAMPLES      256
-#define RTBUF_SIGNAL_SAMPLERATE 44100
+#define RTBUF_SIGNAL_SAMPLES      960
+#define RTBUF_SIGNAL_SAMPLERATE 48000
 #define RTBUF_SIGNAL_DT \
   ((double) RTBUF_SIGNAL_SAMPLES / RTBUF_SIGNAL_SAMPLERATE)
 
