@@ -24,6 +24,7 @@
 #include "rtbuf_lib.h"
 #include "symbol.h"
 
+s_cli     g_cli;
 pthread_t g_rtbuf_cli_thread = 0;
 
 int rtbuf_cli_libs (int argc, const char *argv[])
@@ -277,27 +278,48 @@ void debug_read (int argc, const char **argv, f_cli f)
   }
 }
 
+void repl_init ()
+{
+  cli_init(&g_cli);
+  cli_prompt(&g_cli, "rtbuf> ");
+  cli_functions(&g_cli, rtbuf_cli_functions);
+}
+
+int load (const char *path)
+{
+  FILE *fp = fopen(path, "r");
+  if (!fp)
+    return -1;
+  while (cli_read_file(&g_cli, fp))
+    cli_eval(&g_cli);
+  fclose(fp);
+  return 0;
+}
+
 int repl ()
 {
-  s_cli cli;
-  cli_init(&cli);
-  cli_prompt(&cli, "rtbuf> ");
-  cli_functions(&cli, rtbuf_cli_functions);
-  while (1) {
-    if (cli_read(&cli) < 0)
-      return 0;
+  while (cli_read(&g_cli) >= 0) {
     /* debug_read(cli.argc, cli.argv, cli.f); */
-    cli_eval(&cli);
+    cli_eval(&g_cli);
   }
   return 0;
 }
 
+void rtbuf_cli_args (int argc, char *argv[])
+{
+  while (--argc) {
+    char *arg = *++argv;
+    printf("loading script %s\n", arg);
+    load(arg);
+  }
+}
+
 int main (int argc, char *argv[])
 {
-  (void) argc;
-  (void) argv;
   symbols_init();
   librtbuf_init();
+  repl_init();
+  rtbuf_cli_args(argc, argv);
   return repl();
 }
 
