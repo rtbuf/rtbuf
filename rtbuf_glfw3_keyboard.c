@@ -83,8 +83,8 @@ static int find_note (s_rtbuf_music_notes *notes, double freq)
 }
 
 void rtbuf_glfw3_keyboard_key (GLFWwindow *w, int key,
-                                      int scancode, int action,
-                                      int mods)
+                               int scancode, int action,
+                               int mods)
 {
   int i;
   double freq;
