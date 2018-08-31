@@ -305,7 +305,7 @@ void rtbuf_sort ()
 {
   s_rtbuf_var_stack rvs;
   s_rtbuf_var_ptr *ptr;
-  printf("rtbuf_sort\n");
+  //printf("rtbuf_sort\n");
   if (g_rtbuf_alloc.n == 0)
     return;
   rtbuf_var_stack_init(&rvs);
@@ -325,18 +325,18 @@ void rtbuf_sort ()
 void rtbuf_start ()
 {
   unsigned int i = 0;
-  printf("rtbuf_start\n");
+  //printf("rtbuf_start\n");
   if (g_rtbuf_sort)
     rtbuf_sort();
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
     assert(rtb->data);
     if (rtb->fun->start) {
-      printf(" start ");
-      rtbuf_print(g_rtbuf_sorted[i]);
-      printf(" ");
-      rtbuf_fun_print(rtb->fun);
-      printf("\n");
+      //printf(" start ");
+      //rtbuf_print(g_rtbuf_sorted[i]);
+      //printf(" ");
+      //rtbuf_fun_print(rtb->fun);
+      //printf("\n");
       rtb->fun->start(rtb);
     }
     i++;
@@ -365,7 +365,7 @@ void rtbuf_run ()
 void rtbuf_stop ()
 {
   unsigned int i = 0;
-  printf("rtbuf_stop\n");
+  //printf("rtbuf_stop\n");
   if (g_rtbuf_sort)
     rtbuf_sort();
   while (i < g_rtbuf_sorted_n) {
@@ -412,7 +412,7 @@ int rtbuf_out_find (s_rtbuf *rtb, const char *x)
 {
   s_rtbuf_fun *fun = rtb->fun;
   symbol sym;
-  printf("rtbuf_out_find %s\n", x);
+  //printf("rtbuf_out_find %s\n", x);
   if ('0' <= x[0] && x[0] <= '9') {
     int i = atoi(x);
     if (0 <= i && (unsigned int) i < fun->out_n)
@@ -420,7 +420,7 @@ int rtbuf_out_find (s_rtbuf *rtb, const char *x)
   }
   if ((sym = symbol_find(x))) {
     unsigned int i = 0;
-    printf("rtbuf_out_find sym %s\n", sym);
+    //printf("rtbuf_out_find sym %s\n", sym);
     while (i < fun->out_n) {
       if (sym == fun->out[i].name)
         return i;
