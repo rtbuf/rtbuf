@@ -290,7 +290,8 @@ int load (const char *path)
   FILE *fp = fopen(path, "r");
   if (!fp)
     return -1;
-  while (cli_read_file(&g_cli, fp))
+  printf("; Loading %s\n", path);
+  while (cli_read_file(&g_cli, fp) >= 0)
     cli_eval(&g_cli);
   fclose(fp);
   return 0;
