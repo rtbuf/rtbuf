@@ -112,6 +112,15 @@ s_rtbuf_lib * rtbuf_lib_new ()
 
 void rtbuf_lib_delete (s_rtbuf_lib *rl)
 {
+  unsigned int i = 0;
+  assert(rl);
+  assert(rl->fun);
+  while (i < rl->fun_n) {
+    rtbuf_fun_delete(rl->fun[i]);
+    rl->fun[i] = 0;
+    i++;
+  }
+  free(rl->fun);
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
@@ -170,16 +179,10 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
     }
   fun = dlsym(lib->lib, "rtbuf_lib_fun");
   lib->fun_n = 0;
-  while (lib->fun_n < RTBUF_LIB_MAX &&
-         rtbuf_lib_fun_p(&fun[lib->fun_n])) {
-    if (fun[lib->fun_n].name == 0) {
-      Dl_info info;
-      dladdr(fun[lib->fun_n].f, &info);
-      fun[lib->fun_n].name = symbol_intern(info.dli_sname);
-    }
+  while (lib->fun_n < RTBUF_FUN_MAX &&
+         rtbuf_lib_fun_p(&fun[lib->fun_n]))
     lib->fun_n++;
-  }
-  lib->fun = malloc(sizeof(s_rtbuf_fun*) * (lib->fun_n + 1));
+  lib->fun = malloc(sizeof(s_rtbuf_fun*) * lib->fun_n);
   while (i < lib->fun_n) {
     lib->fun[i] = rtbuf_fun_new();
     assert(lib->fun[i]);
