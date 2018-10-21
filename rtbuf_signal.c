@@ -27,34 +27,34 @@ const double g_rtbuf_signal_sample_half       = 0.5;
 const double g_rtbuf_signal_sample_one        = 1.0;
 const double g_rtbuf_signal_default_frequency = 220.0;
 
-s_rtbuf_lib_fun_var g_rtbuf_signal_sinus_var[] = {
+s_rtbuf_lib_proc_in g_rtbuf_signal_sinus_in[] = {
   { "frequency", RTBUF_SIGNAL_TYPE },
   { "amplitude", RTBUF_SIGNAL_TYPE },
   { 0, 0 } };
 
-s_rtbuf_lib_fun_out g_rtbuf_signal_sinus_out[] = {
+s_rtbuf_lib_proc_out g_rtbuf_signal_sinus_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
   { "phase", "double" },
   { 0, 0 } };
 
-s_rtbuf_lib_fun_var g_rtbuf_signal_square_var[] = {
+s_rtbuf_lib_proc_in g_rtbuf_signal_square_in[] = {
   { "frequency", RTBUF_SIGNAL_TYPE },
   { "amplitude", RTBUF_SIGNAL_TYPE },
   { "pulse",     RTBUF_SIGNAL_TYPE },
   { 0, 0 } };
 
-s_rtbuf_lib_fun_out g_rtbuf_signal_square_out[] = {
+s_rtbuf_lib_proc_out g_rtbuf_signal_square_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
   { "phase", "double" },
   { 0, 0 } };
 
 const char     *rtbuf_lib_name = "signal";
 unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
-s_rtbuf_lib_fun rtbuf_lib_fun[] = {
+s_rtbuf_lib_proc rtbuf_lib_proc[] = {
   { "sinus", rtbuf_signal_sinus, rtbuf_signal_sinus_start, 0,
-    g_rtbuf_signal_sinus_var, g_rtbuf_signal_sinus_out },
+    g_rtbuf_signal_sinus_in, g_rtbuf_signal_sinus_out },
   { "square", rtbuf_signal_square, rtbuf_signal_square_start, 0,
-    g_rtbuf_signal_square_var, g_rtbuf_signal_square_out },
+    g_rtbuf_signal_square_in, g_rtbuf_signal_square_out },
   { 0, 0, 0, 0, 0, 0 } };
 
 void rtbuf_signal_zero (t_rtbuf_signal_sample *signal)
@@ -65,23 +65,23 @@ void rtbuf_signal_zero (t_rtbuf_signal_sample *signal)
 
 t_rtbuf_signal_sample
 rtbuf_signal_sample (s_rtbuf *rtb,
-                     unsigned int var,
+                     unsigned int in,
                      t_rtbuf_signal_sample default_value)
 {
   s_rtbuf_binding *v;
   assert(rtb);
-  assert(rtb->fun);
-  assert(var < rtb->fun->var_n);
-  v = &rtb->var[var];
+  assert(rtb->proc);
+  assert(in < rtb->proc->in_n);
+  v = &rtb->var[in];
   if (v->rtb >= 0) {
     s_rtbuf *src;
-    s_rtbuf_fun_out *out;
+    s_rtbuf_proc_out *out;
     assert(v->rtb < RTBUF_MAX);
     src = &g_rtbuf[v->rtb];
     assert(src->data);
-    assert(src->fun);
-    assert(v->out < src->fun->out_n);
-    out = &src->fun->out[v->out];
+    assert(src->proc);
+    assert(v->out < src->proc->out_n);
+    out = &src->proc->out[v->out];
     assert(out->type);
     if (out->type->t.bits >= sizeof(t_rtbuf_signal_sample) * 8) {
       t_rtbuf_signal_sample *sample = (t_rtbuf_signal_sample*)
@@ -108,33 +108,33 @@ double rtbuf_signal_sample_from_signal (const double *signal,
   return signal[i];
 }
 
-void rtbuf_signal_fun (s_rtbuf *rtb,
-                       unsigned int var,
-                       s_rtbuf_signal_fun *rsf,
-                       const double *default_value)
+void rtbuf_signal_proc (s_rtbuf *rtb,
+                        unsigned int in,
+                        s_rtbuf_signal_proc *rsp,
+                        const double *default_value)
 {
   s_rtbuf_binding *v;
   assert(rtb);
-  assert(rtb->fun);
-  assert(var < rtb->fun->var_n);
-  assert(rsf);
+  assert(rtb->proc);
+  assert(in < rtb->proc->in_n);
+  assert(rsp);
   assert(default_value);
-  rsf->signal = default_value;
-  rsf->sample_fun = rtbuf_signal_sample_from_sample;
-  v = &rtb->var[var];
+  rsp->signal = default_value;
+  rsp->sample_proc = rtbuf_signal_sample_from_sample;
+  v = &rtb->var[in];
   if (v->rtb >= 0) {
     s_rtbuf *dest;
-    s_rtbuf_fun_out *out;
+    s_rtbuf_proc_out *out;
     assert(v->rtb < RTBUF_MAX);
     dest = &g_rtbuf[v->rtb];
     assert(dest->data);
-    assert(dest->fun);
-    assert(v->out < dest->fun->out_n);
-    out = &dest->fun->out[v->out];
+    assert(dest->proc);
+    assert(v->out < dest->proc->out_n);
+    out = &dest->proc->out[v->out];
     assert(out->type);
     if (out->type->t.bits >= sizeof(t_rtbuf_signal_sample) * 8)
-      rsf->signal = (double*)(dest->data + out->offset);
+      rsp->signal = (double*)(dest->data + out->offset);
     if (out->type->t.bits >= sizeof(t_rtbuf_signal) * 8)
-      rsf->sample_fun = rtbuf_signal_sample_from_signal;
+      rsp->sample_proc = rtbuf_signal_sample_from_signal;
   }
 }

@@ -161,7 +161,8 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 librtbuf_la_DEPENDENCIES =
-am_librtbuf_la_OBJECTS = symbol.lo rtbuf_type.lo rtbuf_fun.lo rtbuf.lo
+am_librtbuf_la_OBJECTS = symbol.lo rtbuf_type.lo rtbuf_proc.lo \
+	rtbuf.lo
 librtbuf_la_OBJECTS = $(am_librtbuf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -268,7 +269,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 am__include_HEADERS_DIST = symbol.h rtbuf_defs.h rtbuf_type.h \
-	rtbuf_fun.h rtbuf.h rtbuf_lib.h rtbuf_music.h \
+	rtbuf_proc.h rtbuf.h rtbuf_lib.h rtbuf_music.h \
 	rtbuf_music_type.h rtbuf_signal.h rtbuf_signal_type.h \
 	rtbuf_dynamic.h rtbuf_synth.h rtbuf_synth_type.h rtbuf_sndio.h \
 	rtbuf_sndio_type.h rtbuf_glfw3.h
@@ -450,7 +451,7 @@ ACLOCAL_AMFLAGS = -I build-aux/m4
 CLEANFILES = rtbuf_music_type rtbuf_music_type.h $(am__append_3) \
 	rtbuf_synth_type rtbuf_synth_type.h $(am__append_6) \
 	dependencies.mk.1 dependencies.mk.2
-include_HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_fun.h \
+include_HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_proc.h \
 	rtbuf.h $(am__append_2) rtbuf_music.h rtbuf_music_type.h \
 	$(am__append_5) rtbuf_dynamic.h rtbuf_synth.h \
 	rtbuf_synth_type.h $(am__append_8) $(am__append_10)
@@ -465,7 +466,7 @@ librtbuf_la_LIBADD = -ldata
 librtbuf_la_SOURCES = \
 	symbol.c \
 	rtbuf_type.c \
-	rtbuf_fun.c \
+	rtbuf_proc.c \
 	rtbuf.c
 
 @ENABLE_RTBUF_TRUE@rtbuf_LDADD = ${RTBUF_LIBS} librtbuf.la
@@ -695,9 +696,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_cli.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_dynamic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_dynamic_limiter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_fun.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_lib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_music.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_proc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_sinus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_square.Plo@am__quote@

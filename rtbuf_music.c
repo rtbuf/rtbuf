@@ -129,9 +129,9 @@ s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
     return 0;
   assert(v->rtb < RTBUF_MAX);
   target = &g_rtbuf[v->rtb];
-  assert(target->fun);
-  assert(v->out < target->fun->out_n);
-  offset = target->fun->out[v->out].offset;
+  assert(target->proc);
+  assert(v->out < target->proc->out_n);
+  offset = target->proc->out[v->out].offset;
   return (s_rtbuf_music_notes*) (target->data + offset);
 }
 

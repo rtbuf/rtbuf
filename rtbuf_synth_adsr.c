@@ -46,11 +46,11 @@ void rtbuf_synth_adsr_signal (s_rtbuf *rtb, double *signal,
                               double stop, double r)
 {
   double a =
-    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_ATTACK,  0.02);
+    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_IN_ATTACK,  0.02);
   double d =
-    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_DECAY,   0.01);
+    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_IN_DECAY,   0.01);
   double s =
-    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_SUSTAIN, 0.4);
+    rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_IN_SUSTAIN, 0.4);
   unsigned int i = 0;
   (void) velocity;
   (void) start;
@@ -76,8 +76,8 @@ int rtbuf_synth_adsr (s_rtbuf *rtb)
   s_rtbuf_synth_adsr_data *data;
   assert(rtb);
   assert(rtb->data);
-  vel = rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_VELOCITY, 0.0);
-  start = rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_START, -1.0);
+  vel = rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_IN_VELOCITY, 0.0);
+  start = rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_IN_START, -1.0);
   data = (s_rtbuf_synth_adsr_data*) rtb->data;
   if (data->state == RTBUF_SYNTH_ENVELOPE_STATE_NOT_STARTED) {
     if (vel > 0.0 && start >= 0.0)
@@ -89,9 +89,9 @@ int rtbuf_synth_adsr (s_rtbuf *rtb)
     return 0;
   if (data->state == RTBUF_SYNTH_ENVELOPE_STATE_STARTED) {
     double stop =
-      rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_STOP, -1.0);
+      rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_IN_STOP, -1.0);
     double rel =
-      rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_VAR_RELEASE, 0.3);
+      rtbuf_signal_sample(rtb, RTBUF_SYNTH_ADSR_IN_RELEASE, 0.3);
     if (stop > rel) {
       rtbuf_signal_zero(data->signal);
       data->state = RTBUF_SYNTH_ENVELOPE_STATE_ENDED;
@@ -108,8 +108,8 @@ int rtbuf_synth_adsr_start (s_rtbuf *rtb)
 {
   s_rtbuf_synth_adsr_data *data;
   assert(rtb->data);
-  assert(rtb->fun);
-  assert(rtb->fun->out_bytes == sizeof(*data));
+  assert(rtb->proc);
+  assert(rtb->proc->out_bytes == sizeof(*data));
   data = (s_rtbuf_synth_adsr_data*) rtb->data;
   data->state = RTBUF_SYNTH_ENVELOPE_STATE_NOT_STARTED;
   bzero(data->signal, sizeof(t_rtbuf_signal));

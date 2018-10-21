@@ -19,7 +19,7 @@
 #include <data.h>
 #include "rtbuf_defs.h"
 #include "rtbuf_type.h"
-#include "rtbuf_fun.h"
+#include "rtbuf_proc.h"
 
 #define RTBUF_SORT   0x0001
 #define RTBUF_DELETE 0x0002
@@ -34,9 +34,9 @@ struct rtbuf
 {
   void           *data;
   unsigned int    flags;
-  s_rtbuf_fun    *fun;
+  s_rtbuf_proc   *proc;
   unsigned int    refc;
-  s_rtbuf_binding var[RTBUF_FUN_VAR_MAX];
+  s_rtbuf_binding var[RTBUF_PROC_IN_MAX];
   unsigned int    var_n;
 };
 
@@ -49,7 +49,7 @@ int          g_rtbuf_run;
 int   librtbuf_init ();
 
 int   rtbuf_err (const char *msg);
-int   rtbuf_new (s_rtbuf_fun *rf);
+int   rtbuf_new (s_rtbuf_proc *rp);
 void  rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var);
 void  rtbuf_unbind_all (s_rtbuf *rtb);
 void  rtbuf_delete (s_rtbuf *rtb);

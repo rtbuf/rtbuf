@@ -23,37 +23,37 @@
 #include "rtbuf_music_type.h"
 #include "rtbuf_synth.h"
 
-s_rtbuf_lib_fun_var g_rtbuf_synth_adsr_var[] = {
-  RTBUF_MUSIC_NOTE_VAR(),
+s_rtbuf_lib_proc_in g_rtbuf_synth_adsr_in[] = {
+  RTBUF_MUSIC_NOTE_IN(),
   { "attack",  RTBUF_SIGNAL_TYPE },
   { "decay",   RTBUF_SIGNAL_TYPE },
   { "sustain", RTBUF_SIGNAL_TYPE },
   { "release", RTBUF_SIGNAL_TYPE },
   { 0, 0 } };
 
-s_rtbuf_lib_fun_out g_rtbuf_synth_adsr_out[] = {
+s_rtbuf_lib_proc_out g_rtbuf_synth_adsr_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
   { "state", "int" },
   { 0, 0 } };
 
-s_rtbuf_lib_fun_var g_rtbuf_synth_synth_var[] = {
+s_rtbuf_lib_proc_in g_rtbuf_synth_synth_in[] = {
   { "envelope", RTBUF_SIGNAL_TYPE },
   { "oscillator", RTBUF_SIGNAL_TYPE },
-  RTBUF_MUSIC_NOTES_VAR("note"),
+  RTBUF_MUSIC_NOTES_IN("note"),
   { 0, 0 } };
 
-s_rtbuf_lib_fun_out g_rtbuf_synth_synth_out[] = {
+s_rtbuf_lib_proc_out g_rtbuf_synth_synth_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
   { "note_n", "unsigned int" },
   { 0, 0 } };
 
-const char     *rtbuf_lib_name = "synth";
-unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
-s_rtbuf_lib_fun rtbuf_lib_fun[] = {
+const char      *rtbuf_lib_name = "synth";
+unsigned long    rtbuf_lib_ver = RTBUF_LIB_VER;
+s_rtbuf_lib_proc rtbuf_lib_proc[] = {
   { "adsr", rtbuf_synth_adsr, rtbuf_synth_adsr_start, 0,
-    g_rtbuf_synth_adsr_var, g_rtbuf_synth_adsr_out },
+    g_rtbuf_synth_adsr_in, g_rtbuf_synth_adsr_out },
   { "synth", rtbuf_synth_synth, rtbuf_synth_synth_start, 0,
-    g_rtbuf_synth_synth_var, g_rtbuf_synth_synth_out },
+    g_rtbuf_synth_synth_in, g_rtbuf_synth_synth_out },
   { 0, 0, 0, 0, 0, 0 } };
 
 int rtbuf_lib_init (s_rtbuf_lib *lib)

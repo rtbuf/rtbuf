@@ -85,18 +85,18 @@ int rtbuf_lib_find (const char *str)
   return -1;
 }
 
-int rtbuf_lib_find_fun (s_rtbuf_lib *rl, const char *str)
+int rtbuf_lib_find_proc (s_rtbuf_lib *rl, const char *str)
 {
   const char *sym;
   if ('0' <= str[0] && str[0] <= '9') {
     int i = atoi(str);
-    if (0 <= i && (unsigned) i < rl->fun_n)
+    if (0 <= i && (unsigned) i < rl->proc_n)
       return i;
   }
   if ((sym = symbol_find(str))) {
     unsigned int i = 0;
-    while (i < rl->fun_n) {
-      if (sym == rl->fun[i]->name)
+    while (i < rl->proc_n) {
+      if (sym == rl->proc[i]->name)
         return i;
       i++;
     }
@@ -114,13 +114,13 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
 {
   unsigned int i = 0;
   assert(rl);
-  assert(rl->fun);
-  while (i < rl->fun_n) {
-    rtbuf_fun_delete(rl->fun[i]);
-    rl->fun[i] = 0;
+  assert(rl->proc);
+  while (i < rl->proc_n) {
+    rtbuf_proc_delete(rl->proc[i]);
+    rl->proc[i] = 0;
     i++;
   }
-  free(rl->fun);
+  free(rl->proc);
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
@@ -148,15 +148,15 @@ void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
   }
 }
 
-int rtbuf_lib_fun_p (s_rtbuf_lib_fun *fun)
+int rtbuf_lib_proc_p (s_rtbuf_lib_proc *proc)
 {
-  return fun->name || fun->f || fun->start || fun->stop;
+  return proc->name || proc->f || proc->start || proc->stop;
 }
 
 s_rtbuf_lib * rtbuf_lib_load (const char *name)
 {
   s_rtbuf_lib *lib = rtbuf_lib_new();
-  s_rtbuf_lib_fun *fun;
+  s_rtbuf_lib_proc *proc;
   unsigned long *ver;
   unsigned int i = 0;
   f_rtbuf_lib_init *init;
@@ -177,51 +177,51 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
       rtbuf_lib_delete(lib);
       return 0;
     }
-  fun = dlsym(lib->lib, "rtbuf_lib_fun");
-  lib->fun_n = 0;
-  while (lib->fun_n < RTBUF_FUN_MAX &&
-         rtbuf_lib_fun_p(&fun[lib->fun_n]))
-    lib->fun_n++;
-  lib->fun = malloc(sizeof(s_rtbuf_fun*) * lib->fun_n);
-  while (i < lib->fun_n) {
-    lib->fun[i] = rtbuf_fun_new();
-    assert(lib->fun[i]);
-    rtbuf_lib_fun_init_fun(lib->fun[i], &fun[i]);
-    lib->fun[i]->lib = lib;
-    lib->fun[i]->lib_fun = i;
+  proc = dlsym(lib->lib, "rtbuf_lib_proc");
+  lib->proc_n = 0;
+  while (lib->proc_n < RTBUF_PROC_MAX &&
+         rtbuf_lib_proc_p(&proc[lib->proc_n]))
+    lib->proc_n++;
+  lib->proc = malloc(sizeof(s_rtbuf_proc*) * lib->proc_n);
+  while (i < lib->proc_n) {
+    lib->proc[i] = rtbuf_proc_new();
+    assert(lib->proc[i]);
+    rtbuf_lib_proc_init_proc(lib->proc[i], &proc[i]);
+    lib->proc[i]->lib = lib;
+    lib->proc[i]->lib_proc = i;
     i++;
   }
-  lib->fun[i] = 0;
+  lib->proc[i] = 0;
   return lib;
 }
 
-void rtbuf_lib_fun_var_init_fun (s_rtbuf_fun *fun,
-                                 s_rtbuf_lib_fun_var *var)
+void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
+                                 s_rtbuf_lib_proc_in *in)
 {
   unsigned int i = 0;
-  bzero(fun->var, sizeof(fun->var));
-  if (var) {
-    while (var->name && i < RTBUF_FUN_VAR_MAX) {
-      s_rtbuf_fun_var *v = &fun->var[i];
-      v->name = symbol_intern(var->name);
-      v->type = rtbuf_type(var->type);
-      var++;
+  bzero(proc->in, sizeof(proc->in));
+  if (in) {
+    while (in->name && i < RTBUF_PROC_IN_MAX) {
+      s_rtbuf_proc_in *v = &proc->in[i];
+      v->name = symbol_intern(in->name);
+      v->type = rtbuf_type(in->type);
+      in++;
       i++;
     }
-    assert(i < RTBUF_FUN_VAR_MAX);
+    assert(i < RTBUF_PROC_IN_MAX);
   }
-  fun->var_n = i;
+  proc->in_n = i;
 }
 
-void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
-                                 s_rtbuf_lib_fun_out *out)
+void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
+                                 s_rtbuf_lib_proc_out *out)
 {
   unsigned int i = 0;
-  bzero(fun->out, sizeof(fun->out));
+  bzero(proc->out, sizeof(proc->out));
   if (out) {
     unsigned int offset = 0;
-    while (out->name && i < RTBUF_FUN_OUT_MAX) {
-      s_rtbuf_fun_out *o = &fun->out[i];
+    while (out->name && i < RTBUF_PROC_OUT_MAX) {
+      s_rtbuf_proc_out *o = &proc->out[i];
       o->name = symbol_intern(out->name);
       o->type = rtbuf_type(out->type);
       assert(o->type);
@@ -230,20 +230,20 @@ void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
       out++;
       i++;
     }
-    assert(i < RTBUF_FUN_OUT_MAX);
-    fun->out_bytes = offset;
+    assert(i < RTBUF_PROC_OUT_MAX);
+    proc->out_bytes = offset;
   }
-  fun->out_n = i;
+  proc->out_n = i;
 }
 
-void rtbuf_lib_fun_init_fun (s_rtbuf_fun *fun, s_rtbuf_lib_fun *x)
+void rtbuf_lib_proc_init_proc (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x)
 {
-  fun->name = symbol_intern(x->name);
-  fun->f = x->f;
-  fun->start = x->start;
-  fun->stop = x->stop;
-  rtbuf_lib_fun_var_init_fun(fun, x->var);
-  rtbuf_lib_fun_out_init_fun(fun, x->out);
+  proc->name = symbol_intern(x->name);
+  proc->f = x->f;
+  proc->start = x->start;
+  proc->stop = x->stop;
+  rtbuf_lib_proc_in_init_proc(proc, x->in);
+  rtbuf_lib_proc_out_init_proc(proc, x->out);
 }
 
 void rtbuf_lib_print (unsigned int i)
@@ -260,9 +260,9 @@ void rtbuf_lib_print_long (unsigned int i)
   lib = &g_rtbuf_lib[i];
   printf("#<lib %i %s", i, lib->name);
   printf("\n  %s", lib->path);
-  while (j < lib->fun_n) {
+  while (j < lib->proc_n) {
     printf("\n  ");
-    rtbuf_fun_print(lib->fun[j]);
+    rtbuf_proc_print(lib->proc[j]);
     j++;
   }
   printf(">\n");

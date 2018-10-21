@@ -24,7 +24,7 @@
 s_rtbuf * rtbuf_var_rtbuf (s_rtbuf *rtb, unsigned int var)
 {
   int i;
-  assert(var < rtb->fun->var_n);
+  assert(var < rtb->proc->in_n);
   if ((i = rtb->var[var].rtb) < 0)
     return 0;
   return &g_rtbuf[i];
@@ -34,7 +34,7 @@ s_rtbuf * rtbuf_synth_synth_note_envelope (s_rtbuf *rtb, unsigned int i)
 {
   unsigned int j;
   assert(i < RTBUF_MUSIC_NOTE_MAX);
-  j = RTBUF_SYNTH_SYNTH_VAR_NOTE_ENVELOPE(i);
+  j = RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i);
   return rtbuf_var_rtbuf(rtb, j);
 }
 
@@ -43,7 +43,7 @@ s_rtbuf * rtbuf_synth_synth_note_oscillator (s_rtbuf *rtb,
 {
   unsigned int j;
   assert(i < RTBUF_MUSIC_NOTE_MAX);
-  j = RTBUF_SYNTH_SYNTH_VAR_NOTE_OSCILLATOR(i);
+  j = RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i);
   return rtbuf_var_rtbuf(rtb, j);
 }
 
@@ -78,20 +78,20 @@ void rtbuf_synth_synth_delete_notes (s_rtbuf *rtb)
 s_rtbuf * rtbuf_synth_synth_new_envelope (s_rtbuf *rtb,
                                           unsigned int i)
 {
-  s_rtbuf *ref = rtbuf_var_rtbuf(rtb, RTBUF_SYNTH_SYNTH_VAR_ENVELOPE);
+  s_rtbuf *ref = rtbuf_var_rtbuf(rtb, RTBUF_SYNTH_SYNTH_IN_ENVELOPE);
   int env_i;
   s_rtbuf *env;
   unsigned int env_vel;
   unsigned int env_freq;
   unsigned int env_start;
   unsigned int env_stop;
-  s_rtbuf_binding *v = &rtb->var[RTBUF_SYNTH_SYNTH_VAR_NOTES];
+  s_rtbuf_binding *v = &rtb->var[RTBUF_SYNTH_SYNTH_IN_NOTES];
   unsigned int kbd_i = v->rtb;
   unsigned int kbd_notes = v->out;
-  unsigned int note_vel = RTBUF_MUSIC_NOTE_VAR_VELOCITY(kbd_notes, i);
-  unsigned int note_freq = RTBUF_MUSIC_NOTE_VAR_FREQUENCY(kbd_notes, i);
-  unsigned int note_start = RTBUF_MUSIC_NOTE_VAR_START(kbd_notes, i);
-  unsigned int note_stop = RTBUF_MUSIC_NOTE_VAR_STOP(kbd_notes, i);
+  unsigned int note_vel = RTBUF_MUSIC_NOTE_IN_VELOCITY(kbd_notes, i);
+  unsigned int note_freq = RTBUF_MUSIC_NOTE_IN_FREQUENCY(kbd_notes, i);
+  unsigned int note_start = RTBUF_MUSIC_NOTE_IN_START(kbd_notes, i);
+  unsigned int note_stop = RTBUF_MUSIC_NOTE_IN_STOP(kbd_notes, i);
   assert(rtb > g_rtbuf);
   if (!ref)
     return 0;
@@ -106,11 +106,11 @@ s_rtbuf * rtbuf_synth_synth_new_envelope (s_rtbuf *rtb,
   rtbuf_bind(kbd_i, note_freq , env, env_freq);
   rtbuf_bind(kbd_i, note_start, env, env_start);
   rtbuf_bind(kbd_i, note_stop , env, env_stop);
-  rtbuf_bind(env_i, 0, rtb, RTBUF_SYNTH_SYNTH_VAR_NOTE_ENVELOPE(i));
-  if (env->fun->start)
-    env->fun->start(env);
-  if (env->fun->f)
-    env->fun->f(env);
+  rtbuf_bind(env_i, 0, rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i));
+  if (env->proc->start)
+    env->proc->start(env);
+  if (env->proc->f)
+    env->proc->f(env);
   //rtbuf_print_long(env_i);
   printf("synth_synth_new_envelope %u\n", i);
   return env;
@@ -120,14 +120,14 @@ s_rtbuf * rtbuf_synth_synth_new_oscillator (s_rtbuf *rtb,
                                             unsigned int i)
 {
   s_rtbuf *ref =
-    rtbuf_var_rtbuf(rtb, RTBUF_SYNTH_SYNTH_VAR_OSCILLATOR);
+    rtbuf_var_rtbuf(rtb, RTBUF_SYNTH_SYNTH_IN_OSCILLATOR);
   int osc_i;
   s_rtbuf *osc;
   unsigned int osc_freq;
-  s_rtbuf_binding *v = &rtb->var[RTBUF_SYNTH_SYNTH_VAR_NOTES];
+  s_rtbuf_binding *v = &rtb->var[RTBUF_SYNTH_SYNTH_IN_NOTES];
   unsigned int kbd_i = v->rtb;
   unsigned int kbd_notes = v->out;
-  unsigned int note_freq = RTBUF_MUSIC_NOTE_VAR_FREQUENCY(kbd_notes, i);
+  unsigned int note_freq = RTBUF_MUSIC_NOTE_IN_FREQUENCY(kbd_notes, i);
   assert(rtb > g_rtbuf);
   if (!ref)
     return 0;
@@ -136,11 +136,11 @@ s_rtbuf * rtbuf_synth_synth_new_oscillator (s_rtbuf *rtb,
   osc = &g_rtbuf[osc_i];
   osc_freq = rtbuf_var_find(osc, "frequency");
   rtbuf_bind(kbd_i, note_freq, osc, osc_freq);
-  rtbuf_bind(osc_i, 0, rtb, RTBUF_SYNTH_SYNTH_VAR_NOTE_OSCILLATOR(i));
-  if (osc->fun->start)
-    osc->fun->start(osc);
-  if (osc->fun->f)
-    osc->fun->f(osc);
+  rtbuf_bind(osc_i, 0, rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i));
+  if (osc->proc->start)
+    osc->proc->start(osc);
+  if (osc->proc->f)
+    osc->proc->f(osc);
   //rtbuf_print_long(osc_i);
   return osc;
 }
@@ -149,22 +149,22 @@ void rtbuf_synth_synth_update_note_signal (s_rtbuf *rtb,
                                            unsigned int i)
 {
   s_rtbuf_synth_synth_data *data;
-  s_rtbuf_signal_fun env;
-  s_rtbuf_signal_fun osc;
+  s_rtbuf_signal_proc env;
+  s_rtbuf_signal_proc osc;
   unsigned int j = 0;
   double *signal;
   assert(rtb);
   assert(rtb->data);
   assert(i < RTBUF_MUSIC_NOTE_MAX);
-  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_VAR_NOTE_ENVELOPE(i), &env,
-                   &g_rtbuf_signal_sample_zero);
-  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_VAR_NOTE_OSCILLATOR(i), &osc,
-                   &g_rtbuf_signal_sample_zero);
+  rtbuf_signal_proc(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i), &env,
+                    &g_rtbuf_signal_sample_zero);
+  rtbuf_signal_proc(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i), &osc,
+                    &g_rtbuf_signal_sample_zero);
   data = (s_rtbuf_synth_synth_data *) rtb->data;
   signal = data->signal;
   while (j < RTBUF_SIGNAL_SAMPLES) {
-    double e = env.sample_fun(env.signal, j);
-    double o = osc.sample_fun(osc.signal, j);
+    double e = env.sample_proc(env.signal, j);
+    double o = osc.sample_proc(osc.signal, j);
     e = max(0.0, e);
     *signal += e * o;
     //printf(" e=%f o=%f s=%f", e, o, *signal);
@@ -178,7 +178,7 @@ void rtbuf_synth_synth_update_note (s_rtbuf *rtb,
 {
   s_rtbuf_synth_synth_data *data;
   s_rtbuf_music_notes *notes =
-    rtbuf_music_notes(rtb, RTBUF_SYNTH_SYNTH_VAR_NOTES);
+    rtbuf_music_notes(rtb, RTBUF_SYNTH_SYNTH_IN_NOTES);
   s_rtbuf_music_note *note;
   assert(notes);
   assert(i < RTBUF_MUSIC_NOTE_MAX);
@@ -196,7 +196,7 @@ void rtbuf_synth_synth_update_note (s_rtbuf *rtb,
       data->note_n++;
     }
     if (env && osc) {
-      unsigned int env_state_out = rtbuf_fun_out_find(env->fun,
+      unsigned int env_state_out = rtbuf_proc_out_find(env->proc,
                                                       "state");
       int env_state = rtbuf_out_int(env, env_state_out,
                                     RTBUF_SYNTH_ENVELOPE_STATE_STARTED);
@@ -211,7 +211,7 @@ void rtbuf_synth_synth_update_note (s_rtbuf *rtb,
 int rtbuf_synth_synth (s_rtbuf *rtb)
 {
   s_rtbuf_music_notes *notes =
-    rtbuf_music_notes(rtb, RTBUF_SYNTH_SYNTH_VAR_NOTES);
+    rtbuf_music_notes(rtb, RTBUF_SYNTH_SYNTH_IN_NOTES);
   s_rtbuf_synth_synth_data *data;
   unsigned int i = 0;
   unsigned int notes_n = notes ? notes->note_n : 0;
@@ -234,7 +234,7 @@ int rtbuf_synth_synth (s_rtbuf *rtb)
 int rtbuf_synth_synth_start (s_rtbuf *rtb)
 {
   s_rtbuf_synth_synth_data *data;
-  assert(rtb->fun->out_bytes == sizeof(*data));
+  assert(rtb->proc->out_bytes == sizeof(*data));
   data = (s_rtbuf_synth_synth_data*) rtb->data;
   return 0;
 }

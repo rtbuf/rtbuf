@@ -20,13 +20,13 @@ librtbuf_la_LIBADD = -ldata
 librtbuf_la_SOURCES = \
 	symbol.c \
 	rtbuf_type.c \
-	rtbuf_fun.c \
+	rtbuf_proc.c \
 	rtbuf.c
 include_HEADERS += \
 	symbol.h \
 	rtbuf_defs.h \
 	rtbuf_type.h \
-	rtbuf_fun.h \
+	rtbuf_proc.h \
 	rtbuf.h
 
 if ENABLE_RTBUF

@@ -21,29 +21,29 @@
 #define RTBUF_LIB_MAX 1000
 #define RTBUF_LIB_VER 0x00010001
 
-struct rtbuf_lib_fun_var {
+struct rtbuf_lib_proc_in {
   const char *name;
   const char *type;
 };
 
-struct rtbuf_lib_fun_out {
+struct rtbuf_lib_proc_out {
   const char *name;
   const char *type;
 };
 
-struct rtbuf_lib_fun {
+struct rtbuf_lib_proc {
   const char *name;
-  f_rtbuf_fun *f;
-  f_rtbuf_fun *start;
-  f_rtbuf_fun *stop;
-  s_rtbuf_lib_fun_var *var;  /* variables, end with NULL */
-  s_rtbuf_lib_fun_out *out;  /* outputs, end with NULL */
+  f_rtbuf_proc *f;
+  f_rtbuf_proc *start;
+  f_rtbuf_proc *stop;
+  s_rtbuf_lib_proc_in *in;    /* inputs, end with NULL */
+  s_rtbuf_lib_proc_out *out;  /* outputs, end with NULL */
 };
 
 struct rtbuf_lib {
   const char *name;
-  s_rtbuf_fun **fun;
-  unsigned int fun_n;
+  s_rtbuf_proc **proc;
+  unsigned int proc_n;
   void *lib;
   const char *path;
 };
@@ -53,17 +53,17 @@ s_rtbuf_lib *g_rtbuf_lib;
 
 void          rtbuf_lib_delete (s_rtbuf_lib *rl);
 int           rtbuf_lib_find (const char *str);
-int           rtbuf_lib_find_fun (s_rtbuf_lib *rl, const char *str);
+int           rtbuf_lib_find_proc (s_rtbuf_lib *rl, const char *str);
 void          rtbuf_lib_init_ ();
 s_rtbuf_lib * rtbuf_lib_load (const char *path);
 s_rtbuf_lib * rtbuf_lib_new ();
 void          rtbuf_lib_print (unsigned int i);
 void          rtbuf_lib_print_long (unsigned int i);
 
-void rtbuf_lib_fun_var_init_fun (s_rtbuf_fun *fun,
-                                 s_rtbuf_lib_fun_var *var);
-void rtbuf_lib_fun_out_init_fun (s_rtbuf_fun *fun,
-                                 s_rtbuf_lib_fun_out *out);
-void rtbuf_lib_fun_init_fun (s_rtbuf_fun *fun, s_rtbuf_lib_fun *x);
+void rtbuf_lib_proc_var_init_proc (s_rtbuf_proc *proc,
+                                   s_rtbuf_lib_proc_in *in);
+void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
+                                   s_rtbuf_lib_proc_out *out);
+void rtbuf_lib_proc_init_proc (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x);
 
 #endif

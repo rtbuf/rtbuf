@@ -16,18 +16,18 @@
 #ifndef RTBUF_DEFS_H
 #define RTBUF_DEFS_H
 
-typedef struct rtbuf             s_rtbuf;
-typedef struct rtbuf_binding     s_rtbuf_binding;
-typedef struct rtbuf_fun         s_rtbuf_fun;
-typedef struct rtbuf_fun_out     s_rtbuf_fun_out;
-typedef struct rtbuf_fun_var     s_rtbuf_fun_var;
-typedef struct rtbuf_lib         s_rtbuf_lib;
-typedef struct rtbuf_lib_fun     s_rtbuf_lib_fun;
-typedef struct rtbuf_lib_fun_out s_rtbuf_lib_fun_out;
-typedef struct rtbuf_lib_fun_var s_rtbuf_lib_fun_var;
-typedef struct rtbuf_type        s_rtbuf_type;
+typedef struct rtbuf              s_rtbuf;
+typedef struct rtbuf_binding      s_rtbuf_binding;
+typedef struct rtbuf_proc         s_rtbuf_proc;
+typedef struct rtbuf_proc_in      s_rtbuf_proc_in;
+typedef struct rtbuf_proc_out     s_rtbuf_proc_out;
+typedef struct rtbuf_lib          s_rtbuf_lib;
+typedef struct rtbuf_lib_proc     s_rtbuf_lib_proc;
+typedef struct rtbuf_lib_proc_in  s_rtbuf_lib_proc_in;
+typedef struct rtbuf_lib_proc_out s_rtbuf_lib_proc_out;
+typedef struct rtbuf_type         s_rtbuf_type;
 
-typedef int f_rtbuf_fun (s_rtbuf *rtbuf);
+typedef int f_rtbuf_proc (s_rtbuf *rtbuf);
 typedef int f_rtbuf_lib_init (s_rtbuf_lib *lib);
 
 #endif

@@ -36,20 +36,20 @@ typedef t_rtbuf_signal_sample
 f_rtbuf_signal (const t_rtbuf_signal_sample *signal,
                 unsigned int sample);
 
-typedef struct rtbuf_signal_fun {
-  f_rtbuf_signal *sample_fun;
+typedef struct rtbuf_signal_proc {
+  f_rtbuf_signal *sample_proc;
   const t_rtbuf_signal_sample *signal;
-} s_rtbuf_signal_fun;
+} s_rtbuf_signal_proc;
 
 void rtbuf_signal_zero (t_rtbuf_signal_sample *signal);
 t_rtbuf_signal_sample
 rtbuf_signal_sample (s_rtbuf *rtb,
-                     unsigned int var,
+                     unsigned int in,
                      t_rtbuf_signal_sample default_value);
-void rtbuf_signal_fun (s_rtbuf *rtb,
-                       unsigned int var,
-                       s_rtbuf_signal_fun *data,
-                       const t_rtbuf_signal_sample *default_value);
+void rtbuf_signal_proc (s_rtbuf *rtb,
+                        unsigned int in,
+                        s_rtbuf_signal_proc *data,
+                        const t_rtbuf_signal_sample *default_value);
 
 f_rtbuf_signal rtbuf_signal_sample_from_sample;
 f_rtbuf_signal rtbuf_signal_sample_from_signal;
@@ -68,9 +68,9 @@ typedef struct rtbuf_signal_sinus_data {
 } s_rtbuf_signal_sinus_data;
 
 enum {
-  RTBUF_SIGNAL_SINUS_VAR_FREQUENCY = 0,
-  RTBUF_SIGNAL_SINUS_VAR_AMPLITUDE,
-  RTBUF_SIGNAL_SINUS_VAR_N
+  RTBUF_SIGNAL_SINUS_IN_FREQUENCY = 0,
+  RTBUF_SIGNAL_SINUS_IN_AMPLITUDE,
+  RTBUF_SIGNAL_SINUS_IN_N
 };
 
 int rtbuf_signal_sinus (s_rtbuf *rtb);
@@ -79,10 +79,10 @@ int rtbuf_signal_sinus_start (s_rtbuf *rtb);
 /* square */
 
 enum {
-  RTBUF_SIGNAL_SQUARE_VAR_FREQUENCY = 0,
-  RTBUF_SIGNAL_SQUARE_VAR_AMPLITUDE,
-  RTBUF_SIGNAL_SQUARE_VAR_PULSE,
-  RTBUF_SIGNAL_SQUARE_VAR_N
+  RTBUF_SIGNAL_SQUARE_IN_FREQUENCY = 0,
+  RTBUF_SIGNAL_SQUARE_IN_AMPLITUDE,
+  RTBUF_SIGNAL_SQUARE_IN_PULSE,
+  RTBUF_SIGNAL_SQUARE_IN_N
 };
 
 typedef struct rtbuf_signal_square_data {

@@ -93,12 +93,12 @@ void rtbuf_proc_print (s_rtbuf_proc *proc)
 {
   unsigned int i = 0;
   printf("#<proc %i %s (", proc->lib_proc, proc->name);
-  while (i < proc->var_n) {
+  while (i < proc->in_n) {
     if (i > 0)
       fputs(" ", stdout);
-    fputs(proc->var[i].name, stdout);
+    fputs(proc->in[i].name, stdout);
     fputs(":", stdout);
-    fputs(proc->var[i].type->name, stdout);
+    fputs(proc->in[i].type->name, stdout);
     i++;
   }
   printf(") -> (");

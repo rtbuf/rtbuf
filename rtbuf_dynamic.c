@@ -20,7 +20,7 @@
 #include "rtbuf_signal_type.h"
 #include "rtbuf_dynamic.h"
 
-s_rtbuf_lib_fun_var g_rtbuf_dynamic_limiter_var[] = {
+s_rtbuf_lib_proc_in g_rtbuf_dynamic_limiter_in[] = {
   { "signal"  , RTBUF_SIGNAL_TYPE },
   { "gain"    , RTBUF_SIGNAL_TYPE },
   { "treshold", RTBUF_SIGNAL_TYPE },
@@ -29,14 +29,14 @@ s_rtbuf_lib_fun_var g_rtbuf_dynamic_limiter_var[] = {
   { "release" , RTBUF_SIGNAL_TYPE },
   { 0, 0 } };
 
-s_rtbuf_lib_fun_out g_rtbuf_dynamic_limiter_out[] = {
+s_rtbuf_lib_proc_out g_rtbuf_dynamic_limiter_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
   { "gain"  , RTBUF_SIGNAL_SAMPLE_TYPE },
   { 0, 0 } };
 
-const char     *rtbuf_lib_name = "dynamic";
-unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
-s_rtbuf_lib_fun rtbuf_lib_fun[] = {
+const char      *rtbuf_lib_name = "dynamic";
+unsigned long    rtbuf_lib_ver = RTBUF_LIB_VER;
+s_rtbuf_lib_proc rtbuf_lib_proc[] = {
   { "limiter", rtbuf_dynamic_limiter, rtbuf_dynamic_limiter_start, 0,
-    g_rtbuf_dynamic_limiter_var, g_rtbuf_dynamic_limiter_out },
+    g_rtbuf_dynamic_limiter_in, g_rtbuf_dynamic_limiter_out },
   { 0, 0, 0, 0, 0, 0 } };

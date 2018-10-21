@@ -42,29 +42,29 @@ int librtbuf_init ()
   data_alloc_init(&g_rtbuf_alloc, &g_rtbuf_type, RTBUF_MAX, 0, 0);
   g_rtbuf = g_rtbuf_alloc.mem;
   rtbuf_type_init();
-  rtbuf_fun_init();
+  rtbuf_proc_init();
   rtbuf_lib_init_();
   return 0;
 }
 
-int rtbuf_new (s_rtbuf_fun *rf)
+int rtbuf_new (s_rtbuf_proc *rp)
 {
   int i;
   s_rtbuf *rtb;
   void *data;
   unsigned int j = 0;
-  assert(rf);
-  data = malloc(rf->out_bytes);
+  assert(rp);
+  data = malloc(rp->out_bytes);
   if (!data)
     return rtbuf_err("malloc failed");
-  bzero(data, rf->out_bytes);
+  bzero(data, rp->out_bytes);
   if ((i = data_new_i(&g_rtbuf_alloc)) < 0)
     return -1;
   rtb = &g_rtbuf[i];
   rtb->data = data;
   rtb->flags = 0;
-  rtb->fun = rf;
-  while (j < RTBUF_FUN_VAR_MAX) {
+  rtb->proc = rp;
+  while (j < RTBUF_PROC_IN_MAX) {
     rtb->var[j].rtb = -1;
     j++;
   }
@@ -92,7 +92,7 @@ void rtbuf_unbind_all_out_rtbuf (s_rtbuf *rtb, unsigned int rtb_i,
   unsigned int n;
   assert(dest);
   n = dest->var_n;
-  while (i < dest->fun->var_n && n > 0 && rtb->refc) {
+  while (i < dest->proc->in_n && n > 0 && rtb->refc) {
     s_rtbuf_binding *v = &dest->var[i];
     if (v->rtb >= 0) {
       if ((unsigned int) v->rtb == rtb_i)
@@ -125,8 +125,8 @@ void rtbuf_unbind_all (s_rtbuf *rtb)
 {
   unsigned int i = 0;
   assert(rtb);
-  assert(rtb->fun);
-  while (i < rtb->fun->var_n && rtb->var_n > 0) {
+  assert(rtb->proc);
+  while (i < rtb->proc->in_n && rtb->var_n > 0) {
     rtbuf_var_unbind(rtb, i);
     i++;
   }
@@ -137,7 +137,7 @@ void rtbuf_delete_ (s_rtbuf *rtb)
 {
   assert(rtb);
   rtbuf_unbind_all(rtb);
-  bzero(rtb->data, rtb->fun->out_bytes);
+  bzero(rtb->data, rtb->proc->out_bytes);
   free(rtb->data);
   bzero(rtb, sizeof(s_rtbuf));
   data_delete(&g_rtbuf_alloc, rtb);
@@ -156,10 +156,10 @@ int rtbuf_clone (s_rtbuf *rtb)
   s_rtbuf *new;
   unsigned int j = 0;
   assert(rtb);
-  if ((new_i = rtbuf_new(rtb->fun)) < 0)
+  if ((new_i = rtbuf_new(rtb->proc)) < 0)
     return -1;
   new = &g_rtbuf[new_i];
-  while (j < rtb->fun->var_n) {
+  while (j < rtb->proc->in_n) {
     new->var[j] = rtb->var[j];
     j++;
   }
@@ -184,9 +184,9 @@ void rtbuf_bind (unsigned int src, unsigned int out,
 int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                     unsigned int size)
 {
-  int out_i = rtbuf_fun_out_find(rtb->fun, name);
+  int out_i = rtbuf_proc_out_find(rtb->proc, name);
   if (out_i >= 0) {
-    s_rtbuf_fun_out *out = &rtb->fun->out[out_i];
+    s_rtbuf_proc_out *out = &rtb->proc->out[out_i];
     if (out->type->t.bits == size * 8) {
       void *data = rtb->data + out->offset;
       memcpy(data, value, size);
@@ -312,7 +312,7 @@ void rtbuf_sort ()
   rtbuf_find_roots(&rvs);
   g_rtbuf_sorted_n = 0;
   while ((ptr = rtbuf_var_stack_top(&rvs))) {
-    if (ptr->var == g_rtbuf[ptr->rtb].fun->var_n) {
+    if (ptr->var == g_rtbuf[ptr->rtb].proc->in_n) {
       g_rtbuf_sorted[g_rtbuf_sorted_n++] = ptr->rtb;
       rtbuf_var_stack_pop(&rvs);
     } else
@@ -331,13 +331,13 @@ void rtbuf_start ()
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
     assert(rtb->data);
-    if (rtb->fun->start) {
+    if (rtb->proc->start) {
       //printf(" start ");
       //rtbuf_print(g_rtbuf_sorted[i]);
       //printf(" ");
-      //rtbuf_fun_print(rtb->fun);
+      //rtbuf_proc_print(rtb->proc);
       //printf("\n");
-      rtb->fun->start(rtb);
+      rtb->proc->start(rtb);
     }
     i++;
   }
@@ -355,8 +355,8 @@ void rtbuf_run ()
     //rtbuf_print(g_rtbuf_sorted[i]);
     //printf("\n");
     assert(rtb->data);
-    if (rtb->fun->f)
-      rtb->fun->f(rtb);
+    if (rtb->proc->f)
+      rtb->proc->f(rtb);
     i++;
   }
   //printf(" rtbuf_run => %u\n", i);
@@ -371,8 +371,8 @@ void rtbuf_stop ()
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
     assert(rtb->data);
-    if (rtb->fun->stop)
-      rtb->fun->stop(rtb);
+    if (rtb->proc->stop)
+      rtb->proc->stop(rtb);
     i++;
   }
 }
@@ -381,26 +381,26 @@ int rtbuf_find (const char *x)
 {
   int i = atoi(x);
   if (0 <= i && (unsigned int) i < g_rtbuf_alloc.n &&
-      g_rtbuf[i].data && g_rtbuf[i].fun)
+      g_rtbuf[i].data && g_rtbuf[i].proc)
     return i;
   return -1;
 }
 
 int rtbuf_var_find (s_rtbuf *rtb, const char *x)
 {
-  s_rtbuf_fun *fun = rtb->fun;
+  s_rtbuf_proc *proc = rtb->proc;
   symbol sym;
   //printf("rtbuf_var_find %s\n", x);
   if ('0' <= x[0] && x[0] <= '9') {
     int i = atoi(x);
-    if (0 <= i && (unsigned int) i < fun->var_n)
+    if (0 <= i && (unsigned int) i < proc->in_n)
       return i;
   }
   if ((sym = symbol_find(x))) {
     unsigned int i = 0;
     //printf("rtbuf_var_find sym %s\n", sym);
-    while (i < fun->var_n) {
-      if (sym == fun->var[i].name)
+    while (i < proc->in_n) {
+      if (sym == proc->in[i].name)
         return i;
       i++;
     }
@@ -410,19 +410,19 @@ int rtbuf_var_find (s_rtbuf *rtb, const char *x)
 
 int rtbuf_out_find (s_rtbuf *rtb, const char *x)
 {
-  s_rtbuf_fun *fun = rtb->fun;
+  s_rtbuf_proc *proc = rtb->proc;
   symbol sym;
   //printf("rtbuf_out_find %s\n", x);
   if ('0' <= x[0] && x[0] <= '9') {
     int i = atoi(x);
-    if (0 <= i && (unsigned int) i < fun->out_n)
+    if (0 <= i && (unsigned int) i < proc->out_n)
       return i;
   }
   if ((sym = symbol_find(x))) {
     unsigned int i = 0;
     //printf("rtbuf_out_find sym %s\n", sym);
-    while (i < fun->out_n) {
-      if (sym == fun->out[i].name)
+    while (i < proc->out_n) {
+      if (sym == proc->out[i].name)
         return i;
       i++;
     }
@@ -432,12 +432,12 @@ int rtbuf_out_find (s_rtbuf *rtb, const char *x)
 
 int rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value)
 {
-  s_rtbuf_fun_out *o;
+  s_rtbuf_proc_out *o;
   assert(rtb);
   assert(rtb->data);
-  assert(rtb->fun);
-  assert(out < rtb->fun->out_n);
-  o = &rtb->fun->out[out];
+  assert(rtb->proc);
+  assert(out < rtb->proc->out_n);
+  o = &rtb->proc->out[out];
   assert(o->type);
   if (o->type->t.bits >= sizeof(int) * 8) {
     int *i = (int*)(rtb->data + o->offset);
@@ -456,42 +456,42 @@ void rtbuf_print (unsigned int i)
 void rtbuf_print_long_var (s_rtbuf *rtb, unsigned int j)
 {
   assert(rtb);
-  assert(rtb->fun);
-  assert(j < rtb->fun->var_n);
-  assert(rtb->fun->var[j].name);
-  assert(rtb->fun->var[j].type);
-  assert(rtb->fun->var[j].type->name);
-  printf("\n  var %i %s:%s", j, rtb->fun->var[j].name,
-         rtb->fun->var[j].type->name);
+  assert(rtb->proc);
+  assert(j < rtb->proc->in_n);
+  assert(rtb->proc->in[j].name);
+  assert(rtb->proc->in[j].type);
+  assert(rtb->proc->in[j].type->name);
+  printf("\n  in %i %s:%s", j, rtb->proc->in[j].name,
+         rtb->proc->in[j].type->name);
   if (rtb->var[j].rtb >= 0) {
     s_rtbuf *target = &g_rtbuf[rtb->var[j].rtb];
     unsigned int target_out = rtb->var[j].out;
     printf (" = ");
     rtbuf_print(rtb->var[j].rtb);
     printf(" out %u %s:%s", target_out,
-           target->fun->out[target_out].name,
-           target->fun->out[target_out].type->name);
+           target->proc->out[target_out].name,
+           target->proc->out[target_out].type->name);
   }
 }
 
 void rtbuf_print_long (unsigned int i)
 {
   s_rtbuf *rtb;
-  s_rtbuf_fun *fun;
+  s_rtbuf_proc *proc;
   unsigned int j = 0;
   assert(i < RTBUF_MAX);
   rtb = &g_rtbuf[i];
-  fun = rtb->fun;
+  proc = rtb->proc;
   printf("#<rtbuf %i", i);
-  printf(" %s %s", fun->lib->name, fun->name);
+  printf(" %s %s", proc->lib->name, proc->name);
   if (rtb->data) {
     printf(" %d", rtb->refc);
-    while (j < fun->var_n)
+    while (j < proc->in_n)
       rtbuf_print_long_var(rtb, j++);
     j = 0;
-    while (j < fun->out_n) {
-      printf("\n  out %i %s:%s", j, fun->out[j].name,
-             fun->out[j].type->name);
+    while (j < proc->out_n) {
+      printf("\n  out %i %s:%s", j, proc->out[j].name,
+             proc->out[j].type->name);
       j++;
     }
   }

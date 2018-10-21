@@ -33,36 +33,36 @@ typedef struct rtbuf_music_note {
   t_rtbuf_signal_sample stop;     /* time since stop, or -1.0 */
 } s_rtbuf_music_note;
 
-#define RTBUF_MUSIC_NOTE_VAR(note)                \
+#define RTBUF_MUSIC_NOTE_IN(note)                \
   { note "velocity",  RTBUF_SIGNAL_SAMPLE_TYPE }, \
   { note "frequency", RTBUF_SIGNAL_SAMPLE_TYPE }, \
   { note "start",     RTBUF_SIGNAL_SAMPLE_TYPE }, \
   { note "stop",      RTBUF_SIGNAL_SAMPLE_TYPE }
 
-#define RTBUF_MUSIC_NOTE_VAR_ENUM(note) \
+#define RTBUF_MUSIC_NOTE_IN_ENUM(note) \
   note ## _VELOCITY , \
   note ## _FREQUENCY, \
   note ## _START    , \
   note ## _STOP
 
 enum {
-  RTBUF_MUSIC_NOTE_VAR_VELOCITY = 0,
-  RTBUF_MUSIC_NOTE_VAR_FREQUENCY,
-  RTBUF_MUSIC_NOTE_VAR_START,
-  RTBUF_MUSIC_NOTE_VAR_STOP,
-  RTBUF_MUSIC_NOTE_VARS
+  RTBUF_MUSIC_NOTE_IN_VELOCITY = 0,
+  RTBUF_MUSIC_NOTE_IN_FREQUENCY,
+  RTBUF_MUSIC_NOTE_IN_START,
+  RTBUF_MUSIC_NOTE_IN_STOP,
+  RTBUF_MUSIC_NOTE_INS
 };
 
-#define RTBUF_MUSIC_NOTE_VAR_VELOCITY(notes, i) \
-  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + \
-   RTBUF_MUSIC_NOTE_VAR_VELOCITY)
-#define RTBUF_MUSIC_NOTE_VAR_FREQUENCY(notes, i) \
-  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + \
-   RTBUF_MUSIC_NOTE_VAR_FREQUENCY)
-#define RTBUF_MUSIC_NOTE_VAR_START(notes, i) \
-  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + RTBUF_MUSIC_NOTE_VAR_START)
-#define RTBUF_MUSIC_NOTE_VAR_STOP(notes, i) \
-  (notes + 1 + RTBUF_MUSIC_NOTE_VARS * i + RTBUF_MUSIC_NOTE_VAR_STOP)
+#define RTBUF_MUSIC_NOTE_IN_VELOCITY(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_INS * i + \
+   RTBUF_MUSIC_NOTE_IN_VELOCITY)
+#define RTBUF_MUSIC_NOTE_IN_FREQUENCY(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_INS * i + \
+   RTBUF_MUSIC_NOTE_IN_FREQUENCY)
+#define RTBUF_MUSIC_NOTE_IN_START(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_INS * i + RTBUF_MUSIC_NOTE_IN_START)
+#define RTBUF_MUSIC_NOTE_IN_STOP(notes, i) \
+  (notes + 1 + RTBUF_MUSIC_NOTE_INS * i + RTBUF_MUSIC_NOTE_IN_STOP)
 
 #define RTBUF_MUSIC_NOTE_MAX 128
 
@@ -85,7 +85,7 @@ int  rtbuf_music_note_p (s_rtbuf_music_note *note);
 void rtbuf_music_note_dt (s_rtbuf_music_note *note, double dt);
 
 s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
-                                         unsigned int var);
+                                         unsigned int in);
 
 t_rtbuf_signal_sample rtbuf_music_note_frequency (unsigned int octave,
                                                   unsigned int note);

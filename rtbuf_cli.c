@@ -107,12 +107,12 @@ int rtbuf_cli_new (int argc, const char *argv[])
   int rf;
   int rtb;
   if (argc != 2)
-    return rtbuf_err("usage: new LIBRARY FUNCTION");
+    return rtbuf_err("usage: new LIBRARY PROCEDURE");
   if ((rl = rtbuf_lib_find(argv[1])) < 0)
     return rtbuf_err("library not found");
-  if ((rf = rtbuf_lib_find_fun(&g_rtbuf_lib[rl], argv[2])) < 0)
-    return rtbuf_err("function not found");
-  if ((rtb = rtbuf_new(g_rtbuf_lib[rl].fun[rf])) < 0)
+  if ((rf = rtbuf_lib_find_proc(&g_rtbuf_lib[rl], argv[2])) < 0)
+    return rtbuf_err("procedure not found");
+  if ((rtb = rtbuf_new(g_rtbuf_lib[rl].proc[rf])) < 0)
     return rtbuf_err("buffer not created");
   rtbuf_print(rtb);
   printf("\n");
@@ -163,7 +163,7 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
     return rtbuf_err("buffer not found");
   if (argc == 2) {
     int var = atoi(argv[2]);
-    if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].fun->var_n)
+    if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].proc->in_n)
       return rtbuf_err("variable not found");
     rtbuf_var_unbind(&g_rtbuf[rtb], var);
   }
@@ -173,7 +173,7 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
   return 0;
 }
 
-void * rtbuf_cli_thread_fun (void *arg)
+void * rtbuf_cli_thread_proc (void *arg)
 {
   (void) arg;
   rtbuf_start();
@@ -191,7 +191,7 @@ int rtbuf_cli_start (int argc, const char *argv[])
   if (argc != 0)
     return rtbuf_err("usage: start");
   if (!g_rtbuf_cli_thread) {
-    if (pthread_create(&g_rtbuf_cli_thread, 0, &rtbuf_cli_thread_fun,
+    if (pthread_create(&g_rtbuf_cli_thread, 0, &rtbuf_cli_thread_proc,
                        0))
       return rtbuf_err("pthread_create failed");
   }
@@ -220,7 +220,7 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " load PATH                   Load library at PATH.\n"
          " buffers                     List buffers.\n"
          " buffer N                    Show buffer N.\n"
-         " new LIB FUN                 Instanciate library function.\n"
+         " new LIB PROC                Instanciate library procedure.\n"
          " delete BUFFER               Unlink and delete RTBUF.\n"
          " bind SOURCE OUT DEST VAR    Bind SOURCE OUT to DEST VAR.\n"
          " unbind BUFFER VAR           Unbind BUFFER VAR.\n"

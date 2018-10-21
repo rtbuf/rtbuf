@@ -214,7 +214,7 @@ GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
 int rtbuf_glfw3_keyboard_start (s_rtbuf *rtb)
 {
   s_rtbuf_glfw3_keyboard_data *data;
-  assert(rtb->fun->out_bytes == sizeof(*data));
+  assert(rtb->proc->out_bytes == sizeof(*data));
   data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
   if (!data->window &&
       !(data->window = rtbuf_glfw3_keyboard_window(rtb)))
