@@ -20,12 +20,12 @@
 
 int rtbuf_dynamic_limiter (s_rtbuf *rtb)
 {
-  s_rtbuf_signal_proc in_;
-  s_rtbuf_signal_proc g_;
-  s_rtbuf_signal_proc t_;
-  s_rtbuf_signal_proc l_;
-  s_rtbuf_signal_proc a_;
-  s_rtbuf_signal_proc r_;
+  s_rtbuf_signal_fun in_;
+  s_rtbuf_signal_fun g_;
+  s_rtbuf_signal_fun t_;
+  s_rtbuf_signal_fun l_;
+  s_rtbuf_signal_fun a_;
+  s_rtbuf_signal_fun r_;
   s_rtbuf_dynamic_limiter_data *data;
   unsigned int i = 0;
   double *signal;
@@ -33,28 +33,28 @@ int rtbuf_dynamic_limiter (s_rtbuf *rtb)
   assert(rtb);
   assert(rtb->proc);
   assert(rtb->data);
-  rtbuf_signal_proc(rtb, RTBUF_DYNAMIC_LIMITER_IN_SIGNAL  , &in_,
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_SIGNAL  , &in_,
                    &g_rtbuf_signal_sample_zero);
-  rtbuf_signal_proc(rtb, RTBUF_DYNAMIC_LIMITER_IN_GAIN    , &g_,
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_GAIN    , &g_,
                    &g_rtbuf_signal_sample_one);
-  rtbuf_signal_proc(rtb, RTBUF_DYNAMIC_LIMITER_IN_TRESHOLD, &t_,
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_TRESHOLD, &t_,
                    &g_rtbuf_signal_sample_half);
-  rtbuf_signal_proc(rtb, RTBUF_DYNAMIC_LIMITER_IN_LIMIT   , &l_,
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_LIMIT   , &l_,
                    &g_rtbuf_signal_sample_one);
-  rtbuf_signal_proc(rtb, RTBUF_DYNAMIC_LIMITER_IN_ATTACK  , &a_,
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_ATTACK  , &a_,
                    &g_rtbuf_signal_sample_one);
-  rtbuf_signal_proc(rtb, RTBUF_DYNAMIC_LIMITER_IN_RELEASE , &r_,
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_RELEASE , &r_,
                    &g_rtbuf_signal_sample_one);
   data = (s_rtbuf_dynamic_limiter_data*) rtb->data;
   signal = data->signal;
   s1 = data->signal[RTBUF_SIGNAL_SAMPLES - 1];
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    double in = in_.sample_proc(in_.signal, i);
-    double g = max(0.0, g_.sample_proc(g_.signal, i));
-    double t = max(0.0, t_.sample_proc(t_.signal, i));
-    double l = max(0.0, l_.sample_proc(l_.signal, i));
-    double a = max(0.0, a_.sample_proc(a_.signal, i));
-    double r = max(0.0, r_.sample_proc(r_.signal, i));
+    double in = in_.sample_fun(in_.signal, i);
+    double g = max(0.0, g_.sample_fun(g_.signal, i));
+    double t = max(0.0, t_.sample_fun(t_.signal, i));
+    double l = max(0.0, l_.sample_fun(l_.signal, i));
+    double a = max(0.0, a_.sample_fun(a_.signal, i));
+    double r = max(0.0, r_.sample_fun(r_.signal, i));
     double in_g = in * g;
     double s = in_g * data->gain;
     double ds = s - s1;

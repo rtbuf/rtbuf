@@ -88,7 +88,7 @@ int rtbuf_sndio_output_stop (s_rtbuf *rtb)
 
 int rtbuf_sndio_output (s_rtbuf *rtb)
 {
-  s_rtbuf_signal_proc in[RTBUF_SNDIO_CHANNELS];
+  s_rtbuf_signal_fun in[RTBUF_SNDIO_CHANNELS];
   s_rtbuf_sndio_output_data *data;
   short *sample;
   unsigned int i = 0;
@@ -97,7 +97,7 @@ int rtbuf_sndio_output (s_rtbuf *rtb)
   assert(rtb->data);
   assert(rtb->proc);
   while (j < RTBUF_SNDIO_CHANNELS) {
-    rtbuf_signal_proc(rtb, j, &in[j], &g_rtbuf_signal_sample_zero);
+    rtbuf_signal_fun(rtb, j, &in[j], &g_rtbuf_signal_sample_zero);
     j++;
   }
   data = (s_rtbuf_sndio_output_data*) rtb->data;
@@ -106,7 +106,7 @@ int rtbuf_sndio_output (s_rtbuf *rtb)
   while (i < RTBUF_SIGNAL_SAMPLES) {
     j = 0;
     while (j < RTBUF_SNDIO_CHANNELS) {
-      double in_ = in[j].sample_proc(in[j].signal, i);
+      double in_ = in[j].sample_fun(in[j].signal, i);
       in_ = clamp(-1.0, in_, 1.0);
       if (in_ < 0.0)
         in_ *= -SHRT_MIN;

@@ -149,22 +149,22 @@ void rtbuf_synth_synth_update_note_signal (s_rtbuf *rtb,
                                            unsigned int i)
 {
   s_rtbuf_synth_synth_data *data;
-  s_rtbuf_signal_proc env;
-  s_rtbuf_signal_proc osc;
+  s_rtbuf_signal_fun env;
+  s_rtbuf_signal_fun osc;
   unsigned int j = 0;
   double *signal;
   assert(rtb);
   assert(rtb->data);
   assert(i < RTBUF_MUSIC_NOTE_MAX);
-  rtbuf_signal_proc(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i), &env,
-                    &g_rtbuf_signal_sample_zero);
-  rtbuf_signal_proc(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i), &osc,
-                    &g_rtbuf_signal_sample_zero);
+  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i), &env,
+                   &g_rtbuf_signal_sample_zero);
+  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i), &osc,
+                   &g_rtbuf_signal_sample_zero);
   data = (s_rtbuf_synth_synth_data *) rtb->data;
   signal = data->signal;
   while (j < RTBUF_SIGNAL_SAMPLES) {
-    double e = env.sample_proc(env.signal, j);
-    double o = osc.sample_proc(osc.signal, j);
+    double e = env.sample_fun(env.signal, j);
+    double o = osc.sample_fun(osc.signal, j);
     e = max(0.0, e);
     *signal += e * o;
     //printf(" e=%f o=%f s=%f", e, o, *signal);

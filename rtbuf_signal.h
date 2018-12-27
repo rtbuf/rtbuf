@@ -23,7 +23,7 @@ typedef double t_rtbuf_signal_sample;
 #define RTBUF_SIGNAL_SAMPLE_SIZE sizeof(t_rtbuf_signal_sample)
 #define RTBUF_SIGNAL_SAMPLE_TYPE "double"
 
-#define RTBUF_SIGNAL_SAMPLES      960
+#define RTBUF_SIGNAL_SAMPLES     1024
 #define RTBUF_SIGNAL_SAMPLERATE 48000
 #define RTBUF_SIGNAL_DT \
   ((double) RTBUF_SIGNAL_SAMPLES / RTBUF_SIGNAL_SAMPLERATE)
@@ -36,20 +36,20 @@ typedef t_rtbuf_signal_sample
 f_rtbuf_signal (const t_rtbuf_signal_sample *signal,
                 unsigned int sample);
 
-typedef struct rtbuf_signal_proc {
-  f_rtbuf_signal *sample_proc;
+typedef struct rtbuf_signal_fun {
+  f_rtbuf_signal *sample_fun;
   const t_rtbuf_signal_sample *signal;
-} s_rtbuf_signal_proc;
+} s_rtbuf_signal_fun;
 
 void rtbuf_signal_zero (t_rtbuf_signal_sample *signal);
 t_rtbuf_signal_sample
 rtbuf_signal_sample (s_rtbuf *rtb,
                      unsigned int in,
                      t_rtbuf_signal_sample default_value);
-void rtbuf_signal_proc (s_rtbuf *rtb,
-                        unsigned int in,
-                        s_rtbuf_signal_proc *data,
-                        const t_rtbuf_signal_sample *default_value);
+void rtbuf_signal_fun (s_rtbuf *rtb,
+                       unsigned int in,
+                       s_rtbuf_signal_fun *data,
+                       const t_rtbuf_signal_sample *default_value);
 
 f_rtbuf_signal rtbuf_signal_sample_from_sample;
 f_rtbuf_signal rtbuf_signal_sample_from_signal;
@@ -62,10 +62,12 @@ const double g_rtbuf_signal_default_frequency;
 
 /* sinus */
 
+#pragma pack(push,1)
 typedef struct rtbuf_signal_sinus_data {
   t_rtbuf_signal signal;
   double phase;
 } s_rtbuf_signal_sinus_data;
+#pragma pack(pop)
 
 enum {
   RTBUF_SIGNAL_SINUS_IN_FREQUENCY = 0,
@@ -85,12 +87,33 @@ enum {
   RTBUF_SIGNAL_SQUARE_IN_N
 };
 
+#pragma pack(push,1)
 typedef struct rtbuf_signal_square_data {
   t_rtbuf_signal signal;
   double phase;
 } s_rtbuf_signal_square_data;
+#pragma pack(pop)
 
 int rtbuf_signal_square (s_rtbuf *rtb);
 int rtbuf_signal_square_start (s_rtbuf *rtb);
+
+/* delay */
+
+enum {
+        RTBUF_SIGNAL_DELAY_IN_SIGNAL = 0,
+        RTBUF_SIGNAL_DELAY_IN_DELAY,
+        RTBUF_SIGNAL_DELAY_IN_FEEDBACK,
+        RTBUF_SIGNAL_DELAY_INS
+};
+
+#define RTBUF_SIGNAL_DELAY_SAMPLES_MAX (10 * RTBUF_SIGNAL_SAMPLERATE)
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_delay_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample in[RTBUF_SIGNAL_DELAY_SAMPLES_MAX];
+        long pos;
+} s_rtbuf_signal_delay_data;
+#pragma pack(pop)
 
 #endif /* RTBUF_SIGNAL_H */

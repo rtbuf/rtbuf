@@ -20,11 +20,13 @@
 #include "rtbuf.h"
 #include "rtbuf_music.h"
 
+#pragma pack(push,1)
 typedef struct rtbuf_glfw3_keyboard_data {
   s_rtbuf_music_notes notes;
   GLFWwindow *window;
   unsigned int octave;
 } s_rtbuf_glfw3_keyboard_data;
+#pragma pack(pop)
 
 int rtbuf_glfw3_keyboard (s_rtbuf *rtb);
 int rtbuf_glfw3_keyboard_start (s_rtbuf *rtb);
@@ -38,9 +40,11 @@ enum {
   RTBUF_GLFW3_OSCILLOSCOPE_INS
 };
 
+#pragma pack(push,1)
 typedef struct rtbuf_glfw3_oscilloscope_data {
   GLFWwindow *window;
 } s_rtbuf_glfw3_oscilloscope_data;
+#pragma pack(pop)
 
 int rtbuf_glfw3_oscilloscope (s_rtbuf *rtb);
 int rtbuf_glfw3_oscilloscope_start (s_rtbuf *rtb);

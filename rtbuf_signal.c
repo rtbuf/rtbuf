@@ -27,6 +27,17 @@ const double g_rtbuf_signal_sample_half       = 0.5;
 const double g_rtbuf_signal_sample_one        = 1.0;
 const double g_rtbuf_signal_default_frequency = 220.0;
 
+s_rtbuf_lib_proc_in g_rtbuf_signal_delay_in[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "delay", "double" },
+  { 0, 0 } };
+
+s_rtbuf_lib_proc_out g_rtbuf_signal_delay_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "in", RTBUF_SIGNAL_DELAY_TYPE },
+  { "pos", "unsigned long" },
+  { 0, 0 } };
+
 s_rtbuf_lib_proc_in g_rtbuf_signal_sinus_in[] = {
   { "frequency", RTBUF_SIGNAL_TYPE },
   { "amplitude", RTBUF_SIGNAL_TYPE },
@@ -108,19 +119,19 @@ double rtbuf_signal_sample_from_signal (const double *signal,
   return signal[i];
 }
 
-void rtbuf_signal_proc (s_rtbuf *rtb,
+void rtbuf_signal_fun (s_rtbuf *rtb,
                         unsigned int in,
-                        s_rtbuf_signal_proc *rsp,
+                        s_rtbuf_signal_fun *rsf,
                         const double *default_value)
 {
   s_rtbuf_binding *v;
   assert(rtb);
   assert(rtb->proc);
   assert(in < rtb->proc->in_n);
-  assert(rsp);
+  assert(rsf);
   assert(default_value);
-  rsp->signal = default_value;
-  rsp->sample_proc = rtbuf_signal_sample_from_sample;
+  rsf->signal = default_value;
+  rsf->sample_fun = rtbuf_signal_sample_from_sample;
   v = &rtb->var[in];
   if (v->rtb >= 0) {
     s_rtbuf *dest;
@@ -133,8 +144,8 @@ void rtbuf_signal_proc (s_rtbuf *rtb,
     out = &dest->proc->out[v->out];
     assert(out->type);
     if (out->type->t.bits >= sizeof(t_rtbuf_signal_sample) * 8)
-      rsp->signal = (double*)(dest->data + out->offset);
+      rsf->signal = (double*)(dest->data + out->offset);
     if (out->type->t.bits >= sizeof(t_rtbuf_signal) * 8)
-      rsp->sample_proc = rtbuf_signal_sample_from_signal;
+      rsf->sample_fun = rtbuf_signal_sample_from_signal;
   }
 }

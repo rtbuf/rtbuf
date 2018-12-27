@@ -94,8 +94,6 @@ AM_CONDITIONAL([DEBUG], [test x"$debug" = x"true"])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
-cat dependencies.mk >> Makefile
-
 echo "Building status :"
 echo "  rtbuf  : $enable_rtbuf $RTBUF_LIBS"
 echo "  signal : $enable_signal $SIGNAL_LIBS"

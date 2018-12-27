@@ -39,10 +39,12 @@ enum {
   RTBUF_SYNTH_ENVELOPE_STATE_ENDED
 };
 
+#pragma pack(push,1)
 typedef struct rtbuf_synth_adsr_data {
   t_rtbuf_signal signal;
   int state;
 } s_rtbuf_synth_adsr_data;
+#pragma pack(pop)
 
 int rtbuf_synth_adsr (s_rtbuf *rtb);
 int rtbuf_synth_adsr_start (s_rtbuf *rtb);
@@ -63,11 +65,13 @@ enum {
 #define RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i) \
   (RTBUF_SYNTH_SYNTH_IN_NOTE_0_OSCILLATOR + 2 * i)
 
+#pragma pack(push,1)
 typedef struct rtbuf_synth_synth_data
 {
   t_rtbuf_signal signal;
   unsigned int note_n;
 } s_rtbuf_synth_synth_data;
+#pragma pack(pop)
 
 int rtbuf_synth_synth (s_rtbuf *rtb);
 int rtbuf_synth_synth_start (s_rtbuf *rtb);

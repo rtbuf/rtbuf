@@ -27,22 +27,22 @@ double square (double amp, double phase, double pulse)
 
 int rtbuf_signal_square (s_rtbuf *rtb)
 {
-  s_rtbuf_signal_proc freq;
-  s_rtbuf_signal_proc amp;
-  s_rtbuf_signal_proc pulse;
+  s_rtbuf_signal_fun freq;
+  s_rtbuf_signal_fun amp;
+  s_rtbuf_signal_fun pulse;
   s_rtbuf_signal_square_data *data;
   unsigned int i = 0;
-  rtbuf_signal_proc(rtb, RTBUF_SIGNAL_SQUARE_IN_FREQUENCY, &freq,
-                    &g_rtbuf_signal_default_frequency);
-  rtbuf_signal_proc(rtb, RTBUF_SIGNAL_SQUARE_IN_AMPLITUDE, &amp,
-                    &g_rtbuf_signal_sample_one);
-  rtbuf_signal_proc(rtb, RTBUF_SIGNAL_SQUARE_IN_PULSE, &pulse,
-                    &g_rtbuf_signal_sample_half);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_FREQUENCY, &freq,
+                   &g_rtbuf_signal_default_frequency);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_AMPLITUDE, &amp,
+                   &g_rtbuf_signal_sample_one);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_PULSE, &pulse,
+                   &g_rtbuf_signal_sample_half);
   data = (s_rtbuf_signal_square_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    double f = freq.sample_proc(freq.signal, i);
-    double a = amp.sample_proc(amp.signal, i);
-    double p = pulse.sample_proc(pulse.signal, i);
+    double f = freq.sample_fun(freq.signal, i);
+    double a = amp.sample_fun(amp.signal, i);
+    double p = pulse.sample_fun(pulse.signal, i);
     f = max(0.0, f);
     a = max(0.0, a);
     p = clamp(0.0, p, 1.0);

@@ -33,7 +33,7 @@ void rtbuf_glfw3_oscilloscope_size (GLFWwindow *w, int width,
 void rtbuf_glfw3_oscilloscope_draw (GLFWwindow *window)
 {
   s_rtbuf *rtb = (s_rtbuf*) glfwGetWindowUserPointer(window);
-  s_rtbuf_signal_proc in[4];
+  s_rtbuf_signal_fun in[4];
   const float color[4][3] = { { 0.0f, 0.0f, 0.0f },
                               { 1.0f, 0.0f, 0.0f },
                               { 0.0f, 1.0f, 0.0f },
@@ -42,7 +42,7 @@ void rtbuf_glfw3_oscilloscope_draw (GLFWwindow *window)
   unsigned int j;
   assert(rtb);
   for (j = 0; j < 4; j++)
-    rtbuf_signal_proc(rtb, j, &in[j], &g_rtbuf_signal_sample_zero);
+    rtbuf_signal_fun(rtb, j, &in[j], &g_rtbuf_signal_sample_zero);
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   for (j = 0; j < 4; j++) {
@@ -50,7 +50,7 @@ void rtbuf_glfw3_oscilloscope_draw (GLFWwindow *window)
     glBegin(GL_LINE_STRIP);
     for (i = 0; i < RTBUF_SIGNAL_SAMPLES; i++) {
       float x = (double) i / RTBUF_SIGNAL_SAMPLES;
-      float s = in[j].sample_proc(in[j].signal, i);
+      float s = in[j].sample_fun(in[j].signal, i);
       glVertex2f(x, s / 4.0f + 0.5f);
     }
     glEnd();

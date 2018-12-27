@@ -27,6 +27,9 @@ int main ()
   printf("#define RTBUF_SIGNAL_TYPE"
          " RTBUF_SIGNAL_SAMPLE_TYPE \"[%u]\"\n",
          RTBUF_SIGNAL_SAMPLES);
+  printf("#define RTBUF_SIGNAL_DELAY_TYPE"
+         " RTBUF_SIGNAL_SAMPLE_TYPE \"[%u]\"\n",
+         RTBUF_SIGNAL_DELAY_SAMPLES_MAX);
   printf("\n"
          "#endif\n");
   return 0;
