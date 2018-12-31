@@ -193,8 +193,10 @@ librtbuf_music_la_OBJECTS = $(am_librtbuf_music_la_OBJECTS)
 @ENABLE_SIGNAL_TRUE@	$(am__DEPENDENCIES_1) librtbuf_music.la \
 @ENABLE_SIGNAL_TRUE@	librtbuf.la
 am__librtbuf_signal_la_SOURCES_DIST = rtbuf_signal.c \
-	rtbuf_signal_sinus.c rtbuf_signal_square.c rtbuf_signal_type.h
+	rtbuf_signal_delay.c rtbuf_signal_sinus.c \
+	rtbuf_signal_square.c rtbuf_signal_type.h
 @ENABLE_SIGNAL_TRUE@am_librtbuf_signal_la_OBJECTS = rtbuf_signal.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_delay.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_sinus.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_square.lo
 librtbuf_signal_la_OBJECTS = $(am_librtbuf_signal_la_OBJECTS)
@@ -242,6 +244,7 @@ am__depfiles_remade = ./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3.Plo \
 	./$(DEPDIR)/rtbuf_dynamic_limiter.Plo ./$(DEPDIR)/rtbuf_lib.Po \
 	./$(DEPDIR)/rtbuf_music.Plo ./$(DEPDIR)/rtbuf_proc.Plo \
 	./$(DEPDIR)/rtbuf_signal.Plo \
+	./$(DEPDIR)/rtbuf_signal_delay.Plo \
 	./$(DEPDIR)/rtbuf_signal_sinus.Plo \
 	./$(DEPDIR)/rtbuf_signal_square.Plo \
 	./$(DEPDIR)/rtbuf_sndio.Plo ./$(DEPDIR)/rtbuf_sndio_input.Plo \
@@ -496,6 +499,7 @@ librtbuf_music_la_SOURCES = \
 @ENABLE_SIGNAL_TRUE@librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS} librtbuf_music.la librtbuf.la
 @ENABLE_SIGNAL_TRUE@librtbuf_signal_la_SOURCES = \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_delay.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_sinus.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_square.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_type.h
@@ -715,6 +719,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_music.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_proc.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_delay.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_sinus.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_square.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_sndio.Plo@am__quote@ # am--include-marker
@@ -1087,6 +1092,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/rtbuf_music.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_proc.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_delay.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_sinus.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_square.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_sndio.Plo
@@ -1155,6 +1161,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/rtbuf_music.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_proc.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_delay.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_sinus.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_square.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_sndio.Plo

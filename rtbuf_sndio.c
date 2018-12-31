@@ -31,9 +31,9 @@ s_rtbuf_lib_proc_out g_rtbuf_sndio_input_out[] = {
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_sndio_output_in[] = {
-  { "left", RTBUF_SIGNAL_TYPE },
-  { "right", RTBUF_SIGNAL_TYPE },
-  { 0, 0 } };
+  { "left", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { "right", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { 0, 0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_sndio_output_out[] = {
   { "samples", RTBUF_SNDIO_SAMPLES_TYPE },

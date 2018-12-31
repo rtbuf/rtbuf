@@ -5,14 +5,11 @@ load dynamic
 load sndio
 new glfw3 keyboard
 new synth adsr
-new signal sinus
+new signal square
 new synth synth
 bind 0 notes  3 notes
 bind 1 signal 3 envelope
 bind 2 signal 3 oscillator
-#new dynamic limiter
-#bind 3 signal 4 signal
 new sndio output
-bind 3 signal 4 left
 bind 3 signal 4 right
 start

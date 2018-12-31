@@ -28,20 +28,21 @@ const double g_rtbuf_signal_sample_one        = 1.0;
 const double g_rtbuf_signal_default_frequency = 220.0;
 
 s_rtbuf_lib_proc_in g_rtbuf_signal_delay_in[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
-  { "delay", "double" },
-  { 0, 0 } };
+  { "signal", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { "delay", RTBUF_SIGNAL_TYPE, 0.0, RTBUF_SIGNAL_DELAY_MAX },
+  { "feedback", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_delay_out[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
+  { "wet", RTBUF_SIGNAL_TYPE },
   { "in", RTBUF_SIGNAL_DELAY_TYPE },
-  { "pos", "unsigned long" },
+  { "pos", "unsigned int" },
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_signal_sinus_in[] = {
-  { "frequency", RTBUF_SIGNAL_TYPE },
-  { "amplitude", RTBUF_SIGNAL_TYPE },
-  { 0, 0 } };
+  { "frequency", RTBUF_SIGNAL_TYPE, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_sinus_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
@@ -49,10 +50,10 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_sinus_out[] = {
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_signal_square_in[] = {
-  { "frequency", RTBUF_SIGNAL_TYPE },
-  { "amplitude", RTBUF_SIGNAL_TYPE },
-  { "pulse",     RTBUF_SIGNAL_TYPE },
-  { 0, 0 } };
+  { "frequency", RTBUF_SIGNAL_TYPE, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
+  { "pulse",     RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_square_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
@@ -62,6 +63,8 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_square_out[] = {
 const char     *rtbuf_lib_name = "signal";
 unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
 s_rtbuf_lib_proc rtbuf_lib_proc[] = {
+  { "delay", rtbuf_signal_delay, rtbuf_signal_delay_start, 0,
+    g_rtbuf_signal_delay_in, g_rtbuf_signal_delay_out },
   { "sinus", rtbuf_signal_sinus, rtbuf_signal_sinus_start, 0,
     g_rtbuf_signal_sinus_in, g_rtbuf_signal_sinus_out },
   { "square", rtbuf_signal_square, rtbuf_signal_square_start, 0,

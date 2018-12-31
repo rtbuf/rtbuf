@@ -35,12 +35,13 @@ typedef struct rtbuf_music_note {
 } s_rtbuf_music_note;
 #pragma pack(pop)
 
-#define RTBUF_MUSIC_NOTE_IN(note)                \
-  { note "velocity",  RTBUF_SIGNAL_SAMPLE_TYPE }, \
-  { note "frequency", RTBUF_SIGNAL_SAMPLE_TYPE }, \
-  { note "start",     RTBUF_SIGNAL_SAMPLE_TYPE }, \
-  { note "stop",      RTBUF_SIGNAL_SAMPLE_TYPE }
-
+#define RTBUF_MUSIC_NOTE_IN(note)                                 \
+  { note "velocity",  RTBUF_SIGNAL_SAMPLE_TYPE, 0.0, 1.0 },       \
+  { note "frequency", RTBUF_SIGNAL_SAMPLE_TYPE, 0.0,              \
+                  RTBUF_SIGNAL_SAMPLERATE / 2.0 },                \
+  { note "start",     RTBUF_SIGNAL_SAMPLE_TYPE, -1.0, FLT_MAX },  \
+  { note "stop",      RTBUF_SIGNAL_SAMPLE_TYPE, -1.0, FLT_MAX }
+          
 #define RTBUF_MUSIC_NOTE_IN_ENUM(note) \
   note ## _VELOCITY , \
   note ## _FREQUENCY, \

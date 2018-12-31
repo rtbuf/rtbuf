@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <float.h>
 #include <stdio.h>
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
@@ -25,11 +26,11 @@
 
 s_rtbuf_lib_proc_in g_rtbuf_synth_adsr_in[] = {
   RTBUF_MUSIC_NOTE_IN(),
-  { "attack",  RTBUF_SIGNAL_TYPE },
-  { "decay",   RTBUF_SIGNAL_TYPE },
-  { "sustain", RTBUF_SIGNAL_TYPE },
-  { "release", RTBUF_SIGNAL_TYPE },
-  { 0, 0 } };
+  { "attack",  RTBUF_SIGNAL_TYPE, 0.0, 2.0 },
+  { "decay",   RTBUF_SIGNAL_TYPE, 0.0, 2.0 },
+  { "sustain", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
+  { "release", RTBUF_SIGNAL_TYPE, 0.0, 10.0 },
+  { 0, 0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_synth_adsr_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
@@ -37,10 +38,10 @@ s_rtbuf_lib_proc_out g_rtbuf_synth_adsr_out[] = {
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_synth_synth_in[] = {
-  { "envelope", RTBUF_SIGNAL_TYPE },
-  { "oscillator", RTBUF_SIGNAL_TYPE },
+  { "envelope", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
+  { "oscillator", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
   RTBUF_MUSIC_NOTES_IN("note"),
-  { 0, 0 } };
+  { 0, 0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_synth_synth_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },

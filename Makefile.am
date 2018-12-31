@@ -64,6 +64,7 @@ lib_LTLIBRARIES += librtbuf_signal.la
 librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS} librtbuf_music.la librtbuf.la
 librtbuf_signal_la_SOURCES = \
 	rtbuf_signal.c \
+	rtbuf_signal_delay.c \
 	rtbuf_signal_sinus.c \
 	rtbuf_signal_square.c \
 	rtbuf_signal_type.h

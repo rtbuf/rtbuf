@@ -60,6 +60,31 @@ const double g_rtbuf_signal_sample_one;
 const double g_rtbuf_signal_sample_2pi;
 const double g_rtbuf_signal_default_frequency;
 
+/* delay */
+
+#define RTBUF_SIGNAL_DELAY_MAX 10.0
+#define RTBUF_SIGNAL_DELAY_SAMPLES_MAX ((unsigned int)                  \
+                                        (RTBUF_SIGNAL_DELAY_MAX *       \
+                                         RTBUF_SIGNAL_SAMPLERATE))
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_delay_data {
+        t_rtbuf_signal out;
+        t_rtbuf_signal_sample in[RTBUF_SIGNAL_DELAY_SAMPLES_MAX];
+        unsigned int pos;
+} s_rtbuf_signal_delay_data;
+#pragma pack(pop)
+
+enum {
+  RTBUF_SIGNAL_DELAY_IN_SIGNAL = 0,
+  RTBUF_SIGNAL_DELAY_IN_DELAY,
+  RTBUF_SIGNAL_DELAY_IN_FEEDBACK,
+  RTBUF_SIGNAL_DELAY_INS
+};
+
+int rtbuf_signal_delay (s_rtbuf *rtb);
+int rtbuf_signal_delay_start (s_rtbuf *rtb);
+
 /* sinus */
 
 #pragma pack(push,1)
@@ -96,24 +121,5 @@ typedef struct rtbuf_signal_square_data {
 
 int rtbuf_signal_square (s_rtbuf *rtb);
 int rtbuf_signal_square_start (s_rtbuf *rtb);
-
-/* delay */
-
-enum {
-        RTBUF_SIGNAL_DELAY_IN_SIGNAL = 0,
-        RTBUF_SIGNAL_DELAY_IN_DELAY,
-        RTBUF_SIGNAL_DELAY_IN_FEEDBACK,
-        RTBUF_SIGNAL_DELAY_INS
-};
-
-#define RTBUF_SIGNAL_DELAY_SAMPLES_MAX (10 * RTBUF_SIGNAL_SAMPLERATE)
-
-#pragma pack(push,1)
-typedef struct rtbuf_signal_delay_data {
-        t_rtbuf_signal signal;
-        t_rtbuf_signal_sample in[RTBUF_SIGNAL_DELAY_SAMPLES_MAX];
-        long pos;
-} s_rtbuf_signal_delay_data;
-#pragma pack(pop)
 
 #endif /* RTBUF_SIGNAL_H */

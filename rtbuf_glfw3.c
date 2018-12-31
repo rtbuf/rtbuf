@@ -29,11 +29,11 @@ s_rtbuf_lib_proc_out g_rtbuf_glfw3_keyboard_out[] = {
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_glfw3_oscilloscope_in[] = {
-  { "black", RTBUF_SIGNAL_TYPE },
-  { "red"  , RTBUF_SIGNAL_TYPE },
-  { "green", RTBUF_SIGNAL_TYPE },
-  { "blue" , RTBUF_SIGNAL_TYPE },
-  { 0, 0 } };
+  { "black", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { "red"  , RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { "green", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { "blue" , RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { 0, 0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_glfw3_oscilloscope_out[] = {
   { "window", "void*" },
