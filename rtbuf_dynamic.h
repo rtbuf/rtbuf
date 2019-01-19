@@ -22,7 +22,6 @@ enum {
   RTBUF_DYNAMIC_LIMITER_IN_SIGNAL = 0,
   RTBUF_DYNAMIC_LIMITER_IN_GAIN,
   RTBUF_DYNAMIC_LIMITER_IN_TRESHOLD,
-  RTBUF_DYNAMIC_LIMITER_IN_LIMIT,
   RTBUF_DYNAMIC_LIMITER_IN_ATTACK,
   RTBUF_DYNAMIC_LIMITER_IN_RELEASE,
   RTBUF_DYNAMIC_LIMITER_IN_N
@@ -30,7 +29,7 @@ enum {
 
 typedef struct rtbuf_dynamic_limiter_data {
   t_rtbuf_signal signal;
-  t_rtbuf_signal_sample gain;
+  t_rtbuf_signal_sample ratio;
 } s_rtbuf_dynamic_limiter_data;
 
 int rtbuf_dynamic_limiter (s_rtbuf *rtb);
