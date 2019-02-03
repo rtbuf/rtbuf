@@ -156,10 +156,8 @@ void rtbuf_synth_synth_update_note_signal (s_rtbuf *rtb,
   assert(rtb);
   assert(rtb->data);
   assert(i < RTBUF_MUSIC_NOTE_MAX);
-  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i), &env,
-                   &g_rtbuf_signal_sample_zero);
-  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i), &osc,
-                   &g_rtbuf_signal_sample_zero);
+  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i), &env);
+  rtbuf_signal_fun(rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i), &osc);
   data = (s_rtbuf_synth_synth_data *) rtb->data;
   signal = data->signal;
   while (j < RTBUF_SIGNAL_SAMPLES) {

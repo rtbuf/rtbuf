@@ -24,6 +24,7 @@
 struct rtbuf_lib_proc_in {
   const char *name;
   const char *type;
+  double def;
   double min;
   double max;
 };

@@ -48,8 +48,7 @@ rtbuf_signal_sample (s_rtbuf *rtb,
                      t_rtbuf_signal_sample default_value);
 void rtbuf_signal_fun (s_rtbuf *rtb,
                        unsigned int in,
-                       s_rtbuf_signal_fun *data,
-                       const t_rtbuf_signal_sample *default_value);
+                       s_rtbuf_signal_fun *data);
 
 f_rtbuf_signal rtbuf_signal_sample_from_sample;
 f_rtbuf_signal rtbuf_signal_sample_from_signal;

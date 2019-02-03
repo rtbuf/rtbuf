@@ -32,12 +32,9 @@ int rtbuf_signal_square (s_rtbuf *rtb)
   s_rtbuf_signal_fun pulse;
   s_rtbuf_signal_square_data *data;
   unsigned int i = 0;
-  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_FREQUENCY, &freq,
-                   &g_rtbuf_signal_default_frequency);
-  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_AMPLITUDE, &amp,
-                   &g_rtbuf_signal_sample_one);
-  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_PULSE, &pulse,
-                   &g_rtbuf_signal_sample_half);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_FREQUENCY, &freq);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_AMPLITUDE, &amp);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SQUARE_IN_PULSE, &pulse);
   data = (s_rtbuf_signal_square_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
     double f = freq.sample_fun(freq.signal, i);

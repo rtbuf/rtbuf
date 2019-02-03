@@ -26,10 +26,8 @@ int rtbuf_signal_sinus (s_rtbuf *rtb)
   s_rtbuf_signal_fun amp;
   s_rtbuf_signal_sinus_data *data;
   unsigned int i = 0;
-  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SINUS_IN_FREQUENCY, &freq,
-                   &g_rtbuf_signal_default_frequency);
-  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SINUS_IN_AMPLITUDE, &amp,
-                   &g_rtbuf_signal_sample_one);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SINUS_IN_FREQUENCY, &freq);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_SINUS_IN_AMPLITUDE, &amp);
   data = (s_rtbuf_signal_sinus_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
     double f = freq.sample_fun(freq.signal, i);

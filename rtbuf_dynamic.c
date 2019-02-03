@@ -21,12 +21,12 @@
 #include "rtbuf_dynamic.h"
 
 s_rtbuf_lib_proc_in g_rtbuf_dynamic_limiter_in[] = {
-  { "signal"  , RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
-  { "gain"    , RTBUF_SIGNAL_TYPE, 0.0, 10.0 },
-  { "treshold", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { "attack"  , RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { "release" , RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { 0, 0, 0.0, 0.0 } };
+  { "signal"  , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "gain"    , RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { "treshold", RTBUF_SIGNAL_TYPE, 0.9, 0.0, 1.0 },
+  { "attack"  , RTBUF_SIGNAL_TYPE, 0.1, 0.0, 1.0 },
+  { "release" , RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_dynamic_limiter_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },

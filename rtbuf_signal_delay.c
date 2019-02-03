@@ -34,10 +34,8 @@ int rtbuf_signal_delay (s_rtbuf *rtb)
   s_rtbuf_signal_fun delay;
   s_rtbuf_signal_delay_data *data;
   unsigned int i = 0;
-  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_DELAY_IN_SIGNAL, &in,
-                   &g_rtbuf_signal_sample_zero);
-  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_DELAY_IN_DELAY, &delay,
-                   &g_rtbuf_signal_sample_one);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_DELAY_IN_SIGNAL, &in);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_DELAY_IN_DELAY, &delay);
   data = (s_rtbuf_signal_delay_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
     double s = in.sample_fun(in.signal, i);

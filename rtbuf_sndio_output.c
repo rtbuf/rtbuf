@@ -97,7 +97,7 @@ int rtbuf_sndio_output (s_rtbuf *rtb)
   assert(rtb->data);
   assert(rtb->proc);
   while (j < RTBUF_SNDIO_CHANNELS) {
-    rtbuf_signal_fun(rtb, j, &in[j], &g_rtbuf_signal_sample_zero);
+    rtbuf_signal_fun(rtb, j, &in[j]);
     j++;
   }
   data = (s_rtbuf_sndio_output_data*) rtb->data;

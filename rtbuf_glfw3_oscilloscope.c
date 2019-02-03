@@ -42,7 +42,7 @@ void rtbuf_glfw3_oscilloscope_draw (GLFWwindow *window)
   unsigned int j;
   assert(rtb);
   for (j = 0; j < 4; j++)
-    rtbuf_signal_fun(rtb, j, &in[j], &g_rtbuf_signal_sample_zero);
+    rtbuf_signal_fun(rtb, j, &in[j]);
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   for (j = 0; j < 4; j++) {

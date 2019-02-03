@@ -26,11 +26,11 @@
 
 s_rtbuf_lib_proc_in g_rtbuf_synth_adsr_in[] = {
   RTBUF_MUSIC_NOTE_IN(),
-  { "attack",  RTBUF_SIGNAL_TYPE, 0.0, 2.0 },
-  { "decay",   RTBUF_SIGNAL_TYPE, 0.0, 2.0 },
-  { "sustain", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { "release", RTBUF_SIGNAL_TYPE, 0.0, 10.0 },
-  { 0, 0, 0.0, 0.0 } };
+  { "attack",  RTBUF_SIGNAL_TYPE, 0.02, 0.0,  2.0 },
+  { "decay",   RTBUF_SIGNAL_TYPE, 0.01, 0.0,  2.0 },
+  { "sustain", RTBUF_SIGNAL_TYPE, 0.4,  0.0,  1.0 },
+  { "release", RTBUF_SIGNAL_TYPE, 0.3,  0.0, 10.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_synth_adsr_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
@@ -38,10 +38,10 @@ s_rtbuf_lib_proc_out g_rtbuf_synth_adsr_out[] = {
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_synth_synth_in[] = {
-  { "envelope", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { "oscillator", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
+  { "envelope",   RTBUF_SIGNAL_TYPE, 1.0,  0.0, 1.0 },
+  { "oscillator", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
   RTBUF_MUSIC_NOTES_IN("note"),
-  { 0, 0, 0.0, 0.0 } };
+  { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_synth_synth_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },

@@ -31,16 +31,11 @@ int rtbuf_dynamic_limiter (s_rtbuf *rtb)
   assert(rtb);
   assert(rtb->proc);
   assert(rtb->data);
-  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_SIGNAL  , &in_,
-                   &g_rtbuf_signal_sample_zero);
-  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_GAIN    , &g_,
-                   &g_rtbuf_signal_sample_one);
-  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_TRESHOLD, &t_,
-                   &g_rtbuf_signal_sample_half);
-  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_ATTACK  , &a_,
-                   &g_rtbuf_signal_sample_one);
-  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_RELEASE , &r_,
-                   &g_rtbuf_signal_sample_one);
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_SIGNAL  , &in_);
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_GAIN    , &g_);
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_TRESHOLD, &t_);
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_ATTACK  , &a_);
+  rtbuf_signal_fun(rtb, RTBUF_DYNAMIC_LIMITER_IN_RELEASE , &r_);
   data = (s_rtbuf_dynamic_limiter_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
     double in = in_.sample_fun(in_.signal, i);

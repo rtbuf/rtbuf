@@ -28,10 +28,10 @@ const double g_rtbuf_signal_sample_one        = 1.0;
 const double g_rtbuf_signal_default_frequency = 220.0;
 
 s_rtbuf_lib_proc_in g_rtbuf_signal_delay_in[] = {
-  { "signal", RTBUF_SIGNAL_TYPE, -1.0, 1.0 },
-  { "delay", RTBUF_SIGNAL_TYPE, 0.0, RTBUF_SIGNAL_DELAY_MAX },
-  { "feedback", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { 0, 0, 0.0, 0.0 } };
+  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "delay",    RTBUF_SIGNAL_TYPE, 0.4, 0.0, RTBUF_SIGNAL_DELAY_MAX },
+  { "feedback", RTBUF_SIGNAL_TYPE, 0.1, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_delay_out[] = {
   { "wet", RTBUF_SIGNAL_TYPE },
@@ -40,9 +40,9 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_delay_out[] = {
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_signal_sinus_in[] = {
-  { "frequency", RTBUF_SIGNAL_TYPE, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
-  { "amplitude", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { 0, 0, 0.0, 0.0 } };
+  { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_sinus_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
@@ -50,10 +50,10 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_sinus_out[] = {
   { 0, 0 } };
 
 s_rtbuf_lib_proc_in g_rtbuf_signal_square_in[] = {
-  { "frequency", RTBUF_SIGNAL_TYPE, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
-  { "amplitude", RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { "pulse",     RTBUF_SIGNAL_TYPE, 0.0, 1.0 },
-  { 0, 0, 0.0, 0.0 } };
+  { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { "pulse",     RTBUF_SIGNAL_TYPE, 0.5, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_square_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },
@@ -123,16 +123,16 @@ double rtbuf_signal_sample_from_signal (const double *signal,
 }
 
 void rtbuf_signal_fun (s_rtbuf *rtb,
-                        unsigned int in,
-                        s_rtbuf_signal_fun *rsf,
-                        const double *default_value)
+                       unsigned int in,
+                       s_rtbuf_signal_fun *rsf)
 {
   s_rtbuf_binding *v;
+  const double *default_value;
   assert(rtb);
   assert(rtb->proc);
   assert(in < rtb->proc->in_n);
   assert(rsf);
-  assert(default_value);
+  default_value = &rtb->proc->in[in].def;
   rsf->signal = default_value;
   rsf->sample_fun = rtbuf_signal_sample_from_sample;
   v = &rtb->var[in];

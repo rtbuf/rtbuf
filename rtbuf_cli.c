@@ -81,7 +81,7 @@ int rtbuf_cli_buffers (int argc, const char *argv[])
   printf("Listing %i buffers :\n", n);
   while (i < RTBUF_MAX && n > 0) {
     if (g_rtbuf[i].data) {
-      rtbuf_print(i);
+      rtbuf_print_long(i);
       printf("\n");
       n--;
     }
