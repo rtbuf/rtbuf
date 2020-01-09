@@ -15,11 +15,11 @@
  */
 
 #include <assert.h>
-#include <cli.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "cli.h"
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
 #include "symbol.h"
