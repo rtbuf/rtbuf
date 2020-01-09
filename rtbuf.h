@@ -16,7 +16,7 @@
 #ifndef RTBUF_H
 #define RTBUF_H
 
-#include <data.h>
+#include "data.h"
 #include "rtbuf_defs.h"
 #include "rtbuf_type.h"
 #include "rtbuf_proc.h"
