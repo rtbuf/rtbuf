@@ -29,26 +29,46 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
+enable_libdata=true
 AC_SEARCH_LIBS([libdata_init], [data],
-               [LIBRTBUF_LIBS="$LIBRTBUF_LIBS -ldata"],
-               [if test x"$enable_rtbuf" = x"true"; then
-                  AC_MSG_ERROR([missing libdata for rtbuf"])
+               [LIBRTBUF_LIBS="$LIBRTBUF_LIBS -ldata"
+                enable_libdata=false],
+               [if test x"$with_external_libdata" = x"true"; then
+                  AC_MSG_ERROR([missing libdata for rtbuf])
                 fi])
+AM_CONDITIONAL([ENABLE_LIBDATA], [test x"$enable_libdata" = x"true"])
+
+enable_cli=true
+AC_SEARCH_LIBS([cli_init], [cli],
+               [RTBUF_LIBS="$RTBUF_LIBS -lcli"
+                enable_cli=false],
+               [if test x"$with_external_libcli" = x"true"; then
+                  AC_MSG_ERROR([missing libcli for rtbuf])
+                fi])
+AM_CONDITIONAL([ENABLE_CLI], [test x"$enable_cli" = x"true"])
 
 enable_rtbuf=true
 AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
-AC_SEARCH_LIBS([cli_init], [cli],
-               [RTBUF_LIBS="$RTBUF_LIBS -lcli"],
-               [if test x"$enable_rtbuf" = x"true"; then
-                  AC_MSG_ERROR([missing libcli for rtbuf"])
-                fi])
+
 AC_SEARCH_LIBS([pthread_create], [pthread],
                [RTBUF_LIBS="$RTBUF_LIBS -lpthread"],
                [if test x"$enable_rtbuf" = x"true"; then
-                  AC_MSG_ERROR([missing libpthread for rtbuf"])
+                  AC_MSG_ERROR([missing libpthread for rtbuf])
                 fi])
 AC_SUBST([RTBUF_LIBS])
 
+AC_CHECK_LIB([readline], [readline],
+             [RTBUF_LIBS="$RTBUF_LIBS -lreadline"],
+             AC_MSG_ERROR(missing readline library for rtbuf))
+
+AC_CHECK_LIB([termcap], [tputs],
+             [RTBUF_LIBS="$RTBUF_LIBS -ltermcap"],
+             AC_MSG_ERROR(missing termcap library for rtbuf))
+
+AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
+
+enable_music=true
+AM_CONDITIONAL([ENABLE_MUSIC], [test x"$enable_music" = x"true"])
 MUSIC_LIBS="-lm"
 AC_SUBST([MUSIC_LIBS])
 

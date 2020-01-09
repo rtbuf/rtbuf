@@ -6,9 +6,6 @@ CLEANFILES =
 include_HEADERS =
 lib_LTLIBRARIES =
 
-AM_CPPFLAGS = ${local_cppflags}
-AM_LDFLAGS = ${local_ldflags} -L./.libs
-
 if DEBUG
 AM_CFLAGS = -DDEBUG -O0 -ggdb
 else
@@ -16,7 +13,7 @@ AM_CFLAGS = -DNDEBUG -O2
 endif
 
 lib_LTLIBRARIES += librtbuf.la
-librtbuf_la_LIBADD = -ldata
+librtbuf_la_LIBADD = ${LIBRTBUF_LIBS}
 librtbuf_la_SOURCES = \
 	symbol.c \
 	rtbuf_type.c \
@@ -29,6 +26,13 @@ include_HEADERS += \
 	rtbuf_proc.h \
 	rtbuf.h
 
+if ENABLE_LIBDATA
+librtbuf_la_SOURCES += \
+	data.c
+include_HEADERS += \
+	data.h
+endif
+
 if ENABLE_RTBUF
 bin_PROGRAMS += rtbuf
 rtbuf_LDADD = ${RTBUF_LIBS} librtbuf.la
@@ -37,8 +41,16 @@ rtbuf_SOURCES = \
 	rtbuf_cli.c
 include_HEADERS += \
 	rtbuf_lib.h
-endif
 
+if ENABLE_CLI
+rtbuf_SOURCES += \
+	cli.c
+include_HEADERS += \
+	cli.h
+endif #	ENABLE_CLI
+endif # ENABLE_RTBUF
+
+if ENABLE_MUSIC
 rtbuf_music_type: rtbuf_music_type.c rtbuf_music.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_music_type rtbuf_music_type.c
 rtbuf_music_type.h: rtbuf_music_type
@@ -52,6 +64,7 @@ librtbuf_music_la_SOURCES = \
 include_HEADERS += \
 	rtbuf_music.h \
 	rtbuf_music_type.h
+endif # ENABLE_MUSIC
 
 if ENABLE_SIGNAL
 rtbuf_signal_type: rtbuf_signal_type.c rtbuf_signal.h
@@ -71,7 +84,7 @@ librtbuf_signal_la_SOURCES = \
 include_HEADERS += \
 	rtbuf_signal.h \
 	rtbuf_signal_type.h
-endif
+endif # ENABLE_SIGNAL
 
 lib_LTLIBRARIES += librtbuf_dynamic.la
 librtbuf_dynamic_la_LIBADD = -lm librtbuf_signal.la librtbuf.la
@@ -114,7 +127,7 @@ librtbuf_sndio_la_SOURCES = \
 include_HEADERS += \
 	rtbuf_sndio.h \
 	rtbuf_sndio_type.h
-endif
+endif # ENABLE_SNDIO
 
 if ENABLE_GLFW3
 lib_LTLIBRARIES += librtbuf_glfw3.la
@@ -126,21 +139,4 @@ librtbuf_glfw3_la_SOURCES = \
 	rtbuf_glfw3_oscilloscope.c
 include_HEADERS += \
 	rtbuf_glfw3.h
-endif
-
-deps_headers = ${include_HEADERS}
-deps_sources = \
-	${librtbuf_la_SOURCES} \
-	${rtbuf_SOURCES} \
-	${rtbuf_signal_type_SOURCES} \
-	${librtbuf_signal_la_SOURCES} \
-	${rtbuf_sndio_type_SOURCES} \
-	${librtbuf_sndio_la_SOURCES} \
-	${librtbuf_glfw3_la_SOURCES}
-
-dependencies.mk: ${deps_headers} ${deps_sources}
-	${CC} ${CPPFLAGS} ${CFLAGS} -M *.c > dependencies.mk.1
-	sed -e 's/^\(.*\)[.]o:/\1.$$(OBJEXT) \1.lo:/' dependencies.mk.1 > dependencies.mk.2
-	rm dependencies.mk.1
-	mv dependencies.mk.2 dependencies.mk
-CLEANFILES += dependencies.mk.1 dependencies.mk.2
+endif # ENABLE_GLFW3
