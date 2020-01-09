@@ -649,9 +649,15 @@ ENABLE_SIGNAL_FALSE
 ENABLE_SIGNAL_TRUE
 SIGNAL_LIBS
 MUSIC_LIBS
+ENABLE_MUSIC_FALSE
+ENABLE_MUSIC_TRUE
 RTBUF_LIBS
 ENABLE_RTBUF_FALSE
 ENABLE_RTBUF_TRUE
+ENABLE_CLI_FALSE
+ENABLE_CLI_TRUE
+ENABLE_LIBDATA_FALSE
+ENABLE_LIBDATA_TRUE
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
@@ -12417,6 +12423,7 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
+enable_libdata=true
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing libdata_init" >&5
 $as_echo_n "checking for library containing libdata_init... " >&6; }
 if ${ac_cv_search_libdata_init+:} false; then :
@@ -12471,22 +12478,23 @@ ac_res=$ac_cv_search_libdata_init
 if test "$ac_res" != no; then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   LIBRTBUF_LIBS="$LIBRTBUF_LIBS -ldata"
+                enable_libdata=false
 else
-  if test x"$enable_rtbuf" = x"true"; then
-                  as_fn_error $? "missing libdata for rtbuf\"" "$LINENO" 5
+  if test x"$with_external_libdata" = x"true"; then
+                  as_fn_error $? "missing libdata for rtbuf" "$LINENO" 5
                 fi
 fi
 
-
-enable_rtbuf=true
- if test x"$enable_rtbuf" = x"true"; then
-  ENABLE_RTBUF_TRUE=
-  ENABLE_RTBUF_FALSE='#'
+ if test x"$enable_libdata" = x"true"; then
+  ENABLE_LIBDATA_TRUE=
+  ENABLE_LIBDATA_FALSE='#'
 else
-  ENABLE_RTBUF_TRUE='#'
-  ENABLE_RTBUF_FALSE=
+  ENABLE_LIBDATA_TRUE='#'
+  ENABLE_LIBDATA_FALSE=
 fi
 
+
+enable_cli=true
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing cli_init" >&5
 $as_echo_n "checking for library containing cli_init... " >&6; }
 if ${ac_cv_search_cli_init+:} false; then :
@@ -12541,11 +12549,31 @@ ac_res=$ac_cv_search_cli_init
 if test "$ac_res" != no; then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   RTBUF_LIBS="$RTBUF_LIBS -lcli"
+                enable_cli=false
 else
-  if test x"$enable_rtbuf" = x"true"; then
-                  as_fn_error $? "missing libcli for rtbuf\"" "$LINENO" 5
+  if test x"$with_external_libcli" = x"true"; then
+                  as_fn_error $? "missing libcli for rtbuf" "$LINENO" 5
                 fi
 fi
+
+ if test x"$enable_cli" = x"true"; then
+  ENABLE_CLI_TRUE=
+  ENABLE_CLI_FALSE='#'
+else
+  ENABLE_CLI_TRUE='#'
+  ENABLE_CLI_FALSE=
+fi
+
+
+enable_rtbuf=true
+ if test x"$enable_rtbuf" = x"true"; then
+  ENABLE_RTBUF_TRUE=
+  ENABLE_RTBUF_FALSE='#'
+else
+  ENABLE_RTBUF_TRUE='#'
+  ENABLE_RTBUF_FALSE=
+fi
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing pthread_create" >&5
 $as_echo_n "checking for library containing pthread_create... " >&6; }
@@ -12603,11 +12631,115 @@ if test "$ac_res" != no; then :
   RTBUF_LIBS="$RTBUF_LIBS -lpthread"
 else
   if test x"$enable_rtbuf" = x"true"; then
-                  as_fn_error $? "missing libpthread for rtbuf\"" "$LINENO" 5
+                  as_fn_error $? "missing libpthread for rtbuf" "$LINENO" 5
                 fi
 fi
 
 
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for readline in -lreadline" >&5
+$as_echo_n "checking for readline in -lreadline... " >&6; }
+if ${ac_cv_lib_readline_readline+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lreadline  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char readline ();
+int
+main ()
+{
+return readline ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_readline_readline=yes
+else
+  ac_cv_lib_readline_readline=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_readline_readline" >&5
+$as_echo "$ac_cv_lib_readline_readline" >&6; }
+if test "x$ac_cv_lib_readline_readline" = xyes; then :
+  RTBUF_LIBS="$RTBUF_LIBS -lreadline"
+else
+  as_fn_error $? "missing readline library for rtbuf" "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for tputs in -ltermcap" >&5
+$as_echo_n "checking for tputs in -ltermcap... " >&6; }
+if ${ac_cv_lib_termcap_tputs+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltermcap  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char tputs ();
+int
+main ()
+{
+return tputs ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_termcap_tputs=yes
+else
+  ac_cv_lib_termcap_tputs=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_termcap_tputs" >&5
+$as_echo "$ac_cv_lib_termcap_tputs" >&6; }
+if test "x$ac_cv_lib_termcap_tputs" = xyes; then :
+  RTBUF_LIBS="$RTBUF_LIBS -ltermcap"
+else
+  as_fn_error $? "missing termcap library for rtbuf" "$LINENO" 5
+fi
+
+
+ if test x"$enable_rtbuf" = x"true"; then
+  ENABLE_RTBUF_TRUE=
+  ENABLE_RTBUF_FALSE='#'
+else
+  ENABLE_RTBUF_TRUE='#'
+  ENABLE_RTBUF_FALSE=
+fi
+
+
+enable_music=true
+ if test x"$enable_music" = x"true"; then
+  ENABLE_MUSIC_TRUE=
+  ENABLE_MUSIC_FALSE='#'
+else
+  ENABLE_MUSIC_TRUE='#'
+  ENABLE_MUSIC_FALSE=
+fi
 
 MUSIC_LIBS="-lm"
 
@@ -12943,8 +13075,24 @@ if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${ENABLE_LIBDATA_TRUE}" && test -z "${ENABLE_LIBDATA_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_LIBDATA\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_CLI_TRUE}" && test -z "${ENABLE_CLI_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_CLI\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${ENABLE_RTBUF_TRUE}" && test -z "${ENABLE_RTBUF_FALSE}"; then
   as_fn_error $? "conditional \"ENABLE_RTBUF\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_RTBUF_TRUE}" && test -z "${ENABLE_RTBUF_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_RTBUF\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_MUSIC_TRUE}" && test -z "${ENABLE_MUSIC_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_MUSIC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ENABLE_SIGNAL_TRUE}" && test -z "${ENABLE_SIGNAL_FALSE}"; then
