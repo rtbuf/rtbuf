@@ -33,6 +33,14 @@ include_HEADERS += \
 	data.h
 endif
 
+if ENABLE_GTK3
+bin_PROGRAMS += rtbuf-gtk
+rtbuf_gtk_CFLAGS = ${GTK3_CFLAGS}
+rtbuf_gtk_LDADD = ${GTK3_LIBS} librtbuf.la
+rtbuf_gtk_SOURCES = \
+	rtbuf_gtk.c
+endif # ENABLE_GTK3
+
 if ENABLE_RTBUF
 bin_PROGRAMS += rtbuf
 rtbuf_LDADD = ${RTBUF_LIBS} librtbuf.la

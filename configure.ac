@@ -47,6 +47,13 @@ AC_SEARCH_LIBS([cli_init], [cli],
                 fi])
 AM_CONDITIONAL([ENABLE_CLI], [test x"$enable_cli" = x"true"])
 
+PKG_CHECK_MODULES([GTK3], [gtk+-3.0],
+                  [enable_gtk3=true],
+                  [enable_gtk3=false])
+AM_CONDITIONAL([ENABLE_GTK3], [test x"$enable_gtk3" = x"true"])
+AC_SUBST([GTK3_LIBS])
+AC_SUBST([GTK3_CFLAGS])
+
 enable_rtbuf=true
 AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
 
@@ -115,7 +122,8 @@ AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
 echo "Building status :"
-echo "  rtbuf  : $enable_rtbuf $RTBUF_LIBS"
-echo "  signal : $enable_signal $SIGNAL_LIBS"
-echo "  sndio  : $enable_sndio $SNDIO_LIBS"
-echo "  glfw3  : $enable_glfw3 $GLFW3_LIBS"
+echo "  rtbuf-gtk : $enable_gtk3 $GTK3_LIBS"
+echo "  rtbuf     : $enable_rtbuf $RTBUF_LIBS"
+echo "  signal    : $enable_signal $SIGNAL_LIBS"
+echo "  sndio     : $enable_sndio $SNDIO_LIBS"
+echo "  glfw3     : $enable_glfw3 $GLFW3_LIBS"
