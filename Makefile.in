@@ -90,43 +90,44 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = $(am__EXEEXT_1)
+bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2)
 @ENABLE_LIBDATA_TRUE@am__append_1 = \
 @ENABLE_LIBDATA_TRUE@	data.c
 
 @ENABLE_LIBDATA_TRUE@am__append_2 = \
 @ENABLE_LIBDATA_TRUE@	data.h
 
-@ENABLE_RTBUF_TRUE@am__append_3 = rtbuf
-@ENABLE_RTBUF_TRUE@am__append_4 = \
+@ENABLE_GTK3_TRUE@am__append_3 = rtbuf-gtk
+@ENABLE_RTBUF_TRUE@am__append_4 = rtbuf
+@ENABLE_RTBUF_TRUE@am__append_5 = \
 @ENABLE_RTBUF_TRUE@	rtbuf_lib.h
 
-@ENABLE_CLI_TRUE@@ENABLE_RTBUF_TRUE@am__append_5 = \
+@ENABLE_CLI_TRUE@@ENABLE_RTBUF_TRUE@am__append_6 = \
 @ENABLE_CLI_TRUE@@ENABLE_RTBUF_TRUE@	cli.c
 
-@ENABLE_CLI_TRUE@@ENABLE_RTBUF_TRUE@am__append_6 = \
+@ENABLE_CLI_TRUE@@ENABLE_RTBUF_TRUE@am__append_7 = \
 @ENABLE_CLI_TRUE@@ENABLE_RTBUF_TRUE@	cli.h
 
-@ENABLE_MUSIC_TRUE@am__append_7 = rtbuf_music_type rtbuf_music_type.h
-@ENABLE_MUSIC_TRUE@am__append_8 = librtbuf_music.la
-@ENABLE_MUSIC_TRUE@am__append_9 = \
+@ENABLE_MUSIC_TRUE@am__append_8 = rtbuf_music_type rtbuf_music_type.h
+@ENABLE_MUSIC_TRUE@am__append_9 = librtbuf_music.la
+@ENABLE_MUSIC_TRUE@am__append_10 = \
 @ENABLE_MUSIC_TRUE@	rtbuf_music.h \
 @ENABLE_MUSIC_TRUE@	rtbuf_music_type.h
 
-@ENABLE_SIGNAL_TRUE@am__append_10 = rtbuf_signal_type rtbuf_signal_type.h
-@ENABLE_SIGNAL_TRUE@am__append_11 = librtbuf_signal.la
-@ENABLE_SIGNAL_TRUE@am__append_12 = \
+@ENABLE_SIGNAL_TRUE@am__append_11 = rtbuf_signal_type rtbuf_signal_type.h
+@ENABLE_SIGNAL_TRUE@am__append_12 = librtbuf_signal.la
+@ENABLE_SIGNAL_TRUE@am__append_13 = \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal.h \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_type.h
 
-@ENABLE_SNDIO_TRUE@am__append_13 = rtbuf_sndio_type rtbuf_sndio_type.h
-@ENABLE_SNDIO_TRUE@am__append_14 = librtbuf_sndio.la
-@ENABLE_SNDIO_TRUE@am__append_15 = \
+@ENABLE_SNDIO_TRUE@am__append_14 = rtbuf_sndio_type rtbuf_sndio_type.h
+@ENABLE_SNDIO_TRUE@am__append_15 = librtbuf_sndio.la
+@ENABLE_SNDIO_TRUE@am__append_16 = \
 @ENABLE_SNDIO_TRUE@	rtbuf_sndio.h \
 @ENABLE_SNDIO_TRUE@	rtbuf_sndio_type.h
 
-@ENABLE_GLFW3_TRUE@am__append_16 = librtbuf_glfw3.la
-@ENABLE_GLFW3_TRUE@am__append_17 = \
+@ENABLE_GLFW3_TRUE@am__append_17 = librtbuf_glfw3.la
+@ENABLE_GLFW3_TRUE@am__append_18 = \
 @ENABLE_GLFW3_TRUE@	rtbuf_glfw3.h
 
 subdir = .
@@ -148,7 +149,8 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-@ENABLE_RTBUF_TRUE@am__EXEEXT_1 = rtbuf$(EXEEXT)
+@ENABLE_GTK3_TRUE@am__EXEEXT_1 = rtbuf-gtk$(EXEEXT)
+@ENABLE_RTBUF_TRUE@am__EXEEXT_2 = rtbuf$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(includedir)"
 PROGRAMS = $(bin_PROGRAMS)
@@ -246,6 +248,15 @@ am__rtbuf_SOURCES_DIST = rtbuf_lib.c rtbuf_cli.c cli.c
 rtbuf_OBJECTS = $(am_rtbuf_OBJECTS)
 @ENABLE_RTBUF_TRUE@rtbuf_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 @ENABLE_RTBUF_TRUE@	librtbuf.la
+am__rtbuf_gtk_SOURCES_DIST = rtbuf_gtk.c
+@ENABLE_GTK3_TRUE@am_rtbuf_gtk_OBJECTS =  \
+@ENABLE_GTK3_TRUE@	rtbuf_gtk-rtbuf_gtk.$(OBJEXT)
+rtbuf_gtk_OBJECTS = $(am_rtbuf_gtk_OBJECTS)
+@ENABLE_GTK3_TRUE@rtbuf_gtk_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+@ENABLE_GTK3_TRUE@	librtbuf.la
+rtbuf_gtk_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(rtbuf_gtk_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -267,7 +278,8 @@ am__depfiles_remade = ./$(DEPDIR)/cli.Po ./$(DEPDIR)/data.Plo \
 	./$(DEPDIR)/librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.Plo \
 	./$(DEPDIR)/rtbuf.Plo ./$(DEPDIR)/rtbuf_cli.Po \
 	./$(DEPDIR)/rtbuf_dynamic.Plo \
-	./$(DEPDIR)/rtbuf_dynamic_limiter.Plo ./$(DEPDIR)/rtbuf_lib.Po \
+	./$(DEPDIR)/rtbuf_dynamic_limiter.Plo \
+	./$(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Po ./$(DEPDIR)/rtbuf_lib.Po \
 	./$(DEPDIR)/rtbuf_music.Plo ./$(DEPDIR)/rtbuf_proc.Plo \
 	./$(DEPDIR)/rtbuf_signal.Plo \
 	./$(DEPDIR)/rtbuf_signal_delay.Plo \
@@ -300,14 +312,16 @@ am__v_CCLD_1 =
 SOURCES = $(librtbuf_la_SOURCES) $(librtbuf_dynamic_la_SOURCES) \
 	$(librtbuf_glfw3_la_SOURCES) $(librtbuf_music_la_SOURCES) \
 	$(librtbuf_signal_la_SOURCES) $(librtbuf_sndio_la_SOURCES) \
-	$(librtbuf_synth_la_SOURCES) $(rtbuf_SOURCES)
+	$(librtbuf_synth_la_SOURCES) $(rtbuf_SOURCES) \
+	$(rtbuf_gtk_SOURCES)
 DIST_SOURCES = $(am__librtbuf_la_SOURCES_DIST) \
 	$(librtbuf_dynamic_la_SOURCES) \
 	$(am__librtbuf_glfw3_la_SOURCES_DIST) \
 	$(am__librtbuf_music_la_SOURCES_DIST) \
 	$(am__librtbuf_signal_la_SOURCES_DIST) \
 	$(am__librtbuf_sndio_la_SOURCES_DIST) \
-	$(librtbuf_synth_la_SOURCES) $(am__rtbuf_SOURCES_DIST)
+	$(librtbuf_synth_la_SOURCES) $(am__rtbuf_SOURCES_DIST) \
+	$(am__rtbuf_gtk_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -397,6 +411,8 @@ FGREP = @FGREP@
 GLFW3_CFLAGS = @GLFW3_CFLAGS@
 GLFW3_LIBS = @GLFW3_LIBS@
 GREP = @GREP@
+GTK3_CFLAGS = @GTK3_CFLAGS@
+GTK3_LIBS = @GTK3_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -493,23 +509,29 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I build-aux/m4
-CLEANFILES = $(am__append_7) $(am__append_10) rtbuf_synth_type \
-	rtbuf_synth_type.h $(am__append_13)
+CLEANFILES = $(am__append_8) $(am__append_11) rtbuf_synth_type \
+	rtbuf_synth_type.h $(am__append_14)
 include_HEADERS = symbol.h rtbuf_defs.h rtbuf_type.h rtbuf_proc.h \
-	rtbuf.h $(am__append_2) $(am__append_4) $(am__append_6) \
-	$(am__append_9) $(am__append_12) rtbuf_dynamic.h rtbuf_synth.h \
-	rtbuf_synth_type.h $(am__append_15) $(am__append_17)
-lib_LTLIBRARIES = librtbuf.la $(am__append_8) $(am__append_11) \
-	librtbuf_dynamic.la librtbuf_synth.la $(am__append_14) \
-	$(am__append_16)
+	rtbuf.h $(am__append_2) $(am__append_5) $(am__append_7) \
+	$(am__append_10) $(am__append_13) rtbuf_dynamic.h \
+	rtbuf_synth.h rtbuf_synth_type.h $(am__append_16) \
+	$(am__append_18)
+lib_LTLIBRARIES = librtbuf.la $(am__append_9) $(am__append_12) \
+	librtbuf_dynamic.la librtbuf_synth.la $(am__append_15) \
+	$(am__append_17)
 @DEBUG_FALSE@AM_CFLAGS = -DNDEBUG -O2
 @DEBUG_TRUE@AM_CFLAGS = -DDEBUG -O0 -ggdb
 librtbuf_la_LIBADD = ${LIBRTBUF_LIBS}
 librtbuf_la_SOURCES = symbol.c rtbuf_type.c rtbuf_proc.c rtbuf.c \
 	$(am__append_1)
+@ENABLE_GTK3_TRUE@rtbuf_gtk_CFLAGS = ${GTK3_CFLAGS}
+@ENABLE_GTK3_TRUE@rtbuf_gtk_LDADD = ${GTK3_LIBS} librtbuf.la
+@ENABLE_GTK3_TRUE@rtbuf_gtk_SOURCES = \
+@ENABLE_GTK3_TRUE@	rtbuf_gtk.c
+
 @ENABLE_RTBUF_TRUE@rtbuf_LDADD = ${RTBUF_LIBS} librtbuf.la
 @ENABLE_RTBUF_TRUE@rtbuf_SOURCES = rtbuf_lib.c rtbuf_cli.c \
-@ENABLE_RTBUF_TRUE@	$(am__append_5)
+@ENABLE_RTBUF_TRUE@	$(am__append_6)
 @ENABLE_MUSIC_TRUE@librtbuf_music_la_LIBADD = ${MUSIC_LIBS} librtbuf.la
 @ENABLE_MUSIC_TRUE@librtbuf_music_la_SOURCES = \
 @ENABLE_MUSIC_TRUE@	rtbuf_music.c
@@ -710,6 +732,10 @@ rtbuf$(EXEEXT): $(rtbuf_OBJECTS) $(rtbuf_DEPENDENCIES) $(EXTRA_rtbuf_DEPENDENCIE
 	@rm -f rtbuf$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rtbuf_OBJECTS) $(rtbuf_LDADD) $(LIBS)
 
+rtbuf-gtk$(EXEEXT): $(rtbuf_gtk_OBJECTS) $(rtbuf_gtk_DEPENDENCIES) $(EXTRA_rtbuf_gtk_DEPENDENCIES) 
+	@rm -f rtbuf-gtk$(EXEEXT)
+	$(AM_V_CCLD)$(rtbuf_gtk_LINK) $(rtbuf_gtk_OBJECTS) $(rtbuf_gtk_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -725,6 +751,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_cli.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_dynamic.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_dynamic_limiter.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_lib.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_music.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_proc.Plo@am__quote@ # am--include-marker
@@ -788,6 +815,20 @@ librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo: rtbuf_glfw3_oscilloscope.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rtbuf_glfw3_oscilloscope.c' object='librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(librtbuf_glfw3_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o librtbuf_glfw3_la-rtbuf_glfw3_oscilloscope.lo `test -f 'rtbuf_glfw3_oscilloscope.c' || echo '$(srcdir)/'`rtbuf_glfw3_oscilloscope.c
+
+rtbuf_gtk-rtbuf_gtk.o: rtbuf_gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(rtbuf_gtk_CFLAGS) $(CFLAGS) -MT rtbuf_gtk-rtbuf_gtk.o -MD -MP -MF $(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Tpo -c -o rtbuf_gtk-rtbuf_gtk.o `test -f 'rtbuf_gtk.c' || echo '$(srcdir)/'`rtbuf_gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Tpo $(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rtbuf_gtk.c' object='rtbuf_gtk-rtbuf_gtk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(rtbuf_gtk_CFLAGS) $(CFLAGS) -c -o rtbuf_gtk-rtbuf_gtk.o `test -f 'rtbuf_gtk.c' || echo '$(srcdir)/'`rtbuf_gtk.c
+
+rtbuf_gtk-rtbuf_gtk.obj: rtbuf_gtk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(rtbuf_gtk_CFLAGS) $(CFLAGS) -MT rtbuf_gtk-rtbuf_gtk.obj -MD -MP -MF $(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Tpo -c -o rtbuf_gtk-rtbuf_gtk.obj `if test -f 'rtbuf_gtk.c'; then $(CYGPATH_W) 'rtbuf_gtk.c'; else $(CYGPATH_W) '$(srcdir)/rtbuf_gtk.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Tpo $(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='rtbuf_gtk.c' object='rtbuf_gtk-rtbuf_gtk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(rtbuf_gtk_CFLAGS) $(CFLAGS) -c -o rtbuf_gtk-rtbuf_gtk.obj `if test -f 'rtbuf_gtk.c'; then $(CYGPATH_W) 'rtbuf_gtk.c'; else $(CYGPATH_W) '$(srcdir)/rtbuf_gtk.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1100,6 +1141,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/rtbuf_cli.Po
 	-rm -f ./$(DEPDIR)/rtbuf_dynamic.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_dynamic_limiter.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Po
 	-rm -f ./$(DEPDIR)/rtbuf_lib.Po
 	-rm -f ./$(DEPDIR)/rtbuf_music.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_proc.Plo
@@ -1171,6 +1213,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/rtbuf_cli.Po
 	-rm -f ./$(DEPDIR)/rtbuf_dynamic.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_dynamic_limiter.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_gtk-rtbuf_gtk.Po
 	-rm -f ./$(DEPDIR)/rtbuf_lib.Po
 	-rm -f ./$(DEPDIR)/rtbuf_music.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_proc.Plo
