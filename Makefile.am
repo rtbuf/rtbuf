@@ -81,6 +81,7 @@ rtbuf_signal_type: rtbuf_signal_type.c rtbuf_signal.h
 rtbuf_signal_type.h: rtbuf_signal_type
 	./rtbuf_signal_type > rtbuf_signal_type.h
 CLEANFILES += rtbuf_signal_type rtbuf_signal_type.h
+rtbuf_signal.lo: rtbuf_signal_type.h
 
 lib_LTLIBRARIES += librtbuf_signal.la
 librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS} librtbuf_music.la librtbuf.la
@@ -103,15 +104,18 @@ librtbuf_dynamic_la_SOURCES = \
 include_HEADERS += \
 	rtbuf_dynamic.h
 
-rtbuf_synth_type: rtbuf_synth_type.c rtbuf_synth.h
+rtbuf_synth_type: rtbuf_synth_type.c rtbuf_synth.h rtbuf_music_type.h rtbuf_signal_type.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_synth_type rtbuf_synth_type.c
 rtbuf_synth_type.h: rtbuf_synth_type
 	./rtbuf_synth_type > rtbuf_synth_type.h
 CLEANFILES += rtbuf_synth_type rtbuf_synth_type.h
+rtbuf_synth.lo: rtbuf_synth_type.h
 
 lib_LTLIBRARIES += librtbuf_synth.la
 librtbuf_synth_la_LIBADD = librtbuf_signal.la librtbuf_music.la librtbuf.la
 librtbuf_synth_la_SOURCES = \
+	rtbuf_music_type.h \
+	rtbuf_signal_type.h \
 	rtbuf_synth.c \
 	rtbuf_synth_adsr.c \
 	rtbuf_synth_synth.c
@@ -125,6 +129,7 @@ rtbuf_sndio_type: rtbuf_sndio_type.c rtbuf_sndio.h
 rtbuf_sndio_type.h: rtbuf_sndio_type
 	./rtbuf_sndio_type > rtbuf_sndio_type.h
 CLEANFILES += rtbuf_sndio_type rtbuf_sndio_type.h
+rtbuf_sndio.lo: rtbuf_sndio_type.h
 
 lib_LTLIBRARIES += librtbuf_sndio.la
 librtbuf_sndio_la_LIBADD = ${SNDIO_LIBS} librtbuf_signal.la librtbuf.la
@@ -144,6 +149,7 @@ rtbuf_portaudio_type: rtbuf_portaudio_type.c rtbuf_portaudio.h
 rtbuf_portaudio_type.h: rtbuf_portaudio_type
 	./rtbuf_portaudio_type > rtbuf_portaudio_type.h
 CLEANFILES += rtbuf_portaudio_type rtbuf_portaudio_type.h
+rtbuf_portaudio.lo: rtbuf_portaudio_type.h
 
 lib_LTLIBRARIES += librtbuf_portaudio.la
 librtbuf_portaudio_la_LIBADD = ${PORTAUDIO_LIBS} librtbuf_signal.la librtbuf.la

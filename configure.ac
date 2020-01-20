@@ -29,9 +29,10 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
-AC_SEARCH_LIBS([strlcpy], [bsd],
-               [LIBRTBUF_CFLAGS="-I/usr/include/bsd -DLIBBSD_OVERLAY"
-                LIBRTBUF_LIBS="$LIBRTBUF_LIBS -lbsd"])
+AC_CHECK_FUNC([strlcpy], [echo using system strlcpy],
+	      AC_SEARCH_LIBS([strlcpy], [bsd],
+               	             [LIBRTBUF_CFLAGS="-I/usr/include/bsd -DLIBBSD_OVERLAY"
+                             LIBRTBUF_LIBS="$LIBRTBUF_LIBS -lbsd"]))
 
 enable_libdata=true
 AC_SEARCH_LIBS([libdata_init], [data],
@@ -69,8 +70,9 @@ AC_SEARCH_LIBS([pthread_create], [pthread],
                   AC_MSG_ERROR([missing libpthread for rtbuf])
                 fi])
 
-AC_SEARCH_LIBS([dlopen], [dl],
-               [RTBUF_LIBS="$RTBUF_LIBS -ldl"])
+AC_CHECK_FUNC([dlopen], [echo using system dlopen],
+              AC_SEARCH_LIBS([dlopen], [dl],
+                             [RTBUF_LIBS="$RTBUF_LIBS -ldl"]))
 
 AC_CHECK_LIB([readline], [readline],
              [RTBUF_LIBS="$RTBUF_LIBS -lreadline"],
