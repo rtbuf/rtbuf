@@ -2,7 +2,7 @@ load signal
 load glfw3
 load synth
 load dynamic
-load sndio
+load portaudio
 new glfw3 keyboard
 new synth adsr
 new signal square
@@ -12,7 +12,7 @@ bind 1 signal 3 envelope
 bind 2 signal 3 oscillator
 new dynamic limiter
 bind 3 signal 4 signal
-new sndio output
+new portaudio output
 bind 4 signal 5 left
 bind 4 signal 5 right
 start

@@ -10,6 +10,8 @@
 /rtbuf-gtk
 /rtbuf_music_type
 /rtbuf_music_type.h
+/rtbuf_portaudio_type
+/rtbuf_portaudio_type.h
 /rtbuf_signal_type
 /rtbuf_signal_type.h
 /rtbuf_sndio_type

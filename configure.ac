@@ -107,6 +107,14 @@ AC_SEARCH_LIBS([sio_open], [sndio],
 AC_SUBST([SNDIO_LIBS])
 AM_CONDITIONAL([ENABLE_SNDIO], [test x"$enable_sndio" = x"true"])
 
+enable_portaudio=false
+PORTAUDIO_LIBS=
+AC_SEARCH_LIBS([Pa_Initialize], [portaudio],
+               [enable_portaudio=true
+                PORTAUDIO_LIBS=-lportaudio])
+AC_SUBST([PORTAUDIO_LIBS])
+AM_CONDITIONAL([ENABLE_PORTAUDIO], [test x"$enable_portaudio" = x"true"])
+
 PKG_CHECK_MODULES([GLFW3], [glfw3],
                   [enable_glfw3=true],
                   [enable_glfw3=false])
@@ -136,4 +144,5 @@ echo "  rtbuf-gtk : $enable_gtk3 $GTK3_LIBS"
 echo "  rtbuf     : $enable_rtbuf $RTBUF_LIBS"
 echo "  signal    : $enable_signal $SIGNAL_LIBS"
 echo "  sndio     : $enable_sndio $SNDIO_LIBS"
+echo "  portaudio : $enable_portaudio $PORTAUDIO_LIBS"
 echo "  glfw3     : $enable_glfw3 $GLFW3_LIBS"

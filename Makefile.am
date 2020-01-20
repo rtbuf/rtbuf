@@ -138,6 +138,25 @@ include_HEADERS += \
 	rtbuf_sndio_type.h
 endif # ENABLE_SNDIO
 
+if ENABLE_PORTAUDIO
+rtbuf_portaudio_type: rtbuf_portaudio_type.c rtbuf_portaudio.h
+	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_portaudio_type rtbuf_portaudio_type.c
+rtbuf_portaudio_type.h: rtbuf_portaudio_type
+	./rtbuf_portaudio_type > rtbuf_portaudio_type.h
+CLEANFILES += rtbuf_portaudio_type rtbuf_portaudio_type.h
+
+lib_LTLIBRARIES += librtbuf_portaudio.la
+librtbuf_portaudio_la_LIBADD = ${PORTAUDIO_LIBS} librtbuf_signal.la librtbuf.la
+librtbuf_portaudio_la_SOURCES = \
+	rtbuf_portaudio.c \
+	rtbuf_portaudio_input.c \
+	rtbuf_portaudio_output.c \
+	rtbuf_portaudio_type.h
+include_HEADERS += \
+	rtbuf_portaudio.h \
+	rtbuf_portaudio_type.h
+endif # ENABLE_PORTAUDIO
+
 if ENABLE_GLFW3
 lib_LTLIBRARIES += librtbuf_glfw3.la
 librtbuf_glfw3_la_CPPFLAGS = ${GLFW3_CFLAGS}
