@@ -32,7 +32,8 @@ s_data_alloc g_rtbuf_lib_alloc;
 s_rtbuf_lib *g_rtbuf_lib;
 
 char g_rtbuf_lib_user_dir[1024];
-char *g_rtbuf_lib_path[] = { "./",
+char *g_rtbuf_lib_path[] = { "",
+                             "./",
                              "./.libs/",
                              g_rtbuf_lib_user_dir,
                              "/usr/local/lib/",
@@ -114,13 +115,14 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
 {
   unsigned int i = 0;
   assert(rl);
-  assert(rl->proc);
-  while (i < rl->proc_n) {
-    rtbuf_proc_delete(rl->proc[i]);
-    rl->proc[i] = 0;
-    i++;
+  if (rl->proc) {
+    while (i < rl->proc_n) {
+      rtbuf_proc_delete(rl->proc[i]);
+      rl->proc[i] = 0;
+      i++;
+    }
+    free(rl->proc);
   }
-  free(rl->proc);
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
@@ -143,8 +145,8 @@ void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
     while (*in)
       g_string[g_string_n++] = *in++;
     g_string[g_string_n++] = 0;
-    //printf("lib_load path \"%s\"\n", lib->path);
-    lib->lib = dlopen(lib->path, 0);
+    printf("lib_load path \"%s\"\n", lib->path);
+    lib->lib = dlopen(lib->path, RTLD_LAZY);
   }
 }
 
