@@ -61,10 +61,9 @@ const double g_rtbuf_signal_default_frequency;
 
 /* delay */
 
-#define RTBUF_SIGNAL_DELAY_MAX 10.0
-#define RTBUF_SIGNAL_DELAY_SAMPLES_MAX ((unsigned int)                  \
-                                        (RTBUF_SIGNAL_DELAY_MAX *       \
-                                         RTBUF_SIGNAL_SAMPLERATE))
+#define RTBUF_SIGNAL_DELAY_MAX 10
+#define RTBUF_SIGNAL_DELAY_SAMPLES_MAX (RTBUF_SIGNAL_DELAY_MAX *       \
+                                         RTBUF_SIGNAL_SAMPLERATE)
 
 #pragma pack(push,1)
 typedef struct rtbuf_signal_delay_data {

@@ -29,6 +29,10 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
+AC_SEARCH_LIBS([strlcpy], [bsd],
+               [LIBRTBUF_CFLAGS="-I/usr/include/bsd -DLIBBSD_OVERLAY"
+                LIBRTBUF_LIBS="$LIBRTBUF_LIBS -lbsd"])
+
 enable_libdata=true
 AC_SEARCH_LIBS([libdata_init], [data],
                [LIBRTBUF_LIBS="$LIBRTBUF_LIBS -ldata"
@@ -46,6 +50,8 @@ AC_SEARCH_LIBS([cli_init], [cli],
                   AC_MSG_ERROR([missing libcli for rtbuf])
                 fi])
 AM_CONDITIONAL([ENABLE_CLI], [test x"$enable_cli" = x"true"])
+AC_SUBST([LIBRTBUF_CFLAGS])
+AC_SUBST([LIBRTBUF_LIBS])
 
 PKG_CHECK_MODULES([GTK3], [gtk+-3.0],
                   [enable_gtk3=true],
@@ -62,7 +68,9 @@ AC_SEARCH_LIBS([pthread_create], [pthread],
                [if test x"$enable_rtbuf" = x"true"; then
                   AC_MSG_ERROR([missing libpthread for rtbuf])
                 fi])
-AC_SUBST([RTBUF_LIBS])
+
+AC_SEARCH_LIBS([dlopen], [dl],
+               [RTBUF_LIBS="$RTBUF_LIBS -ldl"])
 
 AC_CHECK_LIB([readline], [readline],
              [RTBUF_LIBS="$RTBUF_LIBS -lreadline"],
@@ -73,6 +81,7 @@ AC_CHECK_LIB([termcap], [tputs],
              AC_MSG_ERROR(missing termcap library for rtbuf))
 
 AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
+AC_SUBST([RTBUF_LIBS])
 
 enable_music=true
 AM_CONDITIONAL([ENABLE_MUSIC], [test x"$enable_music" = x"true"])
@@ -122,6 +131,7 @@ AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
 echo "Building status :"
+echo "  librtbuf  : true $LIBRTBUF_LIBS"
 echo "  rtbuf-gtk : $enable_gtk3 $GTK3_LIBS"
 echo "  rtbuf     : $enable_rtbuf $RTBUF_LIBS"
 echo "  signal    : $enable_signal $SIGNAL_LIBS"

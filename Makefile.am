@@ -13,6 +13,7 @@ AM_CFLAGS = -DNDEBUG -O2
 endif
 
 lib_LTLIBRARIES += librtbuf.la
+librtbuf_la_CFLAGS = ${LIBRTBUF_CFLAGS}
 librtbuf_la_LIBADD = ${LIBRTBUF_LIBS}
 librtbuf_la_SOURCES = \
 	symbol.c \
