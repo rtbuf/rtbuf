@@ -25,11 +25,11 @@ enum {
   RTBUF_PORTAUDIO_CHANNELS
 };
 
-#define RTBUF_PORTAUDIO_SAMPLE_TYPE "double"
+#define RTBUF_PORTAUDIO_SAMPLE_TYPE "short"
 #define RTBUF_PORTAUDIO_SAMPLES \
   (RTBUF_PORTAUDIO_CHANNELS * RTBUF_SIGNAL_SAMPLES)
 
-typedef double                   t_rtbuf_portaudio_sample;
+typedef short                    t_rtbuf_portaudio_sample;
 typedef t_rtbuf_portaudio_sample t_rtbuf_portaudio_samples[RTBUF_PORTAUDIO_SAMPLES];
 
 typedef struct rtbuf_portaudio_input_data {

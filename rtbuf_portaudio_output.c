@@ -39,7 +39,7 @@ int rtbuf_portaudio_output_start (s_rtbuf *rtb)
     if (Pa_OpenDefaultStream(&res->stream,              /* stream pointer */
                              0,                         /* input channels */
                              RTBUF_PORTAUDIO_CHANNELS,  /* output channels */
-                             paFloat32,                 /* sample format */
+                             paInt16,                   /* sample format */
                              RTBUF_SIGNAL_SAMPLERATE,   /* sample rate */
                              RTBUF_SIGNAL_SAMPLES,      /* frames per buffer */
                              NULL,                      /* stream callback */
@@ -65,7 +65,7 @@ int rtbuf_portaudio_output (s_rtbuf *rtb)
 {
   s_rtbuf_signal_fun in[RTBUF_PORTAUDIO_CHANNELS];
   s_rtbuf_portaudio_output_data *data;
-  double *sample;
+  short *sample;
   unsigned int i = 0;
   unsigned int j = 0;
   assert(rtb);
@@ -83,7 +83,11 @@ int rtbuf_portaudio_output (s_rtbuf *rtb)
     while (j < RTBUF_PORTAUDIO_CHANNELS) {
       double in_ = in[j].sample_fun(in[j].signal, i);
       in_ = clamp(-1.0, in_, 1.0);
-      *sample = in_;
+      if (in_ < 0.0)
+        in_ *= -SHRT_MIN;
+      else
+        in_ *= SHRT_MAX;
+      *sample = (short) in_;
       sample++;
       j++;
     }
