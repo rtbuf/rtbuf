@@ -39,7 +39,7 @@ int librtbuf_init ()
 {
   libdata_init();
   bzero(g_rtbuf_sorted, sizeof(g_rtbuf_sorted));
-  data_alloc_init(&g_rtbuf_alloc, &g_rtbuf_type, RTBUF_MAX, 0, 0);
+  data_alloc_init(&g_rtbuf_alloc, &g_rtbuf_type, RTBUF_MAX, NULL, NULL);
   g_rtbuf = g_rtbuf_alloc.mem;
   rtbuf_type_init();
   rtbuf_proc_init();
