@@ -36,8 +36,8 @@ struct rtbuf
   unsigned int    flags;
   s_rtbuf_proc   *proc;
   unsigned int    refc;
-  s_rtbuf_binding var[RTBUF_PROC_IN_MAX];
-  unsigned int    var_n;
+  s_rtbuf_binding in[RTBUF_PROC_IN_MAX];
+  unsigned int    in_n;
 };
 
 #define RTBUF_MAX 1000
@@ -50,12 +50,12 @@ int   librtbuf_init ();
 
 int   rtbuf_err (const char *msg);
 int   rtbuf_new (s_rtbuf_proc *rp);
-void  rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var);
+void  rtbuf_in_unbind (s_rtbuf *rtb, unsigned int var);
 void  rtbuf_unbind_all (s_rtbuf *rtb);
 void  rtbuf_delete (s_rtbuf *rtb);
 int   rtbuf_clone (s_rtbuf *rtb);
 int   rtbuf_find (symbol sym);
-int   rtbuf_var_find (s_rtbuf *rtb, const char *x);
+int   rtbuf_in_find (s_rtbuf *rtb, const char *x);
 void  rtbuf_bind (unsigned int src, unsigned int out,
                   s_rtbuf *dest, unsigned int var);
 int   rtbuf_out_find (s_rtbuf *rtb, symbol sym);

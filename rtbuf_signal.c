@@ -86,7 +86,7 @@ rtbuf_signal_sample (s_rtbuf *rtb,
   assert(rtb);
   assert(rtb->proc);
   assert(in < rtb->proc->in_n);
-  v = &rtb->var[in];
+  v = &rtb->in[in];
   if (v->rtb >= 0) {
     s_rtbuf *src;
     s_rtbuf_proc_out *out;
@@ -135,7 +135,7 @@ void rtbuf_signal_fun (s_rtbuf *rtb,
   default_value = &rtb->proc->in[in].def;
   rsf->signal = default_value;
   rsf->sample_fun = rtbuf_signal_sample_from_sample;
-  v = &rtb->var[in];
+  v = &rtb->in[in];
   if (v->rtb >= 0) {
     s_rtbuf *dest;
     s_rtbuf_proc_out *out;

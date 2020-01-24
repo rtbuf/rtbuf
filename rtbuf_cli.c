@@ -138,18 +138,18 @@ int rtbuf_cli_bind (int argc, const char *argv[])
   int src;
   int out;
   int dest;
-  int var;
+  int in;
   if (argc != 4)
-    return rtbuf_err("usage: bind SOURCE OUT DEST VAR");
+    return rtbuf_err("usage: bind SOURCE OUT DEST IN");
   if ((src = rtbuf_find(argv[1])) < 0)
     return rtbuf_err("source buffer not found");
   if ((out = rtbuf_out_find(&g_rtbuf[src], argv[2])) < 0)
     return rtbuf_err("output not found");
   if ((dest = rtbuf_find(argv[3])) < 0)
     return rtbuf_err("destination buffer not found");
-  if ((var = rtbuf_var_find(&g_rtbuf[dest], argv[4])) < 0)
-    return rtbuf_err("variable not found");
-  rtbuf_bind(src, out, &g_rtbuf[dest], var);
+  if ((in = rtbuf_in_find(&g_rtbuf[dest], argv[4])) < 0)
+    return rtbuf_err("input not found");
+  rtbuf_bind(src, out, &g_rtbuf[dest], in);
   rtbuf_print_long(dest);
   return 0;
 }
@@ -158,14 +158,14 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
 {
   int rtb;
   if (argc < 1 || argc > 2)
-    return rtbuf_err("usage: unbind BUFFER [VARIABLE]");
+    return rtbuf_err("usage: unbind BUFFER [INPUT]");
   if ((rtb = rtbuf_find(argv[1])) < 0)
     return rtbuf_err("buffer not found");
   if (argc == 2) {
-    int var = atoi(argv[2]);
-    if (var < 0 || (unsigned int) var >= g_rtbuf[rtb].proc->in_n)
-      return rtbuf_err("variable not found");
-    rtbuf_var_unbind(&g_rtbuf[rtb], var);
+    int in = atoi(argv[2]);
+    if (in < 0 || (unsigned int) in >= g_rtbuf[rtb].proc->in_n)
+      return rtbuf_err("input not found");
+    rtbuf_in_unbind(&g_rtbuf[rtb], in);
   }
   else
     rtbuf_unbind_all(&g_rtbuf[rtb]);
@@ -222,8 +222,8 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " buffer N                    Show buffer N.\n"
          " new LIB PROC                Instanciate library procedure.\n"
          " delete BUFFER               Unlink and delete RTBUF.\n"
-         " bind SOURCE OUT DEST VAR    Bind SOURCE OUT to DEST VAR.\n"
-         " unbind BUFFER VAR           Unbind BUFFER VAR.\n"
+         " bind SOURCE OUT DEST IN     Bind SOURCE OUT to DEST IN.\n"
+         " unbind BUFFER IN            Unbind BUFFER IN.\n"
          " help                        Show this help message.\n"
          " exit                        Quit RTBUF.\n");
   return 0;

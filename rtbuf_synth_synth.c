@@ -21,11 +21,11 @@
 #include "rtbuf_synth.h"
 #include "rtbuf_synth_type.h"
 
-s_rtbuf * rtbuf_var_rtbuf (s_rtbuf *rtb, unsigned int var)
+s_rtbuf * rtbuf_in_rtbuf (s_rtbuf *rtb, unsigned int in)
 {
   int i;
-  assert(var < rtb->proc->in_n);
-  if ((i = rtb->var[var].rtb) < 0)
+  assert(in < rtb->proc->in_n);
+  if ((i = rtb->in[in].rtb) < 0)
     return 0;
   return &g_rtbuf[i];
 }
@@ -35,7 +35,7 @@ s_rtbuf * rtbuf_synth_synth_note_envelope (s_rtbuf *rtb, unsigned int i)
   unsigned int j;
   assert(i < RTBUF_MUSIC_NOTE_MAX);
   j = RTBUF_SYNTH_SYNTH_IN_NOTE_ENVELOPE(i);
-  return rtbuf_var_rtbuf(rtb, j);
+  return rtbuf_in_rtbuf(rtb, j);
 }
 
 s_rtbuf * rtbuf_synth_synth_note_oscillator (s_rtbuf *rtb,
@@ -44,7 +44,7 @@ s_rtbuf * rtbuf_synth_synth_note_oscillator (s_rtbuf *rtb,
   unsigned int j;
   assert(i < RTBUF_MUSIC_NOTE_MAX);
   j = RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i);
-  return rtbuf_var_rtbuf(rtb, j);
+  return rtbuf_in_rtbuf(rtb, j);
 }
 
 void rtbuf_synth_synth_delete_note (s_rtbuf *rtb,
@@ -78,14 +78,14 @@ void rtbuf_synth_synth_delete_notes (s_rtbuf *rtb)
 s_rtbuf * rtbuf_synth_synth_new_envelope (s_rtbuf *rtb,
                                           unsigned int i)
 {
-  s_rtbuf *ref = rtbuf_var_rtbuf(rtb, RTBUF_SYNTH_SYNTH_IN_ENVELOPE);
+  s_rtbuf *ref = rtbuf_in_rtbuf(rtb, RTBUF_SYNTH_SYNTH_IN_ENVELOPE);
   int env_i;
   s_rtbuf *env;
   unsigned int env_vel;
   unsigned int env_freq;
   unsigned int env_start;
   unsigned int env_stop;
-  s_rtbuf_binding *v = &rtb->var[RTBUF_SYNTH_SYNTH_IN_NOTES];
+  s_rtbuf_binding *v = &rtb->in[RTBUF_SYNTH_SYNTH_IN_NOTES];
   unsigned int kbd_i = v->rtb;
   unsigned int kbd_notes = v->out;
   unsigned int note_vel = RTBUF_MUSIC_NOTE_IN_VELOCITY(kbd_notes, i);
@@ -98,10 +98,10 @@ s_rtbuf * rtbuf_synth_synth_new_envelope (s_rtbuf *rtb,
   if((env_i = rtbuf_clone(ref)) < 0)
     return 0;
   env = &g_rtbuf[env_i];
-  env_vel = rtbuf_var_find(env, "velocity");
-  env_freq = rtbuf_var_find(env, "frequency");
-  env_start = rtbuf_var_find(env, "start");
-  env_stop = rtbuf_var_find(env, "stop");
+  env_vel = rtbuf_in_find(env, "velocity");
+  env_freq = rtbuf_in_find(env, "frequency");
+  env_start = rtbuf_in_find(env, "start");
+  env_stop = rtbuf_in_find(env, "stop");
   rtbuf_bind(kbd_i, note_vel  , env, env_vel);
   rtbuf_bind(kbd_i, note_freq , env, env_freq);
   rtbuf_bind(kbd_i, note_start, env, env_start);
@@ -120,11 +120,11 @@ s_rtbuf * rtbuf_synth_synth_new_oscillator (s_rtbuf *rtb,
                                             unsigned int i)
 {
   s_rtbuf *ref =
-    rtbuf_var_rtbuf(rtb, RTBUF_SYNTH_SYNTH_IN_OSCILLATOR);
+    rtbuf_in_rtbuf(rtb, RTBUF_SYNTH_SYNTH_IN_OSCILLATOR);
   int osc_i;
   s_rtbuf *osc;
   unsigned int osc_freq;
-  s_rtbuf_binding *v = &rtb->var[RTBUF_SYNTH_SYNTH_IN_NOTES];
+  s_rtbuf_binding *v = &rtb->in[RTBUF_SYNTH_SYNTH_IN_NOTES];
   unsigned int kbd_i = v->rtb;
   unsigned int kbd_notes = v->out;
   unsigned int note_freq = RTBUF_MUSIC_NOTE_IN_FREQUENCY(kbd_notes, i);
@@ -134,7 +134,7 @@ s_rtbuf * rtbuf_synth_synth_new_oscillator (s_rtbuf *rtb,
   if ((osc_i = rtbuf_clone(ref)) < 0)
     return 0;
   osc = &g_rtbuf[osc_i];
-  osc_freq = rtbuf_var_find(osc, "frequency");
+  osc_freq = rtbuf_in_find(osc, "frequency");
   rtbuf_bind(kbd_i, note_freq, osc, osc_freq);
   rtbuf_bind(osc_i, 0, rtb, RTBUF_SYNTH_SYNTH_IN_NOTE_OSCILLATOR(i));
   if (osc->proc->start)

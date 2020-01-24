@@ -119,12 +119,12 @@ void rtbuf_music_notes_dt (s_rtbuf_music_notes *notes, double dt)
 }
 
 s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
-                                         unsigned int var)
+                                         unsigned int in)
 {
   s_rtbuf_binding *v;
   s_rtbuf *target;
   unsigned int offset;
-  v = &rtb->var[var];
+  v = &rtb->in[in];
   if (v->rtb < 0)
     return 0;
   assert(v->rtb < RTBUF_MAX);

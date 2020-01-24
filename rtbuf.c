@@ -65,22 +65,22 @@ int rtbuf_new (s_rtbuf_proc *rp)
   rtb->flags = 0;
   rtb->proc = rp;
   while (j < RTBUF_PROC_IN_MAX) {
-    rtb->var[j].rtb = -1;
+    rtb->in[j].rtb = -1;
     j++;
   }
   g_rtbuf_sort = 1;
   return i;
 }
 
-void rtbuf_var_unbind (s_rtbuf *rtb, unsigned int var)
+void rtbuf_in_unbind (s_rtbuf *rtb, unsigned int in)
 {
-  s_rtbuf_binding *v = &rtb->var[var];
+  s_rtbuf_binding *v = &rtb->in[in];
   if (v->rtb >= 0) {
     s_rtbuf *src = &g_rtbuf[v->rtb];
     src->refc--;
     v->rtb = -1;
     v->out = 0;
-    rtb->var_n--;
+    rtb->in_n--;
   }
 }
 
@@ -91,12 +91,12 @@ void rtbuf_unbind_all_out_rtbuf (s_rtbuf *rtb, unsigned int rtb_i,
   unsigned int i = 0;
   unsigned int n;
   assert(dest);
-  n = dest->var_n;
+  n = dest->in_n;
   while (i < dest->proc->in_n && n > 0 && rtb->refc) {
-    s_rtbuf_binding *v = &dest->var[i];
+    s_rtbuf_binding *v = &dest->in[i];
     if (v->rtb >= 0) {
       if ((unsigned int) v->rtb == rtb_i)
-        rtbuf_var_unbind(dest, i);
+        rtbuf_in_unbind(dest, i);
       n--;
     }
     i++;
@@ -126,8 +126,8 @@ void rtbuf_unbind_all (s_rtbuf *rtb)
   unsigned int i = 0;
   assert(rtb);
   assert(rtb->proc);
-  while (i < rtb->proc->in_n && rtb->var_n > 0) {
-    rtbuf_var_unbind(rtb, i);
+  while (i < rtb->proc->in_n && rtb->in_n > 0) {
+    rtbuf_in_unbind(rtb, i);
     i++;
   }
   rtbuf_unbind_all_out(rtb);
@@ -160,23 +160,23 @@ int rtbuf_clone (s_rtbuf *rtb)
     return -1;
   new = &g_rtbuf[new_i];
   while (j < rtb->proc->in_n) {
-    new->var[j] = rtb->var[j];
+    new->in[j] = rtb->in[j];
     j++;
   }
-  new->var_n = rtb->var_n;
+  new->in_n = rtb->in_n;
   return new_i;
 }
 
 void rtbuf_bind (unsigned int src, unsigned int out,
-                 s_rtbuf *dest, unsigned int var)
+                 s_rtbuf *dest, unsigned int in)
 {
-  s_rtbuf_binding *v = &dest->var[var];
+  s_rtbuf_binding *v = &dest->in[in];
   if ((unsigned int) v->rtb == src && v->out == out)
     return;
-  rtbuf_var_unbind(dest, var);
+  rtbuf_in_unbind(dest, in);
   v->rtb = src;
   v->out = out;
-  dest->var_n++;
+  dest->in_n++;
   g_rtbuf[src].refc++;
   g_rtbuf_sort = 1;
 }
@@ -196,60 +196,60 @@ int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
   return 0;
 }
 
-typedef struct rtbuf_var_ptr {
+typedef struct rtbuf_in_ptr {
   unsigned int rtb;
-  unsigned int var;
-} s_rtbuf_var_ptr;
+  unsigned int in;
+} s_rtbuf_in_ptr;
 
-typedef struct rtbuf_var_stack {
-  s_rtbuf_var_ptr st[RTBUF_MAX];
+typedef struct rtbuf_in_stack {
+  s_rtbuf_in_ptr st[RTBUF_MAX];
   unsigned int size;
-} s_rtbuf_var_stack;
+} s_rtbuf_in_stack;
 
-void rtbuf_var_stack_init (s_rtbuf_var_stack *rvs)
+void rtbuf_in_stack_init (s_rtbuf_in_stack *rvs)
 {
-  //printf("rtbuf_var_stack_init\n");
-  bzero(rvs, sizeof(s_rtbuf_var_stack));
+  //printf("rtbuf_in_stack_init\n");
+  bzero(rvs, sizeof(s_rtbuf_in_stack));
 }
 
-s_rtbuf_var_ptr * rtbuf_var_stack_push (s_rtbuf_var_stack *rvs,
+s_rtbuf_in_ptr * rtbuf_in_stack_push (s_rtbuf_in_stack *rvs,
                                         unsigned int rtb,
-                                        unsigned int var)
+                                        unsigned int in)
 {
-  //printf("rtbuf_var_stack_push %i %i\n", rtb, var);
-  s_rtbuf_var_ptr *top;
+  //printf("rtbuf_in_stack_push %i %i\n", rtb, in);
+  s_rtbuf_in_ptr *top;
   if (rvs->size >= RTBUF_MAX)
     return 0;
   top = &rvs->st[rvs->size];
   top->rtb = rtb;
-  top->var = var;
+  top->in = in;
   rvs->size++;
   return top;
 }
 
-s_rtbuf_var_ptr * rtbuf_var_stack_pop (s_rtbuf_var_stack *rvs)
+s_rtbuf_in_ptr * rtbuf_in_stack_pop (s_rtbuf_in_stack *rvs)
 {
-  //printf("rtbuf_var_stack_pop\n");
+  //printf("rtbuf_in_stack_pop\n");
   if (rvs->size <= 0)
     return 0;
   rvs->size--;
   return &rvs->st[rvs->size];
 }
 
-s_rtbuf_var_ptr * rtbuf_var_stack_top (s_rtbuf_var_stack *rvs)
+s_rtbuf_in_ptr * rtbuf_in_stack_top (s_rtbuf_in_stack *rvs)
 {
-  s_rtbuf_var_ptr *top;
-  //printf("rtbuf_var_stack_top\n");
+  s_rtbuf_in_ptr *top;
+  //printf("rtbuf_in_stack_top\n");
   if (rvs->size <= 0) {
-    //printf(" rtbuf_var_stack_top => 0\n");
+    //printf(" rtbuf_in_stack_top => 0\n");
     return 0;
   }
   top = &rvs->st[rvs->size - 1];
-  //printf(" rtbuf_var_stack_top => { %u, %u }\n", top->rtb, top->var);
+  //printf(" rtbuf_in_stack_top => { %u, %u }\n", top->rtb, top->in);
   return top;
 }
 
-void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
+void rtbuf_find_roots (s_rtbuf_in_stack *rvs)
 {
   s_rtbuf *rtb = g_rtbuf;
   unsigned int i = 0;
@@ -263,7 +263,7 @@ void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
         rtbuf_delete_(rtb);
       else {
         if (rtb->refc == 0) {
-          rtbuf_var_stack_push(rvs, i, 0);
+          rtbuf_in_stack_push(rvs, i, 0);
           c++;
         }
       }
@@ -275,15 +275,15 @@ void rtbuf_find_roots (s_rtbuf_var_stack *rvs)
   //printf(" rtbuf_find_roots => %u\n", c);
 }
 
-void rtbuf_sort_push_child (s_rtbuf_var_stack *rvs,
-                            s_rtbuf_var_ptr *ptr)
+void rtbuf_sort_push_child (s_rtbuf_in_stack *rvs,
+                            s_rtbuf_in_ptr *ptr)
 {
   int rtb;
   unsigned int i = 0;
   int found = 0;
-  //printf("rtbuf_sort_push_child { %u, %u }\n", ptr->rtb, ptr->var);
-  rtb = g_rtbuf[ptr->rtb].var[ptr->var].rtb;
-  ptr->var++;
+  //printf("rtbuf_sort_push_child { %u, %u }\n", ptr->rtb, ptr->in);
+  rtb = g_rtbuf[ptr->rtb].in[ptr->in].rtb;
+  ptr->in++;
   if (rtb >= 0) {
     while (i < g_rtbuf_sorted_n && !found) {
       if (g_rtbuf_sorted[i] == (unsigned) rtb)
@@ -297,24 +297,24 @@ void rtbuf_sort_push_child (s_rtbuf_var_stack *rvs,
       i++;
     }
     if (!found)
-      rtbuf_var_stack_push(rvs, rtb, 0);
+      rtbuf_in_stack_push(rvs, rtb, 0);
   }
 }
 
 void rtbuf_sort ()
 {
-  s_rtbuf_var_stack rvs;
-  s_rtbuf_var_ptr *ptr;
+  s_rtbuf_in_stack rvs;
+  s_rtbuf_in_ptr *ptr;
   //printf("rtbuf_sort\n");
   if (g_rtbuf_alloc.n == 0)
     return;
-  rtbuf_var_stack_init(&rvs);
+  rtbuf_in_stack_init(&rvs);
   rtbuf_find_roots(&rvs);
   g_rtbuf_sorted_n = 0;
-  while ((ptr = rtbuf_var_stack_top(&rvs))) {
-    if (ptr->var == g_rtbuf[ptr->rtb].proc->in_n) {
+  while ((ptr = rtbuf_in_stack_top(&rvs))) {
+    if (ptr->in == g_rtbuf[ptr->rtb].proc->in_n) {
       g_rtbuf_sorted[g_rtbuf_sorted_n++] = ptr->rtb;
-      rtbuf_var_stack_pop(&rvs);
+      rtbuf_in_stack_pop(&rvs);
     } else
       rtbuf_sort_push_child(&rvs, ptr);
   }
@@ -386,11 +386,11 @@ int rtbuf_find (const char *x)
   return -1;
 }
 
-int rtbuf_var_find (s_rtbuf *rtb, const char *x)
+int rtbuf_in_find (s_rtbuf *rtb, const char *x)
 {
   s_rtbuf_proc *proc = rtb->proc;
   symbol sym;
-  //printf("rtbuf_var_find %s\n", x);
+  //printf("rtbuf_in_find %s\n", x);
   if ('0' <= x[0] && x[0] <= '9') {
     int i = atoi(x);
     if (0 <= i && (unsigned int) i < proc->in_n)
@@ -398,7 +398,7 @@ int rtbuf_var_find (s_rtbuf *rtb, const char *x)
   }
   if ((sym = symbol_find(x))) {
     unsigned int i = 0;
-    //printf("rtbuf_var_find sym %s\n", sym);
+    //printf("rtbuf_in_find sym %s\n", sym);
     while (i < proc->in_n) {
       if (sym == proc->in[i].name)
         return i;
@@ -453,7 +453,7 @@ void rtbuf_print (unsigned int i)
   fflush(stdout);
 }
 
-void rtbuf_print_long_var (s_rtbuf *rtb, unsigned int j)
+void rtbuf_print_long_in (s_rtbuf *rtb, unsigned int j)
 {
   assert(rtb);
   assert(rtb->proc);
@@ -463,11 +463,11 @@ void rtbuf_print_long_var (s_rtbuf *rtb, unsigned int j)
   assert(rtb->proc->in[j].type->name);
   printf("\n  in %i %s:%s", j, rtb->proc->in[j].name,
          rtb->proc->in[j].type->name);
-  if (rtb->var[j].rtb >= 0) {
-    s_rtbuf *target = &g_rtbuf[rtb->var[j].rtb];
-    unsigned int target_out = rtb->var[j].out;
+  if (rtb->in[j].rtb >= 0) {
+    s_rtbuf *target = &g_rtbuf[rtb->in[j].rtb];
+    unsigned int target_out = rtb->in[j].out;
     printf (" = ");
-    rtbuf_print(rtb->var[j].rtb);
+    rtbuf_print(rtb->in[j].rtb);
     printf(" out %u %s:%s", target_out,
            target->proc->out[target_out].name,
            target->proc->out[target_out].type->name);
@@ -487,7 +487,7 @@ void rtbuf_print_long (unsigned int i)
   if (rtb->data) {
     printf(" %d", rtb->refc);
     while (j < proc->in_n)
-      rtbuf_print_long_var(rtb, j++);
+      rtbuf_print_long_in(rtb, j++);
     j = 0;
     while (j < proc->out_n) {
       printf("\n  out %i %s:%s", j, proc->out[j].name,
