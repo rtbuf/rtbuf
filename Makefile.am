@@ -19,12 +19,14 @@ librtbuf_la_SOURCES = \
 	symbol.c \
 	rtbuf_type.c \
 	rtbuf_proc.c \
+	rtbuf_var.c \
 	rtbuf.c
 include_HEADERS += \
 	symbol.h \
 	rtbuf_defs.h \
 	rtbuf_type.h \
 	rtbuf_proc.h \
+	rtbuf_var.h \
 	rtbuf.h
 
 if ENABLE_LIBDATA
