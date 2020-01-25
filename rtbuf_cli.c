@@ -124,14 +124,14 @@ int rtbuf_cli_new (int argc, const char *argv[])
 
 int rtbuf_cli_set (int argc, const char *argv[])
 {
+  s_rtbuf_var *v;
   if (argc < 4 || argv[2][0] != '=' || argv[2][1])
     return rtbuf_err("usage: set VAR = TYPE ARG [...]");
   if (strncmp("new", argv[3], 4) == 0) {
     int rl;
     int rf;
     int rtb;
-    s_rtbuf_var *v;
-    if (argc < 5)
+    if (argc != 5)
       return rtbuf_err("usage: set VAR = new LIB PROC");
     if ((rl = rtbuf_lib_find(argv[4])) < 0)
       return rtbuf_err("library not found");
@@ -143,6 +143,17 @@ int rtbuf_cli_set (int argc, const char *argv[])
     assert(v);
     rtbuf_var_print(v);
     printf("\n");
+    return 0;
+  }
+  else if (strncmp("buffer", argv[3], 7) == 0) {
+    int rtb;
+    if (argc != 4)
+      return rtbuf_err("usage: set VAR = buffer N");
+    if ((rtb = rtbuf_find(argv[4])) < 0)
+      return rtbuf_err("buffer not found");
+    v = rtbuf_var_rtbuf_set(argv[1], rtb);
+    assert(v);
+    rtbuf_var_print(v);
     return 0;
   }
   return rtbuf_err("unknown type for set");
@@ -252,6 +263,7 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " load PATH                   Load library at PATH.\n"
          " buffers                     List buffers.\n"
          " buffer N                    Show buffer N.\n"
+         " set VAR = buffer N          Set variable.\n"
          " new LIB PROC                Instanciate library procedure.\n"
          " set VAR = new LIB PROC      Set variable.\n"
          " delete BUFFER               Unlink and delete RTBUF.\n"
