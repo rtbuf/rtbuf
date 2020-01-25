@@ -22,6 +22,7 @@
 #include "data.h"
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
+#include "rtbuf_var.h"
 #include "symbol.h"
 
 s_data_type   g_rtbuf_type = {
@@ -44,6 +45,7 @@ int librtbuf_init ()
   rtbuf_type_init();
   rtbuf_proc_init();
   rtbuf_lib_init_();
+  rtbuf_var_init();
   return 0;
 }
 

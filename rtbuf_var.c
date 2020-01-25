@@ -20,7 +20,8 @@ void rtbuf_var_init (void)
 s_rtbuf_var * rtbuf_var_new (const char *name)
 {
   s_rtbuf_var *v = data_new(&g_rtbuf_var_alloc);
-  v->name = name;
+  if (v)
+    v->name = symbol_intern(name);
   return v;
 }
 
@@ -28,15 +29,15 @@ s_rtbuf_var * rtbuf_var_find (const char *name)
 {
   s_rtbuf_var *v = g_rtbuf_var + g_rtbuf_var_alloc.n;
   unsigned i = g_rtbuf_var_alloc.n;
-  assert(name);
-  while (v--, i--) {
-    assert(v >= g_rtbuf_var);
-    if (v->name == name)
-      return v;
-  }
+  const char *sym = symbol_find(name);
+  if (sym)
+    while (v--, i--) {
+      assert(v >= g_rtbuf_var);
+      if (v->name == sym)
+        return v;
+    }
   return NULL;
 }
-
 
 s_rtbuf_var * rtbuf_var_rtbuf_set (const char *name, unsigned i)
 {
@@ -52,16 +53,18 @@ s_rtbuf_var * rtbuf_var_rtbuf_set (const char *name, unsigned i)
 
 void rtbuf_var_print (const s_rtbuf_var *v)
 {
-  assert(v);
-  switch (v->type) {
-  case RTBUF_VAR_NULL:
-    printf("NULL");
-    fflush(stdout);
-    break;
-  case RTBUF_VAR_RTBUF:
-    rtbuf_print_long(v->index);
-    break;
-  default:
-    assert(0);
+  if (v) {
+    printf("%s = ", v->name);
+    switch (v->type) {
+    case RTBUF_VAR_NULL:
+      printf("NULL");
+      fflush(stdout);
+      break;
+    case RTBUF_VAR_RTBUF:
+      rtbuf_print_long(v->index);
+      break;
+    default:
+      assert(0);
+    }
   }
 }

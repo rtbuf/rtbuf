@@ -18,11 +18,13 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include "cli.h"
+#include "symbol.h"
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
-#include "symbol.h"
+#include "rtbuf_var.h"
 
 s_cli     g_cli;
 pthread_t g_rtbuf_cli_thread = 0;
@@ -117,6 +119,33 @@ int rtbuf_cli_new (int argc, const char *argv[])
   rtbuf_print(rtb);
   printf("\n");
   return 0;
+}
+
+
+int rtbuf_cli_set (int argc, const char *argv[])
+{
+  if (argc < 4 || argv[2][0] != '=' || argv[2][1])
+    return rtbuf_err("usage: set VAR = TYPE ARG [...]");
+  if (strncmp("new", argv[3], 4) == 0) {
+    int rl;
+    int rf;
+    int rtb;
+    s_rtbuf_var *v;
+    if (argc < 5)
+      return rtbuf_err("usage: set VAR = new LIB PROC");
+    if ((rl = rtbuf_lib_find(argv[4])) < 0)
+      return rtbuf_err("library not found");
+    if ((rf = rtbuf_lib_find_proc(&g_rtbuf_lib[rl], argv[5])) < 0)
+      return rtbuf_err("procedure not found");
+    if ((rtb = rtbuf_new(g_rtbuf_lib[rl].proc[rf])) < 0)
+      return rtbuf_err("buffer not created");
+    v = rtbuf_var_rtbuf_set(argv[1], rtb);
+    assert(v);
+    rtbuf_var_print(v);
+    printf("\n");
+    return 0;
+  }
+  return rtbuf_err("unknown type for set");
 }
 
 int rtbuf_cli_delete (int argc, const char *argv[])
@@ -224,6 +253,7 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " buffers                     List buffers.\n"
          " buffer N                    Show buffer N.\n"
          " new LIB PROC                Instanciate library procedure.\n"
+         " set VAR = new LIB PROC      Set variable.\n"
          " delete BUFFER               Unlink and delete RTBUF.\n"
          " bind SOURCE OUT DEST IN     Bind SOURCE OUT to DEST IN.\n"
          " unbind BUFFER IN            Unbind BUFFER IN.\n"
@@ -253,6 +283,7 @@ s_cli_function rtbuf_cli_functions[] = {
   { "bind",    4, rtbuf_cli_bind },
   { "unbind",  1, rtbuf_cli_unbind },
   { "unbind",  2, rtbuf_cli_unbind },
+  { "set",    -1, rtbuf_cli_set },
   { "start",   0, rtbuf_cli_start },
   { "stop",    0, rtbuf_cli_stop },
   { "h",       0, rtbuf_cli_help },
