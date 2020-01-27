@@ -32,20 +32,24 @@ int rtbuf_signal_delay (s_rtbuf *rtb)
 {
   s_rtbuf_signal_fun in;
   s_rtbuf_signal_fun delay;
+  s_rtbuf_signal_fun feedback;
   s_rtbuf_signal_delay_data *data;
   unsigned int i = 0;
   rtbuf_signal_fun(rtb, RTBUF_SIGNAL_DELAY_IN_SIGNAL, &in);
   rtbuf_signal_fun(rtb, RTBUF_SIGNAL_DELAY_IN_DELAY, &delay);
+  rtbuf_signal_fun(rtb, RTBUF_SIGNAL_DELAY_IN_FEEDBACK, &feedback);
   data = (s_rtbuf_signal_delay_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
     double s = in.sample_fun(in.signal, i);
-    double d = min(max(0.0, delay.sample_fun(delay.signal, i)),
-                   RTBUF_SIGNAL_DELAY_MAX);
-    unsigned int ds = d * RTBUF_SIGNAL_SAMPLERATE;
-    unsigned int p = data->pos + RTBUF_SIGNAL_DELAY_SAMPLES_MAX - ds;
-    data->out[i] = data->in[p % RTBUF_SIGNAL_DELAY_SAMPLES_MAX];
-    data->in[data->pos++] = s;
-    data->pos %= RTBUF_SIGNAL_DELAY_SAMPLES_MAX;
+    double d = clamp(0.0, delay.sample_fun(delay.signal, i),
+                     RTBUF_SIGNAL_DELAY_MAX);
+    double f = feedback.sample_fun(feedback.signal, i);
+    unsigned int ds = min(d * RTBUF_SIGNAL_SAMPLERATE + 1,
+                          RTBUF_SIGNAL_DELAY_SAMPLES_MAX);
+    data->out[i] = data->in[data->pos];
+    data->in[data->pos] *= f;
+    data->in[data->pos] += s;
+    data->pos %= ds;
     i++;
   }
   return 0;
