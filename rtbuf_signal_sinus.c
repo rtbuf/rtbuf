@@ -20,6 +20,15 @@
 #include "rtbuf.h"
 #include "rtbuf_signal.h"
 
+int rtbuf_signal_sinus_start (s_rtbuf *rtb)
+{
+  s_rtbuf_signal_sinus_data *data;
+  assert(rtb->proc->out_bytes == sizeof(*data));
+  data = (s_rtbuf_signal_sinus_data*) rtb->data;
+  data->phase = 0;
+  return 0;
+}
+
 int rtbuf_signal_sinus (s_rtbuf *rtb)
 {
   s_rtbuf_signal_fun freq;
@@ -40,14 +49,5 @@ int rtbuf_signal_sinus (s_rtbuf *rtb)
     //printf(" i=%u f=%f a=%f %f", i, f, a, data->samples[i]);
     i++;
   }
-  return 0;
-}
-
-int rtbuf_signal_sinus_start (s_rtbuf *rtb)
-{
-  s_rtbuf_signal_sinus_data *data;
-  assert(rtb->proc->out_bytes == sizeof(*data));
-  data = (s_rtbuf_signal_sinus_data*) rtb->data;
-  data->phase = 0;
   return 0;
 }
