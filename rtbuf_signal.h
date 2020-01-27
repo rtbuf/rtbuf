@@ -67,7 +67,7 @@ const double g_rtbuf_signal_default_frequency;
 
 #pragma pack(push,1)
 typedef struct rtbuf_signal_delay_data {
-        t_rtbuf_signal out;
+        t_rtbuf_signal signal;
         t_rtbuf_signal_sample in[RTBUF_SIGNAL_DELAY_SAMPLES_MAX];
         unsigned int pos;
 } s_rtbuf_signal_delay_data;
@@ -82,6 +82,33 @@ enum {
 
 int rtbuf_signal_delay (s_rtbuf *rtb);
 int rtbuf_signal_delay_start (s_rtbuf *rtb);
+
+/* flanger */
+
+#define RTBUF_SIGNAL_FLANGER_MAX 1
+#define RTBUF_SIGNAL_FLANGER_SAMPLES_MAX (RTBUF_SIGNAL_FLANGER_MAX * \
+                                          RTBUF_SIGNAL_SAMPLERATE)
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_flanger_data {
+  t_rtbuf_signal signal;
+  double phase;
+  t_rtbuf_signal_sample in[RTBUF_SIGNAL_FLANGER_SAMPLES_MAX];
+  unsigned int pos;
+} s_rtbuf_signal_flanger_data;
+#pragma pack(pop)
+
+enum {
+  RTBUF_SIGNAL_FLANGER_IN_SIGNAL = 0,
+  RTBUF_SIGNAL_FLANGER_IN_FREQUENCY,
+  RTBUF_SIGNAL_FLANGER_IN_AMPLITUDE,
+  RTBUF_SIGNAL_FLANGER_IN_DELAY,
+  RTBUF_SIGNAL_FLANGER_IN_FEEDBACK,
+  RTBUF_SIGNAL_FLANGER_IN_N
+};
+
+int rtbuf_signal_flanger (s_rtbuf *rtb);
+int rtbuf_signal_flanger_start (s_rtbuf *rtb);
 
 /* sinus */
 

@@ -39,6 +39,21 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_delay_out[] = {
   { "pos", "unsigned int" },
   { 0, 0 } };
 
+s_rtbuf_lib_proc_in g_rtbuf_signal_flanger_in[] = {
+  { "signal",    RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 0.2, 0.0, 1.0 },
+  { "delay",     RTBUF_SIGNAL_TYPE, 0.01, 0.0, 1.0 },
+  { "feedback",  RTBUF_SIGNAL_TYPE, 0.1, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out g_rtbuf_signal_flanger_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "phase", "double" },
+  { "in", RTBUF_SIGNAL_DELAY_TYPE },
+  { "pos", "unsigned int" },
+  { 0, 0 } };
+
 s_rtbuf_lib_proc_in g_rtbuf_signal_sinus_in[] = {
   { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
   { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },

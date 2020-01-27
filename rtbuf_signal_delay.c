@@ -46,7 +46,7 @@ int rtbuf_signal_delay (s_rtbuf *rtb)
     double f = feedback.sample_fun(feedback.signal, i);
     unsigned int ds = min(d * RTBUF_SIGNAL_SAMPLERATE + 1,
                           RTBUF_SIGNAL_DELAY_SAMPLES_MAX);
-    data->out[i] = data->in[data->pos];
+    data->signal[i] = data->in[data->pos];
     data->in[data->pos] *= f;
     data->in[data->pos] += s;
     data->pos %= ds;
