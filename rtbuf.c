@@ -381,10 +381,17 @@ void rtbuf_stop ()
 
 int rtbuf_find (const char *x)
 {
-  int i = atoi(x);
-  if (0 <= i && (unsigned int) i < g_rtbuf_alloc.n &&
-      g_rtbuf[i].data && g_rtbuf[i].proc)
-    return i;
+  if ('0' <= x[0] && x[0] <= '9') {
+    int i = atoi(x);
+    if (0 <= i && (unsigned int) i < g_rtbuf_alloc.n &&
+        g_rtbuf[i].data && g_rtbuf[i].proc)
+      return i;
+  }
+  else {
+    s_rtbuf_var *v = rtbuf_var_find(x);
+    if (v)
+      return v->index;
+  }
   return -1;
 }
 

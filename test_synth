@@ -2,17 +2,17 @@ load signal
 load glfw3
 load synth
 load dynamic
-load portaudio
-new glfw3 keyboard
-new synth adsr
-new signal square
-new synth synth
-bind 0 notes  3 notes
-bind 1 signal 3 envelope
-bind 2 signal 3 oscillator
-new dynamic limiter
-bind 3 signal 4 signal
-new portaudio output
-bind 4 signal 5 left
-bind 4 signal 5 right
+load sndio
+set Keyboard00 = new glfw3 keyboard
+set ADSR00 = new synth adsr
+set Square00 = new signal square
+set Synth00 = new synth synth
+bind Keyboard00 notes Synth00 notes
+bind ADSR00 signal Synth00 envelope
+bind Square00 signal Synth00 oscillator
+set Limiter00 = new dynamic limiter
+bind Synth00 signal Limiter00 signal
+set Output = new sndio output
+bind Limiter00 signal Output left
+bind Limiter00 signal Output right
 start
