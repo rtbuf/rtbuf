@@ -95,6 +95,7 @@ typedef struct rtbuf_signal_flanger_data {
   double phase;
   t_rtbuf_signal_sample in[RTBUF_SIGNAL_FLANGER_SAMPLES_MAX];
   unsigned int pos;
+  unsigned int ds;
 } s_rtbuf_signal_flanger_data;
 #pragma pack(pop)
 

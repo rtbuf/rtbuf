@@ -17,6 +17,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include <strings.h>
 #include "rtbuf.h"
 #include "rtbuf_signal.h"
@@ -28,6 +29,8 @@ int rtbuf_signal_flanger_start (s_rtbuf *rtb)
   data = (s_rtbuf_signal_flanger_data*) rtb->data;
   data->phase = 0;
   bzero(data->in, sizeof(data->in));
+  data->pos = 0;
+  data->ds = 0;
   return 0;
 }
 
@@ -54,16 +57,18 @@ int rtbuf_signal_flanger (s_rtbuf *rtb)
     double delay;
     double fb = feedback.sample_fun(feedback.signal, i);
     unsigned int ds;
+    unsigned int pos;
     f = max(0.0, f);
     f /= (double) RTBUF_SIGNAL_SAMPLERATE;
     data->phase = fmod(data->phase + 2.0 * M_PI * f, 2.0 * M_PI);
     delay = a * (sin(data->phase) * 0.5 + 0.5) + d;
-    ds = min(delay * RTBUF_SIGNAL_SAMPLERATE + 1,
-             RTBUF_SIGNAL_DELAY_SAMPLES_MAX);
-    data->signal[i] = data->in[data->pos] + s;
-    data->in[data->pos] *= fb;
-    data->in[data->pos] += s;
-    data->pos %= ds;
+    ds = max(0.0, min(delay * RTBUF_SIGNAL_SAMPLERATE,
+                      RTBUF_SIGNAL_FLANGER_SAMPLES_MAX));
+    pos = (data->pos + RTBUF_SIGNAL_FLANGER_SAMPLES_MAX - ds) %
+      RTBUF_SIGNAL_FLANGER_SAMPLES_MAX;
+    data->signal[i] = (data->in[pos] + s) / 2.0;
+    data->in[data->pos++] = (1.0 - fb) * s + fb * data->in[pos];
+    data->pos %= RTBUF_SIGNAL_FLANGER_SAMPLES_MAX;
     i++;
   }
   return 0;
