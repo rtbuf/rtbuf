@@ -30,11 +30,11 @@ const double g_rtbuf_signal_default_frequency = 220.0;
 s_rtbuf_lib_proc_in g_rtbuf_signal_delay_in[] = {
   { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
   { "delay",    RTBUF_SIGNAL_TYPE, 0.4, 0.0, RTBUF_SIGNAL_DELAY_MAX },
-  { "feedback", RTBUF_SIGNAL_TYPE, 0.1, 0.0, 1.0 },
+  { "feedback", RTBUF_SIGNAL_TYPE, 0.5, 0.0, 1.0 },
   { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_delay_out[] = {
-  { "wet", RTBUF_SIGNAL_TYPE },
+  { "signal", RTBUF_SIGNAL_TYPE },
   { "in", RTBUF_SIGNAL_DELAY_TYPE },
   { "pos", "unsigned int" },
   { 0, 0 } };
