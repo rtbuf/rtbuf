@@ -26,7 +26,7 @@ int g_initialized = 0;
 int rtbuf_portaudio_output_start (s_rtbuf *rtb)
 {
   s_rtbuf_portaudio_output_data *data;
-  s_rtbuf_portaudio_output_reserved *res;
+  PaError err;
   assert(rtb->proc->out_bytes == sizeof(*data));
   data = (s_rtbuf_portaudio_output_data*) rtb->data;
   if (!g_initialized) {
@@ -34,18 +34,22 @@ int rtbuf_portaudio_output_start (s_rtbuf *rtb)
       return rtbuf_err("portaudio_output_start: Pa_Initialize() failed");
     g_initialized = 1;
   }
-  res = &data->reserved;
-  if (!res->stream) {
-    if (Pa_OpenDefaultStream(&res->stream,              /* stream pointer */
+  err = Pa_OpenDefaultStream(&data->reserved.stream,    /* stream pointer */
                              0,                         /* input channels */
                              RTBUF_PORTAUDIO_CHANNELS,  /* output channels */
                              paInt16,                   /* sample format */
                              RTBUF_SIGNAL_SAMPLERATE,   /* sample rate */
                              RTBUF_SIGNAL_SAMPLES,      /* frames per buffer */
                              NULL,                      /* stream callback */
-                             (void*) rtb)               /* user data */
-        != paNoError)
-      return rtbuf_err("portaudio_output_start: Pa_OpenDefaultStream() failed");
+                             NULL);                     /* user data */
+  if (err != paNoError) {
+    rtbuf_err(Pa_GetErrorText(err));
+    return rtbuf_err("portaudio_output_start: Pa_OpenDefaultStream() failed");
+  }
+  err = Pa_StartStream(data->reserved.stream);
+  if (err != paNoError) {
+    rtbuf_err(Pa_GetErrorText(err));
+    return rtbuf_err("portaudio output start: Pa_StartStream() failed");
   }
   return 0;
 }
@@ -55,6 +59,7 @@ int rtbuf_portaudio_output_stop (s_rtbuf *rtb)
   s_rtbuf_portaudio_output_data *data;
   data = (s_rtbuf_portaudio_output_data*) rtb->data;
   if (data->reserved.stream) {
+    Pa_StopStream(data->reserved.stream);
     Pa_CloseStream(data->reserved.stream);
     data->reserved.stream = 0;
   }
@@ -68,6 +73,7 @@ int rtbuf_portaudio_output (s_rtbuf *rtb)
   short *sample;
   unsigned int i = 0;
   unsigned int j = 0;
+  PaError err;
   assert(rtb);
   assert(rtb->data);
   assert(rtb->proc);
@@ -93,7 +99,11 @@ int rtbuf_portaudio_output (s_rtbuf *rtb)
     }
     i++;
   }
-  Pa_WriteStream(data->reserved.stream, data->samples, RTBUF_SIGNAL_SAMPLES);
+  err = Pa_WriteStream(data->reserved.stream, data->samples, RTBUF_SIGNAL_SAMPLES);
+  if (err != paNoError) {
+    rtbuf_err(Pa_GetErrorText(err));
+    rtbuf_err("portaudio output: Pa_WriteStream failed");
+  }
   //printf("\n");
   return 0;
 }
