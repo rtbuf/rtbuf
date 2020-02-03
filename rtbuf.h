@@ -62,8 +62,8 @@ int   rtbuf_out_find (s_rtbuf *rtb, symbol sym);
 int   rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                       unsigned int size);
 void  rtbuf_sort ();
-void  rtbuf_start ();
-void  rtbuf_run ();
+int   rtbuf_start ();
+int   rtbuf_run ();
 void  rtbuf_stop ();
 void  rtbuf_print (unsigned int i);
 void  rtbuf_print_long (unsigned int i);

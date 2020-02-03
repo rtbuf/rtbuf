@@ -216,10 +216,11 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
 void * rtbuf_cli_thread_proc (void *arg)
 {
   (void) arg;
-  rtbuf_start();
-  g_rtbuf_run = 1;
+  if (!rtbuf_start())
+    g_rtbuf_run = 1;
   while (g_rtbuf_run) {
-    rtbuf_run();
+    if (rtbuf_run())
+      g_rtbuf_run = 0;
   }
   rtbuf_stop();
   return 0;

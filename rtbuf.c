@@ -324,7 +324,7 @@ void rtbuf_sort ()
   rtbuf_print_sorted();
 }
 
-void rtbuf_start ()
+int rtbuf_start ()
 {
   unsigned int i = 0;
   //printf("rtbuf_start\n");
@@ -339,13 +339,15 @@ void rtbuf_start ()
       //printf(" ");
       //rtbuf_proc_print(rtb->proc);
       //printf("\n");
-      rtb->proc->start(rtb);
+      if (rtb->proc->start(rtb))
+        return 1;
     }
     i++;
   }
+  return 0;
 }
 
-void rtbuf_run ()
+int rtbuf_run ()
 {
   unsigned int i = 0;
   //printf("rtbuf_run\n");
@@ -358,10 +360,12 @@ void rtbuf_run ()
     //printf("\n");
     assert(rtb->data);
     if (rtb->proc->f)
-      rtb->proc->f(rtb);
+      if (rtb->proc->f(rtb))
+        return 1;
     i++;
   }
   //printf(" rtbuf_run => %u\n", i);
+  return 0;
 }
 
 void rtbuf_stop ()
