@@ -67,7 +67,7 @@ enum {
 #define RTBUF_MUSIC_NOTE_IN_STOP(notes, i) \
   (notes + 1 + RTBUF_MUSIC_NOTE_INS * i + RTBUF_MUSIC_NOTE_IN_STOP)
 
-#define RTBUF_MUSIC_NOTE_MAX 128
+#define RTBUF_MUSIC_NOTE_MAX 32
 
 #pragma pack(push,1)
 typedef struct rtbuf_music_notes {
