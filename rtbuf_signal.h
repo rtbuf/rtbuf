@@ -111,6 +111,59 @@ enum {
 int rtbuf_signal_flanger (s_rtbuf *rtb);
 int rtbuf_signal_flanger_start (s_rtbuf *rtb);
 
+/* butterworth hipass filter, first order */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_hipass_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample y1;
+} s_rtbuf_signal_hipass_data;
+#pragma pack(pop)
+
+enum {
+  RTBUF_SIGNAL_HIPASS_IN_SIGNAL = 0,
+  RTBUF_SIGNAL_HIPASS_IN_CUTOFF,
+  RTBUF_SIGNAL_HIPASS_INS
+};
+
+int rtbuf_signal_hipass (s_rtbuf *rtb);
+int rtbuf_signal_hipass_start (s_rtbuf *rtb);
+
+/* butterworth lowpass filter, first order */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_lowpass_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample y1;
+} s_rtbuf_signal_lowpass_data;
+#pragma pack(pop)
+
+enum {
+  RTBUF_SIGNAL_LOWPASS_IN_SIGNAL = 0,
+  RTBUF_SIGNAL_LOWPASS_IN_CUTOFF,
+  RTBUF_SIGNAL_LOWPASS_INS
+};
+
+int rtbuf_signal_lowpass (s_rtbuf *rtb);
+int rtbuf_signal_lowpass_start (s_rtbuf *rtb);
+
+/* butterworth lowpass filter, second order */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_lowpass2_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample x2;
+        t_rtbuf_signal_sample y1;
+        t_rtbuf_signal_sample y2;
+} s_rtbuf_signal_lowpass2_data;
+#pragma pack(pop)
+
+int rtbuf_signal_lowpass2 (s_rtbuf *rtb);
+int rtbuf_signal_lowpass2_start (s_rtbuf *rtb);
+
 /* sinus */
 
 #pragma pack(push,1)
