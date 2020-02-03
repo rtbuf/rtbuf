@@ -12959,7 +12959,11 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing strlcpy" >&5
+ac_fn_c_check_func "$LINENO" "strlcpy" "ac_cv_func_strlcpy"
+if test "x$ac_cv_func_strlcpy" = xyes; then :
+  echo using system strlcpy
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing strlcpy" >&5
 $as_echo_n "checking for library containing strlcpy... " >&6; }
 if ${ac_cv_search_strlcpy+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13013,7 +13017,9 @@ ac_res=$ac_cv_search_strlcpy
 if test "$ac_res" != no; then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   LIBRTBUF_CFLAGS="-I/usr/include/bsd -DLIBBSD_OVERLAY"
-                LIBRTBUF_LIBS="$LIBRTBUF_LIBS -lbsd"
+                             LIBRTBUF_LIBS="$LIBRTBUF_LIBS -lbsd"
+fi
+
 fi
 
 
@@ -13314,7 +13320,11 @@ else
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing dlopen" >&5
+ac_fn_c_check_func "$LINENO" "dlopen" "ac_cv_func_dlopen"
+if test "x$ac_cv_func_dlopen" = xyes; then :
+  echo using system dlopen
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing dlopen" >&5
 $as_echo_n "checking for library containing dlopen... " >&6; }
 if ${ac_cv_search_dlopen+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13368,6 +13378,8 @@ ac_res=$ac_cv_search_dlopen
 if test "$ac_res" != no; then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
   RTBUF_LIBS="$RTBUF_LIBS -ldl"
+fi
+
 fi
 
 
