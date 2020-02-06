@@ -40,15 +40,19 @@ int rtbuf_signal_lowpass2 (s_rtbuf *rtb)
   rtbuf_signal_fun(rtb, RTBUF_SIGNAL_LOWPASS_IN_CUTOFF, &cutoff);
   data = (s_rtbuf_signal_lowpass2_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
-    double s = in.sample_fun(in.signal, i);
+    double x = in.sample_fun(in.signal, i);
     double fc = cutoff.sample_fun(cutoff.signal, i);
     double k = RTBUF_SIGNAL_SAMPLERATE / (M_PI * fc);
-    double z = 1.0 / (k * (k + M_SQRT2) + 1);
-    data->signal[i] = z * (s + 2.0 * data->x1 + data->x2 -
-                           data->y1 * 2.0 * (1.0 - k * k) -
-                           data->y2 * (1.0 + (k - M_SQRT2) * k));
+    double k2 = k * k;
+    double k_sqrt2 = M_SQRT2 * k;
+    double z = 1.0 / (k2 + k_sqrt2 + 1);
+    data->signal[i] = z * (x
+                           + data->x1 * 2.0
+                           + data->x2
+                           + data->y1 * 2.0 * (k2 - 1.0)
+                           + data->y2 * (k_sqrt2 - (k2 + 1.0)));
     data->x2 = data->x1;
-    data->x1 = s;
+    data->x1 = x;
     data->y2 = data->y1;
     data->y1 = data->signal[i];
     i++;
