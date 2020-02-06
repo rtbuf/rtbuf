@@ -130,6 +130,21 @@ enum {
 int rtbuf_signal_hipass (s_rtbuf *rtb);
 int rtbuf_signal_hipass_start (s_rtbuf *rtb);
 
+/* butterworth hipass filter, second order */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_hipass2_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample x2;
+        t_rtbuf_signal_sample y1;
+        t_rtbuf_signal_sample y2;
+} s_rtbuf_signal_hipass2_data;
+#pragma pack(pop)
+
+int rtbuf_signal_hipass2 (s_rtbuf *rtb);
+int rtbuf_signal_hipass2_start (s_rtbuf *rtb);
+
 /* butterworth lowpass filter, first order */
 
 #pragma pack(push,1)

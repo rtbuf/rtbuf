@@ -7,7 +7,7 @@ include_HEADERS =
 lib_LTLIBRARIES =
 
 if DEBUG
-AM_CFLAGS = -DDEBUG -O0 -ggdb
+AM_CFLAGS = -DDEBUG -O0 -ggdb -fsanitize=address
 else
 AM_CFLAGS = -DNDEBUG -O2
 endif
@@ -92,6 +92,7 @@ librtbuf_signal_la_SOURCES = \
 	rtbuf_signal_delay.c \
 	rtbuf_signal_flanger.c \
 	rtbuf_signal_hipass.c \
+	rtbuf_signal_hipass2.c \
 	rtbuf_signal_lowpass.c \
 	rtbuf_signal_lowpass2.c \
 	rtbuf_signal_sinus.c \
