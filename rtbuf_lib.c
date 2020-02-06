@@ -184,7 +184,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   while (lib->proc_n < RTBUF_PROC_MAX &&
          rtbuf_lib_proc_p(&proc[lib->proc_n]))
     lib->proc_n++;
-  lib->proc = malloc(sizeof(s_rtbuf_proc*) * lib->proc_n);
+  lib->proc = malloc(sizeof(s_rtbuf_proc*) * (lib->proc_n + 1));
   while (i < lib->proc_n) {
     lib->proc[i] = rtbuf_proc_new();
     assert(lib->proc[i]);
