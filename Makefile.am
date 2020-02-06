@@ -7,7 +7,7 @@ include_HEADERS =
 lib_LTLIBRARIES =
 
 if DEBUG
-AM_CFLAGS = -DDEBUG -O0 -ggdb -fsanitize=address
+AM_CFLAGS = -DDEBUG -O0 -ggdb
 else
 AM_CFLAGS = -DNDEBUG -O2
 endif
