@@ -157,7 +157,10 @@ f_cli cli_find_function (s_cli *cli, const char *name, int arity)
 
 int cli_eval (s_cli *cli)
 {
-  if (0 < cli->argc && cli->f)
-    return cli->f(cli->argc - 1, cli->argv);
+  if (0 < cli->argc) {
+    if (cli->f)
+      return cli->f(cli->argc - 1, cli->argv);
+    fprintf(stderr, "rtbuf: function not found: %s\n", cli->argv[0]);
+  }
   return -1;
 }
