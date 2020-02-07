@@ -179,6 +179,23 @@ typedef struct rtbuf_signal_lowpass2_data {
 int rtbuf_signal_lowpass2 (s_rtbuf *rtb);
 int rtbuf_signal_lowpass2_start (s_rtbuf *rtb);
 
+/* butterworth lowpass filter, third order */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_lowpass3_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample x2;
+        t_rtbuf_signal_sample x3;
+        t_rtbuf_signal_sample y1;
+        t_rtbuf_signal_sample y2;
+        t_rtbuf_signal_sample y3;
+} s_rtbuf_signal_lowpass3_data;
+#pragma pack(pop)
+
+int rtbuf_signal_lowpass3 (s_rtbuf *rtb);
+int rtbuf_signal_lowpass3_start (s_rtbuf *rtb);
+
 /* sinus */
 
 #pragma pack(push,1)
