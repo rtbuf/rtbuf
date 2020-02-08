@@ -93,6 +93,7 @@ librtbuf_signal_la_SOURCES = \
 	rtbuf_signal_flanger.c \
 	rtbuf_signal_hipass.c \
 	rtbuf_signal_hipass2.c \
+	rtbuf_signal_hipass3.c \
 	rtbuf_signal_lowpass.c \
 	rtbuf_signal_lowpass2.c \
 	rtbuf_signal_lowpass3.c \
