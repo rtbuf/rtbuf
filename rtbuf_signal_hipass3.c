@@ -14,7 +14,32 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+/*
 
+Polynomial for Butterworth third order high pass filter
+b: (w/s+1)*((w/s)^2+w/s+1) $
+
+Transfer function
+h: 1/b $
+
+Bilinear transform:
+s: 2*F*(1-z)/(1+z) $
+
+ratsimp(h);
+-(8 F³ z³ - 24 F³ z² + 24 F³ z - 8 F³)
+/((w³ - 4 F w² + 8 F² w - 8 F³) z³
+  + (3 w³ - 4 F w² - 8 F² w + 24 F³) z²
+  + (3 w³ + 4 F w² - 8 F² w - 24 F³) z
+  + w³ + 4 F w² + 8 F² w + 8 F³)
+
+a: w³ - 4 F w² + 8 F² w - 8 F³
+b: 3 w³ - 4 F w² - 8 F² w + 24 F³
+c: 3 w³ + 4 F w² - 8 F² w - 24 F³
+d: w³ + 4 F w² + 8 F² w + 8 F³
+
+y: (8 F³ ((x - x3) + 3 (x2 - x1)) - (a y3 + b y2 + c y1)) / d
+
+*/
 #include <math.h>
 #include "rtbuf.h"
 #include "rtbuf_signal.h"
