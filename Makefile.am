@@ -97,6 +97,7 @@ librtbuf_signal_la_SOURCES = \
 	rtbuf_signal_lowpass.c \
 	rtbuf_signal_lowpass2.c \
 	rtbuf_signal_lowpass3.c \
+	rtbuf_signal_lowpass4.c \
 	rtbuf_signal_sinus.c \
 	rtbuf_signal_square.c \
 	rtbuf_signal_type.h

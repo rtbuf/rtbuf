@@ -16,42 +16,38 @@
 /* Butterworth lowpass fourth order filter
 a: cos(5*%pi/8) $
 b: cos(7*%pi/8) $
-s: 2*Fs*(1-z)/(1+z) $
-B4:(s^2-2*s*a+1)*(s^2-2*s*b+1) $
+s: 2*F*(1-z)/(1+z) $
+B4:((s/w)^2-2*(s/w)*a+1)*((s/w)^2-2*s/w*b+1) $
 H: 1/B4 $
 ratsimp(H);
-         4      3      2                   4
-(%o20) (z  + 4 z  + 6 z  + 4 z + 1)/((16 Fs
-           7 %pi           5 %pi     3           5 %pi      7 %pi         2
- + (16 cos(-----) + 16 cos(-----)) Fs  + (16 cos(-----) cos(-----) + 8) Fs
-             8               8                     8          8
-          7 %pi          5 %pi            4
- + (4 cos(-----) + 4 cos(-----)) Fs + 1) z
-            8              8
-            4               7 %pi            5 %pi     3
- + ((- 64 Fs ) + ((- 32 cos(-----)) - 32 cos(-----)) Fs
-                              8                8
-          7 %pi          5 %pi            3
- + (8 cos(-----) + 8 cos(-----)) Fs + 4) z
-            8              8
-         4              5 %pi      7 %pi           2       2
- + (96 Fs  + ((- 32 cos(-----) cos(-----)) - 16) Fs  + 6) z
-                          8          8
-            4            7 %pi           5 %pi     3
- + ((- 64 Fs ) + (32 cos(-----) + 32 cos(-----)) Fs
-                           8               8
-             7 %pi           5 %pi                    4
- + ((- 8 cos(-----)) - 8 cos(-----)) Fs + 4) z + 16 Fs
-               8               8
-              7 %pi            5 %pi     3           5 %pi      7 %pi         2
- + ((- 16 cos(-----)) - 16 cos(-----)) Fs  + (16 cos(-----) cos(-----) + 8) Fs
-                8                8                     8          8
-             7 %pi           5 %pi
- + ((- 4 cos(-----)) - 4 cos(-----)) Fs + 1)
-               8               8
-c: 16*Fs^4+(16*b+16*a)*Fs^3+(16*a*b+8)*Fs^2+(4*b+4*a)*Fs+1 $
-d: (-64*Fs^4+(-32*b-32*a)*Fs^3+(8*b+8*a)*Fs+4 $
-e: 96*Fs^4
+        4  4      4  3      4  2      4      4
+(%o8) (w  z  + 4 w  z  + 6 w  z  + 4 w  z + w )
+    4                    3        2          2   2        3         3
+/((w  + (4 F b + 4 F a) w  + (16 F  a b + 8 F ) w  + (16 F  b + 16 F  a) w
+       4   4       4                    3           3          3
+ + 16 F ) z  + (4 w  + (8 F b + 8 F a) w  + ((- 32 F  b) - 32 F  a) w
+       4   3       4           2            2   2       4   2
+ - 64 F ) z  + (6 w  + ((- 32 F  a b) - 16 F ) w  + 96 F ) z
+       4                        3        3         3            4       4
+ + (4 w  + ((- 8 F b) - 8 F a) w  + (32 F  b + 32 F  a) w - 64 F ) z + w
+                        3        2          2   2
+ + ((- 4 F b) - 4 F a) w  + (16 F  a b + 8 F ) w
+           3          3            4
+ + ((- 16 F  b) - 16 F  a) w + 16 F )
+
+c:  16*F^4+( 16*b+16*a)*F^3*w+(16*a*b  +8)*F^2*w^2+( 4*b+4*a)*F*w^3+  w^4 $
+d: -64*F^4+(-32*b-32*a)*F^3*w                     +( 8*b+8*a)*F*w^3+4*w^4 $
+e:  96*F^4                   +(-32*a*b-16)*F^2*w^2                  +6*w^4 $
+f: -64*F^4+( 32*b+32*a)*F^3*w                     +(-8*b-8*a)*F*w^3+4*w^4 $
+g:  16*F^4+(-16*b-16*a)*F^3*w+(16*a*b  +8)*F^2*w^2+(-4*b-4*a)*F*w^3+  w^4 $
+
+c:   16*F^4 + 16*(a+b)*F^3*w +  (16*a*b+8)*F^2*w^2 + 4*(a+b)*F*w^3 +  w^4 $
+d: -(64*F^4 + 32*(a+b)*F^3*w)                      + 8*(a+b)*F*w^3 + 4*w^4 $
+e:   96*F^4                  -2*(16*a*b+8)*F^2*w^2                + 6*w^4 $
+f:  -64*F^4 + 32*(a+b)*F^3*w                       - 8*(a+b)*F*w^3 + 4*w^4 $
+g:   16*F^4 - 16*(a+b)*F^3*w +  (16*a*b+8)*F^2*w^2 - 4*(a+b)*F*w^3 +  w^4 $
+
+y: (w4*(x4+4*x3+6*x2+4*x1+x)-(c*y4+d*y3+e*y2+f*y1))/g $
 */
 #include <math.h>
 #include "rtbuf.h"
@@ -79,37 +75,52 @@ int rtbuf_signal_lowpass4 (s_rtbuf *rtb)
   s_rtbuf_signal_fun cutoff;
   s_rtbuf_signal_lowpass4_data *data;
   unsigned int i = 0;
-  const double fs = RTBUF_SIGNAL_SAMPLERATE;
-  const double fs2 = fs * fs;
-  const double fs3 = fs2 * fs;
-  const double _8fs3 = 8.0 * fs3;
+  const double a = cos(5.0 * M_PI / 8.0);
+  const double b = cos(7.0 * M_PI / 8.0);
+  const double f = RTBUF_SIGNAL_SAMPLERATE;
+  const double _4a_bf = 4.0 * (a + b) * f;
+  const double f2 = f * f;
+  const double _16ab_8f2 = (16.0 * a * b + 8.0) * f2;
+  const double f3 = f2 * f;
+  const double _16a_bf3 = 16.0 * (a + b) * f3;
+  const double f4 = f2 * f2;
+  const double _16f4 = 16.0 * f4;
+  const double _64f4 = 64.0 * f4;
   rtbuf_signal_fun(rtb, RTBUF_SIGNAL_LOWPASS_IN_SIGNAL, &in);
   rtbuf_signal_fun(rtb, RTBUF_SIGNAL_LOWPASS_IN_CUTOFF, &cutoff);
   data = (s_rtbuf_signal_lowpass4_data*) rtb->data;
   while (i < RTBUF_SIGNAL_SAMPLES) {
     const double x = in.sample_fun(in.signal, i);
     const double fc = cutoff.sample_fun(cutoff.signal, i);
-    const double wc = 2.0 * M_PI * fc;
-    const double wc2 = wc * wc;
-    const double wc3 = wc2 * wc;
-    const double _4fs2wc = 4.0 * fs2 * wc;
-    const double _8fs2wc = 2.0 * _4fs2wc;
-    const double _4fswc2 = 4.0 * fs * wc2;
-    const double _3wc3 = 3.0 * wc3;
-    const double a = wc3 + _4fswc2 + _8fs2wc + _8fs3;
-    const double b = _8fs2wc + 24.0 * fs3 - (_3wc3 + _4fswc2);
-    const double c = _4fswc2 + _8fs2wc - (24.0 * fs3 + _3wc3);
-    const double d = _8fs3 + _4fswc2 - (wc3 + _8fs2wc);
-    data->signal[i] = (wc3 * (x
-                              + 3.0 * (data->x1 +
-                                       data->x2)
-                              + data->x3)
-                       + b * data->y1
-                       + c * data->y2
-                       + d * data->y3) / a;
+    const double w = 2.0 * M_PI * fc;
+    const double _16a_bf3w = _16a_bf3 * w;
+    const double _32a_bf3w = 2.0 * _16a_bf3w;
+    const double w2 = w * w;
+    const double _16ab_8f2w2 = _16ab_8f2 * w2;
+    const double w3 = w2 * w;
+    const double _4a_bfw3 = _4a_bf * w3;
+    const double _8a_bfw3 = 2.0 * _4a_bfw3;
+    const double w4 = w2 * w2;
+    const double _4w4 = 4.0 * w4;
+    const double c =       _16f4 + _16a_bf3w + _16ab_8f2w2 + _4a_bfw3 +   w4;
+    const double d =     -(_64f4 + _32a_bf3w)              + _8a_bfw3 + _4w4;
+    const double e =   96.0 * f4       - 2.0 * _16ab_8f2w2        + 6.0 * w4;
+    const double f =     - _64f4 + _32a_bf3w               - _8a_bfw3 + _4w4;
+    const double g =       _16f4 - _16a_bf3w + _16ab_8f2w2 - _4a_bfw3 +   w4;
+    data->signal[i] = (w4 * (x
+                             + 4.0 * (data->x1 +
+                                      data->x3)
+                             + 6.0 * data->x2
+                             + data->x4)
+                       - (c * data->y4
+                          + d * data->y3
+                          + e * data->y2
+                          + f * data->y1)) / g;
+    data->x4 = data->x3;
     data->x3 = data->x2;
     data->x2 = data->x1;
     data->x1 = x;
+    data->y4 = data->y3;
     data->y3 = data->y2;
     data->y2 = data->y1;
     data->y1 = data->signal[i];
