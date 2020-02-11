@@ -18,7 +18,7 @@ bind Synth00 signal Delay00 signal
 set Flanger00 = new signal flanger
 bind Delay00 signal Flanger00 signal
 
-set LP00 = new signal lowpass4
+set LP00 = new signal lowpass5
 bind Flanger00 signal LP00 signal
 
 set Limiter00 = new dynamic limiter

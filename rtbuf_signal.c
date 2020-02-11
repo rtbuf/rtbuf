@@ -167,6 +167,25 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_lowpass4_out[] = {
   { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
   { 0, 0 } };
 
+s_rtbuf_lib_proc_in g_rtbuf_signal_lowpass5_in[] = {
+  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "cutoff",   RTBUF_SIGNAL_TYPE, 400.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out g_rtbuf_signal_lowpass5_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x5", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y5", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { 0, 0 } };
+
 s_rtbuf_lib_proc_in g_rtbuf_signal_sinus_in[] = {
   { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
   { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
@@ -211,6 +230,8 @@ s_rtbuf_lib_proc rtbuf_lib_proc[] = {
     g_rtbuf_signal_lowpass3_in, g_rtbuf_signal_lowpass3_out },
   { "lowpass4", rtbuf_signal_lowpass4, rtbuf_signal_lowpass4_start, 0,
     g_rtbuf_signal_lowpass4_in, g_rtbuf_signal_lowpass4_out },
+  { "lowpass5", rtbuf_signal_lowpass5, rtbuf_signal_lowpass5_start, 0,
+    g_rtbuf_signal_lowpass5_in, g_rtbuf_signal_lowpass5_out },
   { "sinus", rtbuf_signal_sinus, rtbuf_signal_sinus_start, 0,
     g_rtbuf_signal_sinus_in, g_rtbuf_signal_sinus_out },
   { "square", rtbuf_signal_square, rtbuf_signal_square_start, 0,
