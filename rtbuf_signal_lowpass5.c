@@ -13,7 +13,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-/* Butterworth lowpass fourth order filter
+/* Butterworth lowpass fifth order filter
 a: (sqrt(5)-1)/2 $
 b: (sqrt(5)+1)/2 $
 s: 2*F*(1-z)/(1+z) $
