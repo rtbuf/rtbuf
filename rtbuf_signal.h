@@ -181,6 +181,27 @@ typedef struct rtbuf_signal_hipass4_data {
 int rtbuf_signal_hipass4 (s_rtbuf *rtb);
 int rtbuf_signal_hipass4_start (s_rtbuf *rtb);
 
+/* butterworth hipass filter, fifth order */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_hipass5_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample x2;
+        t_rtbuf_signal_sample x3;
+        t_rtbuf_signal_sample x4;
+        t_rtbuf_signal_sample x5;
+        t_rtbuf_signal_sample y1;
+        t_rtbuf_signal_sample y2;
+        t_rtbuf_signal_sample y3;
+        t_rtbuf_signal_sample y4;
+        t_rtbuf_signal_sample y5;
+} s_rtbuf_signal_hipass5_data;
+#pragma pack(pop)
+
+int rtbuf_signal_hipass5 (s_rtbuf *rtb);
+int rtbuf_signal_hipass5_start (s_rtbuf *rtb);
+
 /* butterworth lowpass filter, first order */
 
 #pragma pack(push,1)
