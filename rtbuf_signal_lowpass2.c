@@ -13,7 +13,12 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+/* Butterworth lowpass second order filter
 
+B2: s^2+sqrt(2)*s+1 $
+H: 1/B2 $
+
+*/
 #include <math.h>
 #include "rtbuf.h"
 #include "rtbuf_signal.h"
