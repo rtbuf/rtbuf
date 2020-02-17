@@ -27,7 +27,7 @@ bind LP00 signal Limiter00 signal
 set Flanger01 = new signal flanger
 bind Synth00 signal Flanger01 signal
 
-set HP01 = new signal hipass5
+set HP01 = new signal bandpass2
 bind Flanger01 signal HP01 signal
 
 set Limiter01 = new dynamic limiter

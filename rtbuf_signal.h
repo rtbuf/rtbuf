@@ -59,6 +59,32 @@ const double g_rtbuf_signal_sample_one;
 const double g_rtbuf_signal_sample_2pi;
 const double g_rtbuf_signal_default_frequency;
 
+/* butterworth bandpass filter, second order */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_bandpass2_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample x2;
+        t_rtbuf_signal_sample x3;
+        t_rtbuf_signal_sample x4;
+        t_rtbuf_signal_sample y1;
+        t_rtbuf_signal_sample y2;
+        t_rtbuf_signal_sample y3;
+        t_rtbuf_signal_sample y4;
+} s_rtbuf_signal_bandpass2_data;
+#pragma pack(pop)
+
+enum {
+  RTBUF_SIGNAL_BANDPASS_IN_SIGNAL = 0,
+  RTBUF_SIGNAL_BANDPASS_IN_CUTOFF,
+  RTBUF_SIGNAL_BANDPASS_IN_QFACTOR,
+  RTBUF_SIGNAL_BANDPASS_INS
+};
+
+int rtbuf_signal_bandpass2 (s_rtbuf *rtb);
+int rtbuf_signal_bandpass2_start (s_rtbuf *rtb);
+
 /* delay */
 
 #define RTBUF_SIGNAL_DELAY_MAX 10

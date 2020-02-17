@@ -27,6 +27,24 @@ const double g_rtbuf_signal_sample_half       = 0.5;
 const double g_rtbuf_signal_sample_one        = 1.0;
 const double g_rtbuf_signal_default_frequency = 220.0;
 
+s_rtbuf_lib_proc_in g_rtbuf_signal_bandpass2_in[] = {
+  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "cutoff",   RTBUF_SIGNAL_TYPE, 400.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "qfactor",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1000.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out g_rtbuf_signal_bandpass2_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { 0, 0 } };
+
 s_rtbuf_lib_proc_in g_rtbuf_signal_delay_in[] = {
   { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
   { "delay",    RTBUF_SIGNAL_TYPE, 0.4, 0.0, RTBUF_SIGNAL_DELAY_MAX },
@@ -229,6 +247,8 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_square_out[] = {
 const char     *rtbuf_lib_name = "signal";
 unsigned long   rtbuf_lib_ver = RTBUF_LIB_VER;
 s_rtbuf_lib_proc rtbuf_lib_proc[] = {
+  { "bandpass2", rtbuf_signal_bandpass2, rtbuf_signal_bandpass2_start, 0,
+    g_rtbuf_signal_bandpass2_in, g_rtbuf_signal_bandpass2_out },
   { "delay", rtbuf_signal_delay, rtbuf_signal_delay_start, 0,
     g_rtbuf_signal_delay_in, g_rtbuf_signal_delay_out },
   { "flanger", rtbuf_signal_flanger, rtbuf_signal_flanger_start, 0,
