@@ -24,6 +24,9 @@
 #include "rtbuf_music_type.h"
 #include "rtbuf_glfw3.h"
 
+#define RTBUF_GLFW3_KEYBOARD_WIDTH 512
+#define RTBUF_GLFW3_KEYBOARD_HEIGHT 256
+
 double scancode_frequency (int scancode, unsigned int octave)
 {
   int note = -1;
@@ -194,7 +197,8 @@ void rtbuf_glfw3_keyboard_draw (GLFWwindow *w)
 
 GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
 {
-  GLFWwindow *window = glfwCreateWindow(512, 128,
+  GLFWwindow *window = glfwCreateWindow(RTBUF_GLFW3_KEYBOARD_WIDTH,
+                                        RTBUF_GLFW3_KEYBOARD_HEIGHT,
                                         "rtbuf_glfw3_keyboard",
                                         NULL, NULL);
   if (!window) {
@@ -208,6 +212,8 @@ GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
   glfwSetWindowRefreshCallback(window,
                                rtbuf_glfw3_keyboard_draw);
   glfwShowWindow(window);
+  rtbuf_glfw3_keyboard_size(window, RTBUF_GLFW3_KEYBOARD_WIDTH,
+                            RTBUF_GLFW3_KEYBOARD_HEIGHT);
   return window;
 }
 
