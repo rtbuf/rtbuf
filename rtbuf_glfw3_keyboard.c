@@ -45,11 +45,16 @@ double scancode_frequency (int scancode, unsigned int octave)
   case 57: note =  9; break; /* A */
   case 44: note = 10; break;
   case 58: note = 11; break; /* B */
-  case 24: note = 12; break; /* C */
+  case 59:                   /* C */
+  case 24: note = 12; break;
+  case 46:
   case 11: note = 13; break;
-  case 25: note = 14; break; /* D */
+  case 60:                   /* D */
+  case 25: note = 14; break;
+  case 47:
   case 12: note = 15; break;
-  case 26: note = 16; break; /* E */
+  case 61:                   /* E */
+  case 26: note = 16; break;
   case 27: note = 17; break; /* F */
   case 14: note = 18; break;
   case 28: note = 19; break; /* G */
@@ -63,6 +68,8 @@ double scancode_frequency (int scancode, unsigned int octave)
   case 19: note = 27; break;
   case 33: note = 28; break; /* E */
   case 34: note = 29; break; /* F */
+  case 21: note = 30; break;
+  case 35: note = 31; break; /* G */
   }
   if (note >= 0)
     freq = rtbuf_music_note_frequency(octave, note);
@@ -176,7 +183,7 @@ void rtbuf_glfw3_keyboard_draw (GLFWwindow *w)
 {
   float y_buttons = 0.75f;
   float y_black = 0.36f;
-  unsigned int notes = 30;
+  unsigned int notes = 32;
   float n = ceilf((notes + 1) * 7 / 12);
   unsigned int i = 0;
   unsigned int j = 0;
