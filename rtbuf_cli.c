@@ -233,6 +233,11 @@ int rtbuf_cli_start (int argc, const char *argv[])
   (void) argv;
   if (argc != 0)
     return rtbuf_err("usage: start");
+  if (!g_rtbuf_run && g_rtbuf_cli_thread) {
+    if (pthread_join(g_rtbuf_cli_thread, 0))
+      return rtbuf_err("pthread_join failed");
+    g_rtbuf_cli_thread = 0;
+  }
   if (!g_rtbuf_cli_thread) {
     if (pthread_create(&g_rtbuf_cli_thread, 0, &rtbuf_cli_thread_proc,
                        0))
