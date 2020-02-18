@@ -202,6 +202,15 @@ void rtbuf_glfw3_keyboard_draw (GLFWwindow *w)
   glfwSwapBuffers(w);
 }
 
+void rtbuf_glfw3_keyboard_close (GLFWwindow *window)
+{
+  s_rtbuf *rtb = (s_rtbuf*) glfwGetWindowUserPointer(window);
+  s_rtbuf_glfw3_keyboard_data* data = (s_rtbuf_glfw3_keyboard_data*)
+    rtb->data;
+  glfwDestroyWindow(window);
+  data->window = 0;
+}
+
 GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
 {
   GLFWwindow *window = glfwCreateWindow(RTBUF_GLFW3_KEYBOARD_WIDTH,
@@ -215,6 +224,7 @@ GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
   glfwMakeContextCurrent(window);
   glfwSetWindowUserPointer(window, rtb);
   glfwSetKeyCallback(window, rtbuf_glfw3_keyboard_key);
+  glfwSetWindowCloseCallback(window, rtbuf_glfw3_keyboard_close);
   glfwSetWindowSizeCallback(window, rtbuf_glfw3_keyboard_size);
   glfwSetWindowRefreshCallback(window,
                                rtbuf_glfw3_keyboard_draw);
@@ -250,6 +260,8 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb)
   unsigned int i = 0;
   unsigned int n;
   data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
+  if (!data->window)
+    return 1;
   n = data->notes.note_n;
   while (i < RTBUF_MUSIC_NOTE_MAX && n > 0) {
     s_rtbuf_music_note *note = &data->notes.note[i];
