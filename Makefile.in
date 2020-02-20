@@ -242,17 +242,29 @@ librtbuf_portaudio_la_OBJECTS = $(am_librtbuf_portaudio_la_OBJECTS)
 @ENABLE_SIGNAL_TRUE@	$(am__DEPENDENCIES_1) librtbuf_music.la \
 @ENABLE_SIGNAL_TRUE@	librtbuf.la
 am__librtbuf_signal_la_SOURCES_DIST = rtbuf_signal.c \
-	rtbuf_signal_delay.c rtbuf_signal_flanger.c \
+	rtbuf_signal_bandpass2.c rtbuf_signal_delay.c \
+	rtbuf_signal_equalizer10.c rtbuf_signal_flanger.c \
 	rtbuf_signal_hipass.c rtbuf_signal_hipass2.c \
-	rtbuf_signal_lowpass.c rtbuf_signal_lowpass2.c \
+	rtbuf_signal_hipass3.c rtbuf_signal_hipass4.c \
+	rtbuf_signal_hipass5.c rtbuf_signal_lowpass.c \
+	rtbuf_signal_lowpass2.c rtbuf_signal_lowpass3.c \
+	rtbuf_signal_lowpass4.c rtbuf_signal_lowpass5.c \
 	rtbuf_signal_sinus.c rtbuf_signal_square.c rtbuf_signal_type.h
 @ENABLE_SIGNAL_TRUE@am_librtbuf_signal_la_OBJECTS = rtbuf_signal.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_bandpass2.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_delay.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_equalizer10.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_flanger.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass2.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass3.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass4.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass5.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass2.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass3.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass4.lo \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass5.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_sinus.lo \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_square.lo
 librtbuf_signal_la_OBJECTS = $(am_librtbuf_signal_la_OBJECTS)
@@ -319,12 +331,20 @@ am__depfiles_remade = ./$(DEPDIR)/cli.Po \
 	./$(DEPDIR)/rtbuf_portaudio_input.Plo \
 	./$(DEPDIR)/rtbuf_portaudio_output.Plo \
 	./$(DEPDIR)/rtbuf_signal.Plo \
+	./$(DEPDIR)/rtbuf_signal_bandpass2.Plo \
 	./$(DEPDIR)/rtbuf_signal_delay.Plo \
+	./$(DEPDIR)/rtbuf_signal_equalizer10.Plo \
 	./$(DEPDIR)/rtbuf_signal_flanger.Plo \
 	./$(DEPDIR)/rtbuf_signal_hipass.Plo \
 	./$(DEPDIR)/rtbuf_signal_hipass2.Plo \
+	./$(DEPDIR)/rtbuf_signal_hipass3.Plo \
+	./$(DEPDIR)/rtbuf_signal_hipass4.Plo \
+	./$(DEPDIR)/rtbuf_signal_hipass5.Plo \
 	./$(DEPDIR)/rtbuf_signal_lowpass.Plo \
 	./$(DEPDIR)/rtbuf_signal_lowpass2.Plo \
+	./$(DEPDIR)/rtbuf_signal_lowpass3.Plo \
+	./$(DEPDIR)/rtbuf_signal_lowpass4.Plo \
+	./$(DEPDIR)/rtbuf_signal_lowpass5.Plo \
 	./$(DEPDIR)/rtbuf_signal_sinus.Plo \
 	./$(DEPDIR)/rtbuf_signal_square.Plo \
 	./$(DEPDIR)/rtbuf_sndio.Plo ./$(DEPDIR)/rtbuf_sndio_input.Plo \
@@ -586,12 +606,20 @@ librtbuf_la_SOURCES = symbol.c rtbuf_type.c rtbuf_proc.c rtbuf_var.c \
 @ENABLE_SIGNAL_TRUE@librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS} librtbuf_music.la librtbuf.la
 @ENABLE_SIGNAL_TRUE@librtbuf_signal_la_SOURCES = \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_bandpass2.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_delay.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_equalizer10.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_flanger.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass2.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass3.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass4.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_hipass5.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass2.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass3.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass4.c \
+@ENABLE_SIGNAL_TRUE@	rtbuf_signal_lowpass5.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_sinus.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_square.c \
 @ENABLE_SIGNAL_TRUE@	rtbuf_signal_type.h
@@ -826,12 +854,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_portaudio_input.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_portaudio_output.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_bandpass2.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_delay.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_equalizer10.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_flanger.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_hipass.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_hipass2.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_hipass3.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_hipass4.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_hipass5.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_lowpass.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_lowpass2.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_lowpass3.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_lowpass4.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_lowpass5.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_sinus.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_signal_square.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtbuf_sndio.Plo@am__quote@ # am--include-marker
@@ -1267,12 +1303,20 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/rtbuf_portaudio_input.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_portaudio_output.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_bandpass2.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_delay.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_equalizer10.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_flanger.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass2.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass3.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass4.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass5.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass2.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass3.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass4.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass5.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_sinus.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_square.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_sndio.Plo
@@ -1348,12 +1392,20 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/rtbuf_portaudio_input.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_portaudio_output.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_bandpass2.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_delay.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_equalizer10.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_flanger.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass2.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass3.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass4.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_hipass5.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass2.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass3.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass4.Plo
+	-rm -f ./$(DEPDIR)/rtbuf_signal_lowpass5.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_sinus.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_signal_square.Plo
 	-rm -f ./$(DEPDIR)/rtbuf_sndio.Plo
