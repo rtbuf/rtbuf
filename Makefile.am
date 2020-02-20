@@ -91,6 +91,7 @@ librtbuf_signal_la_SOURCES = \
 	rtbuf_signal.c \
 	rtbuf_signal_bandpass2.c \
 	rtbuf_signal_delay.c \
+	rtbuf_signal_equalizer10.c \
 	rtbuf_signal_flanger.c \
 	rtbuf_signal_hipass.c \
 	rtbuf_signal_hipass2.c \

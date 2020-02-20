@@ -49,8 +49,6 @@ y: (4 f2 w2 (x4 - 2 x2 + x) - (b y1 + c y2 + d y3 + e y4)) / a;
 #include "rtbuf.h"
 #include "rtbuf_signal.h"
 
-const double sqrt2_2 = M_SQRT2 * M_SQRT2;
-
 int rtbuf_signal_bandpass2_start (s_rtbuf *rtb)
 {
   s_rtbuf_signal_bandpass2_data *data;

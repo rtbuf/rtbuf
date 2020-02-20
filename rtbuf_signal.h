@@ -100,14 +100,94 @@ typedef struct rtbuf_signal_delay_data {
 #pragma pack(pop)
 
 enum {
-  RTBUF_SIGNAL_DELAY_IN_SIGNAL = 0,
-  RTBUF_SIGNAL_DELAY_IN_DELAY,
-  RTBUF_SIGNAL_DELAY_IN_FEEDBACK,
-  RTBUF_SIGNAL_DELAY_INS
+        RTBUF_SIGNAL_DELAY_IN_SIGNAL = 0,
+        RTBUF_SIGNAL_DELAY_IN_DELAY,
+        RTBUF_SIGNAL_DELAY_IN_FEEDBACK,
+        RTBUF_SIGNAL_DELAY_INS
 };
 
 int rtbuf_signal_delay (s_rtbuf *rtb);
 int rtbuf_signal_delay_start (s_rtbuf *rtb);
+
+/* butterworth second order 10 band equalizer */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_equalizer10_data {
+        t_rtbuf_signal signal;
+        t_rtbuf_signal signal32;
+        t_rtbuf_signal signal64;
+        t_rtbuf_signal signal128;
+        t_rtbuf_signal signal256;
+        t_rtbuf_signal signal512;
+        t_rtbuf_signal signal1k;
+        t_rtbuf_signal signal2k;
+        t_rtbuf_signal signal4k;
+        t_rtbuf_signal signal8k;
+        t_rtbuf_signal signal16k;
+        t_rtbuf_signal_sample x1;
+        t_rtbuf_signal_sample x2;
+        t_rtbuf_signal_sample x3;
+        t_rtbuf_signal_sample x4;
+        t_rtbuf_signal_sample y0_1;
+        t_rtbuf_signal_sample y0_2;
+        t_rtbuf_signal_sample y0_3;
+        t_rtbuf_signal_sample y0_4;
+        t_rtbuf_signal_sample y1_1;
+        t_rtbuf_signal_sample y1_2;
+        t_rtbuf_signal_sample y1_3;
+        t_rtbuf_signal_sample y1_4;
+        t_rtbuf_signal_sample y2_1;
+        t_rtbuf_signal_sample y2_2;
+        t_rtbuf_signal_sample y2_3;
+        t_rtbuf_signal_sample y2_4;
+        t_rtbuf_signal_sample y3_1;
+        t_rtbuf_signal_sample y3_2;
+        t_rtbuf_signal_sample y3_3;
+        t_rtbuf_signal_sample y3_4;
+        t_rtbuf_signal_sample y4_1;
+        t_rtbuf_signal_sample y4_2;
+        t_rtbuf_signal_sample y4_3;
+        t_rtbuf_signal_sample y4_4;
+        t_rtbuf_signal_sample y5_1;
+        t_rtbuf_signal_sample y5_2;
+        t_rtbuf_signal_sample y5_3;
+        t_rtbuf_signal_sample y5_4;
+        t_rtbuf_signal_sample y6_1;
+        t_rtbuf_signal_sample y6_2;
+        t_rtbuf_signal_sample y6_3;
+        t_rtbuf_signal_sample y6_4;
+        t_rtbuf_signal_sample y7_1;
+        t_rtbuf_signal_sample y7_2;
+        t_rtbuf_signal_sample y7_3;
+        t_rtbuf_signal_sample y7_4;
+        t_rtbuf_signal_sample y8_1;
+        t_rtbuf_signal_sample y8_2;
+        t_rtbuf_signal_sample y8_3;
+        t_rtbuf_signal_sample y8_4;
+        t_rtbuf_signal_sample y9_1;
+        t_rtbuf_signal_sample y9_2;
+        t_rtbuf_signal_sample y9_3;
+        t_rtbuf_signal_sample y9_4;
+} s_rtbuf_signal_equalizer10_data;
+#pragma pack(pop)
+
+enum {
+  RTBUF_SIGNAL_EQUALIZER10_IN_SIGNAL = 0,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP32,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP64,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP128,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP256,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP512,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP1K,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP2K,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP4K,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP8K,
+  RTBUF_SIGNAL_EQUALIZER10_IN_AMP16K,
+  RTBUF_SIGNAL_EQUALIZER10_INS
+};
+
+int rtbuf_signal_equalizer10 (s_rtbuf *rtb);
+int rtbuf_signal_equalizer10_start (s_rtbuf *rtb);
 
 /* flanger */
 
@@ -355,5 +435,7 @@ typedef struct rtbuf_signal_square_data {
 
 int rtbuf_signal_square (s_rtbuf *rtb);
 int rtbuf_signal_square_start (s_rtbuf *rtb);
+
+const double sqrt2_2;
 
 #endif /* RTBUF_SIGNAL_H */
