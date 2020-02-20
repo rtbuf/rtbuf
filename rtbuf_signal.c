@@ -59,16 +59,16 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_delay_out[] = {
 
 s_rtbuf_lib_proc_in g_rtbuf_signal_equalizer10_in[] = {
   { "signal", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "amp32",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp64",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp128", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp256", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp512", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp1k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp2k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp4k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp8k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
-  { "amp16k", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 10.0 },
+  { "amp32",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp64",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp128", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp256", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp512", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp1k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp2k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp4k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp8k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp16k", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
   { 0, 0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_signal_equalizer10_out[] = {
