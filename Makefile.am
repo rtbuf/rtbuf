@@ -41,7 +41,19 @@ bin_PROGRAMS += rtbuf-gtk
 rtbuf_gtk_CFLAGS = ${GTK3_CFLAGS}
 rtbuf_gtk_LDADD = ${GTK3_LIBS} librtbuf.la
 rtbuf_gtk_SOURCES = \
-	rtbuf_gtk.c
+	rtbuf_lib.c \
+	rtbuf_gtk.c \
+	rtbuf_gtk_resources.c \
+	rtbuf_widget.c
+include_HEADERS += \
+	rtbuf_lib.h
+rtbuf_gtk_UI = \
+	rtbuf_input.ui \
+	rtbuf_modular.ui \
+	rtbuf_output.ui \
+	rtbuf_widget.ui
+rtbuf_gtk_resources.c: rtbuf_gtk.gresource.xml ${rtbuf_gtk_UI}
+	glib-compile-resources rtbuf_gtk.gresource.xml --target=rtbuf_gtk_resources.c --generate-source
 endif # ENABLE_GTK3
 
 if ENABLE_RTBUF

@@ -8,6 +8,7 @@
 /libtool
 /rtbuf
 /rtbuf-gtk
+/rtbuf_gtk_resources.c
 /rtbuf_music_type
 /rtbuf_music_type.h
 /rtbuf_portaudio_type
