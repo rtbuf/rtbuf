@@ -24,6 +24,8 @@ struct rtbuf_proc_in {
   symbol name;
   s_rtbuf_type *type;
   double def;
+  double min;
+  double max;
 };
 
 struct rtbuf_proc_out {

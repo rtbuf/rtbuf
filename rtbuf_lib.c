@@ -208,6 +208,8 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
       v->name = symbol_intern(in->name);
       v->type = rtbuf_type(in->type);
       v->def = in->def;
+      v->min = in->min;
+      v->max = in->max;
       in++;
       i++;
     }
