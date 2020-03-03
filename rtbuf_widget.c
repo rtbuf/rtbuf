@@ -43,7 +43,8 @@ static void rtbuf_widget_get_property (GObject     *object,
                                        GValue      *value,
                                        GParamSpec  *pspec);
 static void rtbuf_widget_finalize (GObject *object);
-static gboolean rtbuf_widget_draw (GtkWidget *widget, cairo_t *cr);
+static gboolean rtbuf_widget_draw (GtkWidget *widget, cairo_t *cr,
+                                   gpointer data);
 
 G_DEFINE_TYPE_WITH_PRIVATE (RtbufWidget, rtbuf_widget, GTK_TYPE_BOX)
 
@@ -68,7 +69,6 @@ rtbuf_widget_class_init (RtbufWidgetClass *klass)
                          "Pointer to a s_rtbuf",
                          G_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
   g_object_class_install_properties(gobject_class, LAST_PROP, rtbuf_widget_props);
-  widget_class->draw = rtbuf_widget_draw;
   gtk_widget_class_set_template_from_resource(widget_class,
                                               "/rtbuf/rtbuf_widget.ui");
   gtk_widget_class_bind_template_child_private(widget_class,
@@ -86,6 +86,8 @@ rtbuf_widget_init (RtbufWidget *widget)
   printf("rtbuf_widget init\n");
   priv = rtbuf_widget_get_instance_private(widget);
   gtk_widget_init_template(GTK_WIDGET(widget));
+  g_signal_connect(G_OBJECT(widget), "draw",
+                   G_CALLBACK(rtbuf_widget_draw), priv);
 }
 
 static void 
@@ -138,11 +140,12 @@ rtbuf_widget_finalize (GObject *object)
 }
 
 static gboolean
-rtbuf_widget_draw (GtkWidget *widget, cairo_t *cr)
+rtbuf_widget_draw (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-  cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
+  RtbufWidgetPrivate *priv = (RtbufWidgetPrivate*) data;
+  cairo_set_source_rgb(cr, 1.0, 1.0, 0.7);
   cairo_paint(cr);
-  GTK_WIDGET_GET_PARENT_CLASS(widget)->draw(widget, cr);
+  return FALSE;
 }
 
 RtbufWidget *
