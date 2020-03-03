@@ -9,11 +9,57 @@ GtkWindow *modular = NULL;
 GtkLayout *modular_layout = NULL;
 GtkMenu *library_menu = NULL;
 
+void rtbuf_gtk_rtbuf_rename (RtbufWidget *widget)
+{
+  (void) widget;
+  printf("rtbuf-gtk rtbuf rename\n");
+}
+
+void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEventButton *event)
+{
+  GtkWidget *menu = gtk_menu_new();
+  GtkWidget *item = gtk_menu_item_new_with_label("Rename...");
+  gtk_container_add(GTK_CONTAINER(menu), item);
+  g_signal_connect_swapped(G_OBJECT(item), "activate",
+                           G_CALLBACK(rtbuf_gtk_rtbuf_rename),
+                           widget);
+  (void) event;
+  gtk_menu_popup(menu,
+                 NULL, NULL, NULL, NULL,
+                 event->button, event->time);
+}
+
+gboolean rtbuf_gtk_rtbuf_label_mouse_down (GtkWidget *widget,
+                                           GdkEventButton *event,
+                                           gpointer data)
+{
+  (void) widget;
+  (void) data;
+  if (event->type == GDK_BUTTON_PRESS) {
+    if (event->button == 1) {
+      printf("rtbuf-gtk rtbuf drag\n");
+      return TRUE;
+    }
+    else if (event->button == 3) {
+      printf("rtbuf-gtk rtbuf popup\n");
+      rtbuf_gtk_rtbuf_menu(RTBUF_WIDGET(widget), event);
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+
 RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtb,
                                             const gint x, const gint y)
 {
   RtbufWidget *widget = rtbuf_widget_new(rtb, "rtbuf");
+  GtkWidget *label;
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
+  label = rtbuf_widget_get_label_widget(widget);
+  g_signal_connect(G_OBJECT(label), "button-press-event",
+                   G_CALLBACK(rtbuf_gtk_rtbuf_label_mouse_down),
+                   NULL);
   return widget;
 }
 

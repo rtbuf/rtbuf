@@ -19,12 +19,12 @@
 
 #include "rtbuf.h"
 
-#define RTBUF_WIDGET_TYPE            (rtbuf_widget_get_type ())
-#define RTBUF_WIDGET(object)         (G_TYPE_CHECK_INSTANCE_CAST ((object), RTBUF_WIDGET_TYPE, RtbufWidget))
-#define RTBUF_WIDGET_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), RTBUF_WIDGET_TYPE, RtbufWidgetClass))
-#define IS_RTBUF_WIDGET(object)      (G_TYPE_CHECK_INSTANCE_TYPE ((object), RTBUF_WIDGET_TYPE))
-#define IS_RTBUF_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RTBUF_WIDGET_TYPE))
-#define RTBUF_WIDGET_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), RTBUF_WIDGET_TYPE, RtbufWidgetClass))
+#define RTBUF_WIDGET_TYPE            (rtbuf_widget_get_type())
+#define RTBUF_WIDGET(object)         (G_TYPE_CHECK_INSTANCE_CAST((object), RTBUF_WIDGET_TYPE, RtbufWidget))
+#define RTBUF_WIDGET_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), RTBUF_WIDGET_TYPE, RtbufWidgetClass))
+#define IS_RTBUF_WIDGET(object)      (G_TYPE_CHECK_INSTANCE_TYPE((object), RTBUF_WIDGET_TYPE))
+#define IS_RTBUF_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), RTBUF_WIDGET_TYPE))
+#define RTBUF_WIDGET_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), RTBUF_WIDGET_TYPE, RtbufWidgetClass))
 
 typedef struct _RtbufWidget RtbufWidget;
 typedef struct _RtbufWidgetClass RtbufWidgetClass;
@@ -38,8 +38,10 @@ struct _RtbufWidgetClass {
   GtkBoxClass parent_class;
 };
 
+GType rtbuf_widget_get_type (void) G_GNUC_CONST;
 RtbufWidget * rtbuf_widget_new (s_rtbuf *rtb, const gchar *label);
 void rtbuf_widget_set_label (RtbufWidget *widget, const gchar *label);
 const gchar * rtbuf_widget_get_label (RtbufWidget *widget);
+GtkWidget * rtbuf_widget_get_label_widget (RtbufWidget *widget);
 
 #endif

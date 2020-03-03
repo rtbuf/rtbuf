@@ -20,9 +20,9 @@
 
 struct _RtbufWidgetPrivate {
   s_rtbuf *rtbuf;
-  GtkLabel *label;
-  GtkBox *inputs;
-  GtkBox *outputs;
+  GtkWidget *label;
+  GtkWidget *inputs;
+  GtkWidget *outputs;
 };
 
 enum {
@@ -145,6 +145,8 @@ rtbuf_widget_draw (GtkWidget *widget, cairo_t *cr, gpointer data)
   RtbufWidgetPrivate *priv = (RtbufWidgetPrivate*) data;
   cairo_set_source_rgb(cr, 1.0, 1.0, 0.7);
   cairo_paint(cr);
+  (void) widget;
+  (void) priv;
   return FALSE;
 }
 
@@ -164,7 +166,7 @@ void rtbuf_widget_set_label (RtbufWidget *widget,
   if (label) {
     RtbufWidgetPrivate *priv = rtbuf_widget_get_instance_private(widget);
     if (GTK_IS_LABEL(priv->label))
-      gtk_label_set_text(priv->label, label);
+      gtk_label_set_text(GTK_LABEL(priv->label), label);
   }
 }
 
@@ -175,7 +177,19 @@ rtbuf_widget_get_label (RtbufWidget *widget)
   g_return_val_if_fail(IS_RTBUF_WIDGET(widget), NULL);
   priv = rtbuf_widget_get_instance_private(widget);
   if (GTK_IS_LABEL(priv->label))
-    return gtk_label_get_text(priv->label);
+    return gtk_label_get_text(GTK_LABEL(priv->label));
+  else
+    return NULL;
+}
+
+GtkWidget *
+rtbuf_widget_get_label_widget (RtbufWidget *widget)
+{
+  RtbufWidgetPrivate *priv;
+  g_return_val_if_fail(IS_RTBUF_WIDGET(widget), NULL);
+  priv = rtbuf_widget_get_instance_private(widget);
+  if (GTK_IS_LABEL(priv->label))
+    return priv->label;
   else
     return NULL;
 }
