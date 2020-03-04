@@ -523,3 +523,18 @@ void rtbuf_print_sorted ()
   }
   printf("\n");
 }
+
+double min (double a, double b)
+{
+  return a < b ? a : b;
+}
+
+double max (double a, double b)
+{
+  return a < b ? b : a;
+}
+
+double clamp (double inf, double x, double sup)
+{
+  return max(inf, min(x, sup));
+}

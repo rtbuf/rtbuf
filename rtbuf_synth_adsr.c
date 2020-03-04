@@ -20,7 +20,7 @@
 #include "rtbuf.h"
 #include "rtbuf_synth.h"
 
-static inline
+static
 double adsr (double attack, double decay, double sustain,
              double release, double start, double stop)
 {

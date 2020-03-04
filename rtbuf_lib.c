@@ -161,7 +161,10 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   s_rtbuf_lib_proc *proc;
   unsigned long *ver;
   unsigned int i = 0;
-  f_rtbuf_lib_init *init;
+  union {
+    void *ptr;
+    f_rtbuf_lib_init *init;
+  } init_ptr;
   if (!lib)
     return 0;
   rtbuf_lib_load_path(lib, name);
@@ -170,12 +173,12 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
     return 0;
   }
   ver = dlsym(lib->lib, "rtbuf_lib_ver");
-  //printf("lib_load ver %lu\n", *ver);
+  /* printf("lib_load ver %lu\n", *ver); */
   assert(*ver == RTBUF_LIB_VER);
   lib->name = symbol_intern(name);
-  //printf("lib_load name %s\n", lib->name);
-  if ((init = dlsym(lib->lib, "rtbuf_lib_init")))
-    if (init(lib) < 0) {
+  /* printf("lib_load name %s\n", lib->name); */
+  if ((init_ptr.ptr = dlsym(lib->lib, "rtbuf_lib_init")))
+    if (init_ptr.init(lib) < 0) {
       rtbuf_lib_delete(lib);
       return 0;
     }

@@ -69,7 +69,7 @@ int rtbuf_cli_load (int argc, const char *argv[])
     printf("load failed\n");
     return -1;
   }
-  i = ((void*) lib - (void*) g_rtbuf_lib) / sizeof(s_rtbuf_lib);
+  i = ((char*) lib - (char*) g_rtbuf_lib) / sizeof(s_rtbuf_lib);
   rtbuf_lib_print(i);
   return 0;
 }
@@ -271,8 +271,8 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " load PATH                   Load library at PATH.\n"
          " buffers                     List buffers.\n"
          " buffer N                    Show buffer N.\n"
-         " set VAR = buffer N          Set variable.\n"
-         " new LIB PROC                Instanciate library procedure.\n"
+         " set VAR = buffer N          Set variable.\n");
+  printf(" new LIB PROC                Instanciate library procedure.\n"
          " set VAR = new LIB PROC      Set variable.\n"
          " delete BUFFER               Unlink and delete RTBUF.\n"
          " bind SOURCE OUT DEST IN     Bind SOURCE OUT to DEST IN.\n"
@@ -314,14 +314,19 @@ s_cli_function rtbuf_cli_functions[] = {
 
 void debug_read (int argc, const char **argv, f_cli f)
 {
+  union {
+    f_cli f;
+    void *p;
+  } fp;
   if (argc < 1)
     return;
   printf("CLI READ %i %s(", argc, *argv);
   argv++;
   argc--;
+  fp.f = f;
   while (1) {
     if (argc < 1) {
-      printf("); %p\n", f);
+      printf("); %p\n", fp.p);
       return;
     }
     printf("%s", *argv);

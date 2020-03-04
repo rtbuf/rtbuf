@@ -3,11 +3,6 @@
 
 #include "rtbuf_defs.h"
 
-enum rtbuf_var_type {
-  RTBUF_VAR_NULL  = 0,
-  RTBUF_VAR_RTBUF = 1
-};
-
 #define RTBUF_VAR_MAX 1000
 
 struct rtbuf_var {

@@ -83,7 +83,7 @@ int rtbuf_portaudio_output (s_rtbuf *rtb)
   }
   data = (s_rtbuf_portaudio_output_data*) rtb->data;
   sample = data->samples;
-  //printf("portaudio_output");
+  /* printf("portaudio_output"); */
   while (i < RTBUF_SIGNAL_SAMPLES) {
     j = 0;
     while (j < RTBUF_PORTAUDIO_CHANNELS) {
@@ -104,6 +104,6 @@ int rtbuf_portaudio_output (s_rtbuf *rtb)
     rtbuf_err(Pa_GetErrorText(err));
     rtbuf_err("portaudio output: Pa_WriteStream failed");
   }
-  //printf("\n");
+  /* printf("\n"); */
   return 0;
 }

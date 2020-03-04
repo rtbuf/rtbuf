@@ -138,7 +138,7 @@ void rtbuf_glfw3_keyboard_size (GLFWwindow *w, int width,
   glLoadIdentity();
 }
 
-static inline
+static
 void rtbuf_glfw3_keyboard_draw_panel (float y1, float y2)
 {
   glColor3f(0.5f, 0.5f, 0.5f);
@@ -150,7 +150,7 @@ void rtbuf_glfw3_keyboard_draw_panel (float y1, float y2)
   glEnd();
 }
 
-static inline
+static
 void rtbuf_glfw3_keyboard_draw_white (unsigned int i, float n,
                                       float y1, float y2)
 {
@@ -165,7 +165,7 @@ void rtbuf_glfw3_keyboard_draw_white (unsigned int i, float n,
   glEnd();
 }
 
-static inline
+static
 void rtbuf_glfw3_keyboard_draw_black (unsigned int i, float n,
                                       float y1, float y2)
 {

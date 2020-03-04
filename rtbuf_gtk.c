@@ -27,12 +27,12 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
   gtk_menu_popup_at_pointer(menu, event);
 }
 
-gboolean rtbuf_gtk_rtbuf_label_mouse_down (GtkWidget *widget,
-                                           GdkEvent *event,
-                                           gpointer data)
+gboolean rtbuf_gtk_rtbuf_mouse_down (GtkWidget *widget,
+                                     GdkEvent *event,
+                                     gpointer data)
 {
-  (void) widget;
   (void) data;
+  printf("rtbuf-gtk rtbuf mouse down\n");
   if (event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *eb = (GdkEventButton*) event;
     if (eb->button == 1) {
@@ -53,11 +53,14 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtb,
                                             const gint x, const gint y)
 {
   RtbufWidget *widget = rtbuf_widget_new(rtb, "rtbuf");
-  GtkWidget *label;
+  GtkWidget *label = rtbuf_widget_get_label_widget(widget);
+  printf("rtbuf-gtk modular layout new\n");
+  gtk_widget_add_events(GTK_WIDGET(widget), GDK_BUTTON_PRESS_MASK);
+  gtk_widget_add_events(label, GDK_BUTTON_PRESS_MASK);
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
-  label = rtbuf_widget_get_label_widget(widget);
-  g_signal_connect(G_OBJECT(widget), "button-press-event",
-                   G_CALLBACK(rtbuf_gtk_rtbuf_label_mouse_down),
+  rtbuf_widget_set_label(widget, "test");
+  g_signal_connect(G_OBJECT(label), "button-press-event",
+                   G_CALLBACK(rtbuf_gtk_rtbuf_mouse_down),
                    NULL);
   return widget;
 }

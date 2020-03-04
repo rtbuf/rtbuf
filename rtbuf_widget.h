@@ -38,10 +38,10 @@ struct _RtbufWidgetClass {
   GtkBoxClass parent_class;
 };
 
-GType rtbuf_widget_get_type (void) G_GNUC_CONST;
+GType         rtbuf_widget_get_type (void) G_GNUC_CONST;
 RtbufWidget * rtbuf_widget_new (s_rtbuf *rtb, const gchar *label);
-void rtbuf_widget_set_label (RtbufWidget *widget, const gchar *label);
+void          rtbuf_widget_set_label (RtbufWidget *widget, const gchar *label);
 const gchar * rtbuf_widget_get_label (RtbufWidget *widget);
-GtkWidget * rtbuf_widget_get_label_widget (RtbufWidget *widget);
+GtkWidget *   rtbuf_widget_get_label_widget (RtbufWidget *widget);
 
 #endif

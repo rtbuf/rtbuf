@@ -19,7 +19,7 @@
 #include "rtbuf.h"
 #include "rtbuf_signal.h"
 
-static inline
+static
 double square (double amp, double phase, double pulse)
 {
   return phase < pulse ? amp : -amp;
@@ -43,11 +43,11 @@ int rtbuf_signal_square (s_rtbuf *rtb)
     f = max(0.0, f);
     a = max(0.0, a);
     p = clamp(0.0, p, 1.0);
-    //printf(" i=%u freq=%f amp=%f pulse=%f", i, f, a, p);
+    /* printf(" i=%u freq=%f amp=%f pulse=%f", i, f, a, p); */
     f /= (double) RTBUF_SIGNAL_SAMPLERATE;
     data->phase = fmod(data->phase + f, 1.0);
     data->signal[i] = square(a, data->phase, p);
-    //printf(" f=%f a=%f p=%f square=%f", f, a, p, data->samples[i]);
+    /* printf(" f=%f a=%f p=%f square=%f", f, a, p, data->samples[i]); */
     i++;
   }
   return 0;

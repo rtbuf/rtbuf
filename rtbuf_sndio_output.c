@@ -37,12 +37,14 @@ void rtbuf_sndio_output_parameters (struct sio_par *want)
 
 int rtbuf_sndio_output_check_parameters (struct sio_par *have)
 {
-  print_sio_par(have); printf("\n");
-  int ok = (have->bits == 16 &&
-            have->sig == 1 &&
-            have->rchan == 0 &&
-            have->pchan == RTBUF_SNDIO_CHANNELS &&
-            have->rate == RTBUF_SIGNAL_SAMPLERATE);
+  int ok;
+  print_sio_par(have);
+  printf("\n");
+  ok = (have->bits == 16 &&
+        have->sig == 1 &&
+        have->rchan == 0 &&
+        have->pchan == RTBUF_SNDIO_CHANNELS &&
+        have->rate == RTBUF_SIGNAL_SAMPLERATE);
   return ok;
 }
 
@@ -102,7 +104,7 @@ int rtbuf_sndio_output (s_rtbuf *rtb)
   }
   data = (s_rtbuf_sndio_output_data*) rtb->data;
   sample = data->samples;
-  //printf("sndio_output");
+  /* printf("sndio_output"); */
   while (i < RTBUF_SIGNAL_SAMPLES) {
     j = 0;
     while (j < RTBUF_SNDIO_CHANNELS) {
@@ -120,6 +122,6 @@ int rtbuf_sndio_output (s_rtbuf *rtb)
   }
   sio_write(data->reserved.sio_hdl, data->samples,
             sizeof(t_rtbuf_sndio_samples));
-  //printf("\n");
+  /* printf("\n"); */
   return 0;
 }

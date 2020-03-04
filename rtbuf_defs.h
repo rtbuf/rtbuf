@@ -28,7 +28,11 @@ typedef struct rtbuf_lib_proc_out s_rtbuf_lib_proc_out;
 typedef struct rtbuf_type         s_rtbuf_type;
 typedef struct rtbuf_var          s_rtbuf_var;
 typedef union rtbuf_var_data      u_rtbuf_var_data;
-typedef enum rtbuf_var_type       e_rtbuf_var_type;
+
+typedef enum rtbuf_var_type {
+  RTBUF_VAR_NULL  = 0,
+  RTBUF_VAR_RTBUF = 1
+} e_rtbuf_var_type;
 
 typedef int f_rtbuf_proc (s_rtbuf *rtbuf);
 typedef int f_rtbuf_lib_init (s_rtbuf_lib *lib);

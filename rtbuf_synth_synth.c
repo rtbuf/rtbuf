@@ -111,7 +111,7 @@ s_rtbuf * rtbuf_synth_synth_new_envelope (s_rtbuf *rtb,
     env->proc->start(env);
   if (env->proc->f)
     env->proc->f(env);
-  //rtbuf_print_long(env_i);
+  /* rtbuf_print_long(env_i); */
   printf("synth_synth_new_envelope %u\n", i);
   return env;
 }
@@ -141,7 +141,7 @@ s_rtbuf * rtbuf_synth_synth_new_oscillator (s_rtbuf *rtb,
     osc->proc->start(osc);
   if (osc->proc->f)
     osc->proc->f(osc);
-  //rtbuf_print_long(osc_i);
+  /* rtbuf_print_long(osc_i); */
   return osc;
 }
 
@@ -165,7 +165,7 @@ void rtbuf_synth_synth_update_note_signal (s_rtbuf *rtb,
     double o = osc.sample_fun(osc.signal, j);
     e = max(0.0, e);
     *signal += e * o;
-    //printf(" e=%f o=%f s=%f", e, o, *signal);
+    /* printf(" e=%f o=%f s=%f", e, o, *signal); */
     signal++;
     j++;
   }

@@ -132,7 +132,7 @@ s_rtbuf_music_notes * rtbuf_music_notes (s_rtbuf *rtb,
   assert(target->proc);
   assert(v->out < target->proc->out_n);
   offset = target->proc->out[v->out].offset;
-  return (s_rtbuf_music_notes*) (target->data + offset);
+  return (s_rtbuf_music_notes*) ((char*) target->data + offset);
 }
 
 int rtbuf_music_note_p (s_rtbuf_music_note *note)

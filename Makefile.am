@@ -12,6 +12,8 @@ else
 AM_CFLAGS = -DNDEBUG -O2
 endif
 
+AM_CFLAGS += -std=c89 -pedantic
+
 lib_LTLIBRARIES += librtbuf.la
 librtbuf_la_CFLAGS = ${LIBRTBUF_CFLAGS}
 librtbuf_la_LIBADD = ${LIBRTBUF_LIBS}

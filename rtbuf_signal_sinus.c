@@ -46,7 +46,7 @@ int rtbuf_signal_sinus (s_rtbuf *rtb)
     f /= (double) RTBUF_SIGNAL_SAMPLERATE;
     data->phase = fmod(data->phase + 2.0 * M_PI * f, 2.0 * M_PI);
     data->signal[i] = a * sin(data->phase);
-    //printf(" i=%u f=%f a=%f %f", i, f, a, data->samples[i]);
+    /* printf(" i=%u f=%f a=%f %f", i, f, a, data->samples[i]); */
     i++;
   }
   return 0;

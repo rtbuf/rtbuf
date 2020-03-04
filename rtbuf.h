@@ -71,22 +71,8 @@ void  rtbuf_print_sorted ();
 
 int  rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value);
 
-static inline
-double min (double a, double b)
-{
-  return a < b ? a : b;
-}
-
-static inline
-double max (double a, double b)
-{
-  return a < b ? b : a;
-}
-
-static inline
-double clamp (double inf, double x, double sup)
-{
-  return max(inf, min(x, sup));
-}
+double min (double a, double b);
+double max (double a, double b);
+double clamp (double inf, double x, double sup);
 
 #endif /* RTBUF_H */
