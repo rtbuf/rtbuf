@@ -54,7 +54,6 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtb,
   RtbufWidget *widget = rtbuf_widget_new(rtb, "rtbuf");
   GtkWidget *event_box = rtbuf_widget_get_event_box(widget);
   printf("rtbuf-gtk modular layout new\n");
-  gtk_widget_add_events(GTK_WIDGET(widget), GDK_BUTTON_PRESS_MASK);
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
   rtbuf_widget_set_label(widget, "test");
   g_signal_connect_swapped(G_OBJECT(event_box), "button-press-event",
