@@ -1,10 +1,13 @@
 /.deps/
 /.libs/
+/autom4te.cache/
 /build/
+/build-aux/
 /Makefile
 /config.h
 /config.log
 /config.status
+/configure
 /libtool
 /rtbuf
 /rtbuf-gtk
@@ -22,3 +25,5 @@
 /stamp-*
 *.la
 *.lo
+*.in
+*.m4
