@@ -19,28 +19,35 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
 {
   GtkMenu *menu = GTK_MENU(gtk_menu_new());
   GtkWidget *item = gtk_menu_item_new_with_label("Rename...");
+  printf("rtbuf-gtk rtbuf popup\n");
   gtk_container_add(GTK_CONTAINER(menu), item);
   g_signal_connect_swapped(G_OBJECT(item), "activate",
                            G_CALLBACK(rtbuf_gtk_rtbuf_rename),
                            widget);
+  gtk_widget_show(item);
   gtk_menu_popup_at_pointer(menu, event);
 }
 
-gboolean rtbuf_gtk_rtbuf_mouse_down (GtkWidget *widget,
-                                     GdkEvent *event,
-                                     gpointer data)
+void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
+                           GdkEventButton *event)
 {
-  (void) data;
+  printf("rtbuf-gtk rtbuf drag\n");
+}
+
+gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
+                                       GdkEvent *event,
+                                       gpointer data)
+{
+  RtbufWidget *rtbuf_widget = RTBUF_WIDGET(widget);
   printf("rtbuf-gtk rtbuf mouse down\n");
   if (event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *eb = (GdkEventButton*) event;
     if (eb->button == 1) {
-      printf("rtbuf-gtk rtbuf drag\n");
+      rtbuf_gtk_rtbuf_drag(rtbuf_widget, eb);
       return TRUE;
     }
     else if (eb->button == 3) {
-      printf("rtbuf-gtk rtbuf popup\n");
-      rtbuf_gtk_rtbuf_menu(RTBUF_WIDGET(widget), event);
+      rtbuf_gtk_rtbuf_menu(rtbuf_widget, event);
       return TRUE;
     }
   }
@@ -57,7 +64,7 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtb,
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
   rtbuf_widget_set_label(widget, "test");
   g_signal_connect_swapped(G_OBJECT(event_box), "button-press-event",
-                           G_CALLBACK(rtbuf_gtk_rtbuf_mouse_down),
+                           G_CALLBACK(rtbuf_gtk_rtbuf_button_press),
                            widget);
   return widget;
 }
@@ -157,9 +164,9 @@ gboolean rtbuf_gtk_modular_draw (GtkWidget *widget,
   return FALSE;
 }
 
-gboolean rtbuf_gtk_modular_popup (GtkWidget *widget,
-                                  GdkEvent *event,
-                                  gpointer data)
+gboolean rtbuf_gtk_modular_button_press (GtkWidget *widget,
+                                         GdkEvent *event,
+                                         gpointer data)
 {
   (void) widget;
   (void) data;
@@ -190,7 +197,7 @@ void rtbuf_gtk_modular ()
   modular_layout = GTK_LAYOUT(gtk_builder_get_object(builder, "modular_layout"));
   gtk_widget_add_events(GTK_WIDGET(modular_layout), GDK_BUTTON_PRESS_MASK);
   g_signal_connect(modular_layout, "button-press-event",
-                   G_CALLBACK(rtbuf_gtk_modular_popup), NULL);
+                   G_CALLBACK(rtbuf_gtk_modular_button_press), NULL);
   g_signal_connect(modular_layout, "draw",
                    G_CALLBACK(rtbuf_gtk_modular_draw), NULL);
 
