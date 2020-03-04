@@ -4,13 +4,20 @@
   <requires lib="gtk+" version="3.20"/>
   <template class="RtbufWidget" parent="GtkBox">
     <property name="visible">True</property>
+    <property name="app_paintable">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkLabel" id="label">
+      <object class="GtkEventBox" id="event_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">rtbuf</property>
+        <child>
+          <object class="GtkLabel" id="label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">rtbuf</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="expand">False</property>

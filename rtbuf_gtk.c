@@ -23,7 +23,6 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
   g_signal_connect_swapped(G_OBJECT(item), "activate",
                            G_CALLBACK(rtbuf_gtk_rtbuf_rename),
                            widget);
-  (void) event;
   gtk_menu_popup_at_pointer(menu, event);
 }
 
@@ -53,15 +52,14 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtb,
                                             const gint x, const gint y)
 {
   RtbufWidget *widget = rtbuf_widget_new(rtb, "rtbuf");
-  GtkWidget *label = rtbuf_widget_get_label_widget(widget);
+  GtkWidget *event_box = rtbuf_widget_get_event_box(widget);
   printf("rtbuf-gtk modular layout new\n");
   gtk_widget_add_events(GTK_WIDGET(widget), GDK_BUTTON_PRESS_MASK);
-  gtk_widget_add_events(label, GDK_BUTTON_PRESS_MASK);
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
   rtbuf_widget_set_label(widget, "test");
-  g_signal_connect(G_OBJECT(label), "button-press-event",
-                   G_CALLBACK(rtbuf_gtk_rtbuf_mouse_down),
-                   NULL);
+  g_signal_connect_swapped(G_OBJECT(event_box), "button-press-event",
+                           G_CALLBACK(rtbuf_gtk_rtbuf_mouse_down),
+                           widget);
   return widget;
 }
 

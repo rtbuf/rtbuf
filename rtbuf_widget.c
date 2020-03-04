@@ -20,6 +20,7 @@
 
 struct _RtbufWidgetPrivate {
   s_rtbuf *rtbuf;
+  GtkWidget *event_box;
   GtkWidget *label;
   GtkWidget *inputs;
   GtkWidget *outputs;
@@ -71,6 +72,8 @@ rtbuf_widget_class_init (RtbufWidgetClass *klass)
   g_object_class_install_properties(gobject_class, LAST_PROP, rtbuf_widget_props);
   gtk_widget_class_set_template_from_resource(widget_class,
                                               "/rtbuf/rtbuf_widget.ui");
+  gtk_widget_class_bind_template_child_private(widget_class,
+                                               RtbufWidget, event_box);
   gtk_widget_class_bind_template_child_private(widget_class,
                                                RtbufWidget, label);
   gtk_widget_class_bind_template_child_private(widget_class,
@@ -183,13 +186,10 @@ rtbuf_widget_get_label (RtbufWidget *widget)
 }
 
 GtkWidget *
-rtbuf_widget_get_label_widget (RtbufWidget *widget)
+rtbuf_widget_get_event_box (RtbufWidget *widget)
 {
   RtbufWidgetPrivate *priv;
   g_return_val_if_fail(IS_RTBUF_WIDGET(widget), NULL);
   priv = rtbuf_widget_get_instance_private(widget);
-  if (GTK_IS_LABEL(priv->label))
-    return priv->label;
-  else
-    return NULL;
+  return priv->event_box;
 }
