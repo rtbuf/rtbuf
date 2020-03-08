@@ -295,6 +295,16 @@ s_rtbuf_lib_proc_out g_rtbuf_signal_lowpass5_out[] = {
   { "y5", RTBUF_SIGNAL_SAMPLE_TYPE },
   { 0, 0 } };
 
+s_rtbuf_lib_proc_in g_rtbuf_signal_sawtooth_in[] = {
+  { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out g_rtbuf_signal_sawtooth_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "phase", "double" },
+  { 0, 0 } };
+
 s_rtbuf_lib_proc_in g_rtbuf_signal_sinus_in[] = {
   { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
   { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
@@ -347,6 +357,8 @@ s_rtbuf_lib_proc rtbuf_lib_proc[] = {
     g_rtbuf_signal_lowpass4_in, g_rtbuf_signal_lowpass4_out },
   { "lowpass5", rtbuf_signal_lowpass5, rtbuf_signal_lowpass5_start, 0,
     g_rtbuf_signal_lowpass5_in, g_rtbuf_signal_lowpass5_out },
+  { "sawtooth", rtbuf_signal_sawtooth, rtbuf_signal_sawtooth_start, 0,
+    g_rtbuf_signal_sawtooth_in, g_rtbuf_signal_sawtooth_out },
   { "sinus", rtbuf_signal_sinus, rtbuf_signal_sinus_start, 0,
     g_rtbuf_signal_sinus_in, g_rtbuf_signal_sinus_out },
   { "square", rtbuf_signal_square, rtbuf_signal_square_start, 0,

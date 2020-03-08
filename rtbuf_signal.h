@@ -399,6 +399,24 @@ typedef struct rtbuf_signal_lowpass5_data {
 int rtbuf_signal_lowpass5 (s_rtbuf *rtb);
 int rtbuf_signal_lowpass5_start (s_rtbuf *rtb);
 
+/* sawtooth */
+
+#pragma pack(push,1)
+typedef struct rtbuf_signal_sawtooth_data {
+  t_rtbuf_signal signal;
+  double phase;
+} s_rtbuf_signal_sawtooth_data;
+#pragma pack(pop)
+
+enum {
+  RTBUF_SIGNAL_SAWTOOTH_IN_FREQUENCY = 0,
+  RTBUF_SIGNAL_SAWTOOTH_IN_AMPLITUDE,
+  RTBUF_SIGNAL_SAWTOOTH_IN_N
+};
+
+int rtbuf_signal_sawtooth (s_rtbuf *rtb);
+int rtbuf_signal_sawtooth_start (s_rtbuf *rtb);
+
 /* sinus */
 
 #pragma pack(push,1)
