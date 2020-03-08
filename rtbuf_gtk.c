@@ -18,8 +18,9 @@ void rtbuf_gtk_rtbuf_rename (RtbufWidget *widget)
 void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
 {
   GtkMenu *menu = GTK_MENU(gtk_menu_new());
-  GtkWidget *item = gtk_menu_item_new_with_label("Rename...");
+  GtkWidget *item;
   printf("rtbuf-gtk rtbuf popup\n");
+  item = gtk_menu_item_new_with_label("Rename...");
   gtk_container_add(GTK_CONTAINER(menu), item);
   g_signal_connect_swapped(G_OBJECT(item), "activate",
                            G_CALLBACK(rtbuf_gtk_rtbuf_rename),
@@ -31,6 +32,8 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
 void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
                            GdkEventButton *event)
 {
+  (void) widget;
+  (void) event;
   printf("rtbuf-gtk rtbuf drag\n");
 }
 
@@ -39,6 +42,7 @@ gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
                                        gpointer data)
 {
   RtbufWidget *rtbuf_widget = RTBUF_WIDGET(widget);
+  (void) data;
   printf("rtbuf-gtk rtbuf mouse down\n");
   if (event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *eb = (GdkEventButton*) event;
