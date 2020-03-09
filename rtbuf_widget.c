@@ -177,19 +177,28 @@ const gchar *
 rtbuf_widget_get_label (RtbufWidget *widget)
 {
   RtbufWidgetPrivate *priv;
-  g_return_val_if_fail(IS_RTBUF_WIDGET(widget), NULL);
   priv = rtbuf_widget_get_instance_private(widget);
-  if (GTK_IS_LABEL(priv->label))
+  if (priv && priv->label)
     return gtk_label_get_text(GTK_LABEL(priv->label));
-  else
-    return NULL;
+  return NULL;
 }
 
 GtkWidget *
 rtbuf_widget_get_event_box (RtbufWidget *widget)
 {
   RtbufWidgetPrivate *priv;
-  g_return_val_if_fail(IS_RTBUF_WIDGET(widget), NULL);
   priv = rtbuf_widget_get_instance_private(widget);
-  return priv->event_box;
+  if (priv)
+    return priv->event_box;
+  return NULL;
+}
+
+s_rtbuf *
+rtbuf_widget_get_rtbuf (RtbufWidget *widget)
+{
+  RtbufWidgetPrivate *priv;
+  priv = rtbuf_widget_get_instance_private(widget);
+  if (priv)
+    return priv->rtbuf;
+  return NULL;
 }

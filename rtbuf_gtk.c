@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include "rtbuf.h"
@@ -15,17 +16,53 @@ void rtbuf_gtk_rtbuf_rename (RtbufWidget *widget)
   printf("rtbuf-gtk rtbuf rename\n");
 }
 
+void rtbuf_gtk_rtbuf_delete (RtbufWidget *widget)
+{
+  s_rtbuf *rtbuf = rtbuf_widget_get_rtbuf(widget);
+  printf("rtbuf-gtk rtbuf delete\n");
+  gtk_container_remove(GTK_CONTAINER(modular_layout),
+                       GTK_WIDGET(widget));
+  rtbuf_delete(rtbuf);
+}
+
 void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
 {
-  GtkMenu *menu = GTK_MENU(gtk_menu_new());
-  GtkWidget *item;
+  static GtkMenu *menu = 0;
+  static GtkWidget *rename;
+  static GtkWidget *delete;
+  static guint signal;
   printf("rtbuf-gtk rtbuf popup\n");
-  item = gtk_menu_item_new_with_label("Rename...");
-  gtk_container_add(GTK_CONTAINER(menu), item);
-  g_signal_connect_swapped(G_OBJECT(item), "activate",
+  if (!menu) {
+    signal = g_signal_lookup("activate", GTK_TYPE_MENU_ITEM);
+    assert(signal);
+    menu = GTK_MENU(gtk_menu_new());
+    rename = gtk_menu_item_new_with_label("Rename...");
+    gtk_container_add(GTK_CONTAINER(menu), rename);
+    gtk_widget_show(rename);
+    delete = gtk_menu_item_new_with_label("Delete");
+    gtk_container_add(GTK_CONTAINER(menu), delete);
+    gtk_widget_show(delete);
+  }
+  g_signal_handlers_disconnect_matched(G_OBJECT(rename),
+                                       G_SIGNAL_MATCH_FUNC,
+                                       signal,
+                                       0,
+                                       NULL,
+                                       G_CALLBACK(rtbuf_gtk_rtbuf_rename),
+                                       NULL);
+  g_signal_connect_swapped(G_OBJECT(rename), "activate",
                            G_CALLBACK(rtbuf_gtk_rtbuf_rename),
                            widget);
-  gtk_widget_show(item);
+  g_signal_handlers_disconnect_matched(G_OBJECT(delete),
+                                       G_SIGNAL_MATCH_FUNC,
+                                       signal,
+                                       0,
+                                       NULL,
+                                       G_CALLBACK(rtbuf_gtk_rtbuf_delete),
+                                       NULL);
+  g_signal_connect_swapped(G_OBJECT(delete), "activate",
+                           G_CALLBACK(rtbuf_gtk_rtbuf_delete),
+                           widget);
   gtk_menu_popup_at_pointer(menu, event);
 }
 
