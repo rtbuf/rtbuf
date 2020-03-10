@@ -145,11 +145,13 @@ rtbuf_widget_finalize (GObject *object)
 static gboolean
 rtbuf_widget_draw (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-  RtbufWidgetPrivate *priv = (RtbufWidgetPrivate*) data;
+  GtkAllocation alloc;
+  gtk_widget_get_allocation(widget, &alloc);
+  cairo_new_path(cr);
+  cairo_rectangle(cr, 0, 0, alloc.width, alloc.height);
   cairo_set_source_rgb(cr, 1.0, 1.0, 0.7);
-  cairo_paint(cr);
-  (void) widget;
-  (void) priv;
+  cairo_fill(cr);
+  (void) data;
   return FALSE;
 }
 
