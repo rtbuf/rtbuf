@@ -19,7 +19,7 @@ GtkMenu *library_menu = NULL;
 GtkTargetList *rtbuf_move_target_list;
 #define RTBUF_MOVE_TARGETS 1
 GtkTargetEntry rtbuf_move_target_entry[RTBUF_MOVE_TARGETS] = {
-  {"rtbuf/rtbuf", 0, TARGET_RTBUF}
+  {"RtbufWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF}
 };
 gint drag_x = 0;
 gint drag_y = 0;
@@ -81,13 +81,24 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
   gtk_menu_popup_at_pointer(menu, event);
 }
 
+void rtbuf_gtk_rtbuf_drag_begin (GtkWidget      *widget,
+                                 GdkDragContext *context,
+                                 gpointer        data)
+{
+  (void) data;
+  (void) context;
+  printf("rtbuf-gtk rtbuf drag begin\n");
+}
+
 void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
                            GdkEventButton *event)
 {
   (void) widget;
   (void) event;
   GtkWidget *gtk_widget = GTK_WIDGET(widget);
-  gtk_target_entry_new("rtbuf/rtbuf", 0, 0);
+  printf("rtbuf-gtk rtbuf drag\n");
+  g_signal_connect(G_OBJECT(widget), "drag-begin",
+                   G_CALLBACK (rtbuf_gtk_rtbuf_drag_begin), NULL);
   gdk_window_get_device_position(event->window, event->device,
                                  &drag_x, &drag_y, NULL);
   gtk_drag_begin_with_coordinates(GTK_WIDGET(widget),
@@ -96,7 +107,6 @@ void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
                                   event->button,
                                   (GdkEvent*) event,
                                   -1, -1);
-  printf("rtbuf-gtk rtbuf drag\n");
 }
 
 gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
