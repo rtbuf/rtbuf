@@ -24,6 +24,8 @@ GtkTargetEntry rtbuf_move_target_entry[RTBUF_MOVE_TARGETS] = {
 gint drag_x = 0;
 gint drag_y = 0;
 
+gint rtbuf_x = 100;
+gint rtbuf_y = 100;
 
 void rtbuf_gtk_rtbuf_rename (RtbufWidget *widget)
 {
@@ -184,7 +186,9 @@ void rtbuf_gtk_library_menu_activate (GtkMenuItem *menuitem,
   gchar *proc;
   gchar *library = (gchar*) data;
   g_object_get(menuitem, "label", &proc, NULL);
-  rtbuf_gtk_new(library, proc, 100, 100);
+  rtbuf_gtk_new(library, proc, rtbuf_x, rtbuf_y);
+  rtbuf_x = 100;
+  rtbuf_y = 100;
   g_free(proc);
 }
 
@@ -251,6 +255,8 @@ gboolean rtbuf_gtk_modular_button_press (GtkWidget *widget,
     GdkEventButton *eb = (GdkEventButton*) event;
     if (eb->button == 3) {
       printf("rtbuf-gtk modular popup\n");
+      gdk_window_get_device_position(eb->window, eb->device,
+                                     &rtbuf_x, &rtbuf_y, NULL);
       gtk_menu_popup_at_pointer(library_menu, event);
       return TRUE;
     }
