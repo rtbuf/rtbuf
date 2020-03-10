@@ -86,11 +86,13 @@ void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
 {
   (void) widget;
   (void) event;
+  GtkWidget *gtk_widget = GTK_WIDGET(widget);
   gtk_target_entry_new("rtbuf/rtbuf", 0, 0);
-  gtk_widget_get_pointer(GTK_WIDGET(widget), &drag_x, &drag_y);
+  gdk_window_get_device_position(event->window, event->device,
+                                 &drag_x, &drag_y, NULL);
   gtk_drag_begin_with_coordinates(GTK_WIDGET(widget),
                                   rtbuf_move_target_list,
-                                  GDK_ACTION_PRIVATE,
+                                  GDK_ACTION_DEFAULT,
                                   event->button,
                                   (GdkEvent*) event,
                                   -1, -1);
@@ -286,7 +288,7 @@ void rtbuf_gtk_modular ()
   rtbuf_move_target_list = gtk_target_list_new(rtbuf_move_target_entry,
                                                RTBUF_MOVE_TARGETS);
   gtk_drag_dest_set(GTK_WIDGET(modular_layout), 0, rtbuf_move_target_entry,
-                    RTBUF_MOVE_TARGETS, GDK_ACTION_PRIVATE);
+                    RTBUF_MOVE_TARGETS, GDK_ACTION_DEFAULT);
   g_signal_connect(modular_layout, "drag-motion",
                    G_CALLBACK(rtbuf_gtk_modular_drag_motion), NULL);
 }
