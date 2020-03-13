@@ -261,7 +261,7 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb)
   unsigned int n;
   data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
   if (!data->window)
-    return 1;
+    return -1;
   n = data->notes.note_n;
   while (i < RTBUF_MUSIC_NOTE_MAX && n > 0) {
     s_rtbuf_music_note *note = &data->notes.note[i];
