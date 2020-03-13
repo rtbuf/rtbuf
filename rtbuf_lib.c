@@ -201,7 +201,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
 }
 
 void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
-                                 s_rtbuf_lib_proc_in *in)
+                                  s_rtbuf_lib_proc_in *in)
 {
   unsigned int i = 0;
   bzero(proc->in, sizeof(proc->in));
@@ -222,7 +222,7 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
 }
 
 void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
-                                 s_rtbuf_lib_proc_out *out)
+                                   s_rtbuf_lib_proc_out *out)
 {
   unsigned int i = 0;
   bzero(proc->out, sizeof(proc->out));
