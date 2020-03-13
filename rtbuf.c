@@ -56,12 +56,13 @@ int rtbuf_new (s_rtbuf_proc *rp)
   void *data;
   unsigned int j = 0;
   assert(rp);
-  data = malloc(rp->out_bytes);
+  data = data_new(&rp->alloc);
   if (!data)
-    return rtbuf_err("malloc failed");
-  bzero(data, rp->out_bytes);
+    return rtbuf_err("rtbuf data allocation failed, "
+                     "please increase RTBUF_INSTANCE_MAX");
   if ((i = data_new_i(&g_rtbuf_alloc)) < 0)
-    return -1;
+    return rtbuf_err("rtbuf allocation failed, "
+                     "please increase RTBUF_MAX");
   rtb = &g_rtbuf[i];
   rtb->data = data;
   rtb->flags = 0;
@@ -140,8 +141,7 @@ void rtbuf_delete_ (s_rtbuf *rtb)
   assert(rtb);
   rtbuf_unbind_all(rtb);
   bzero(rtb->data, rtb->proc->out_bytes);
-  free(rtb->data);
-  bzero(rtb, sizeof(s_rtbuf));
+  data_delete(&rtb->proc->alloc, rtb->data);
   data_delete(&g_rtbuf_alloc, rtb);
 }
 

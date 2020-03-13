@@ -240,6 +240,10 @@ void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
     }
     assert(i < RTBUF_PROC_OUT_MAX);
     proc->out_bytes = offset;
+    proc->type.bits = offset * 8;
+    proc->type.type = DATA_TYPE_BITS;
+    data_alloc_init(&proc->alloc, &proc->type, RTBUF_INSTANCE_MAX,
+                    NULL, NULL);
   }
   proc->out_n = i;
 }
