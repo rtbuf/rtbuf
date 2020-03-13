@@ -127,7 +127,7 @@ void rtbuf_glfw3_keyboard_key (GLFWwindow *w, int key,
 }
 
 void rtbuf_glfw3_keyboard_size (GLFWwindow *w, int width,
-                                       int height)
+                                int height)
 {
   (void) w;
   glViewport(0, 0, width, height);
