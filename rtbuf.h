@@ -40,7 +40,7 @@ struct rtbuf
   unsigned int    in_n;
 };
 
-#define RTBUF_MAX          1000
+#define RTBUF_MAX         10000
 #define RTBUF_INSTANCE_MAX  100
 
 s_data_alloc g_rtbuf_alloc;
