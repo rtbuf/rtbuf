@@ -19,12 +19,26 @@
 
 #include "rtbuf.h"
 
-#define RTBUF_WIDGET_TYPE            (rtbuf_widget_get_type())
-#define RTBUF_WIDGET(object)         (G_TYPE_CHECK_INSTANCE_CAST((object), RTBUF_WIDGET_TYPE, RtbufWidget))
-#define RTBUF_WIDGET_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), RTBUF_WIDGET_TYPE, RtbufWidgetClass))
-#define IS_RTBUF_WIDGET(object)      (G_TYPE_CHECK_INSTANCE_TYPE((object), RTBUF_WIDGET_TYPE))
-#define IS_RTBUF_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), RTBUF_WIDGET_TYPE))
-#define RTBUF_WIDGET_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), RTBUF_WIDGET_TYPE, RtbufWidgetClass))
+#define RTBUF_WIDGET_TYPE \
+  (rtbuf_widget_get_type())
+
+#define RTBUF_WIDGET(object) \
+  (G_TYPE_CHECK_INSTANCE_CAST((object), RTBUF_WIDGET_TYPE, \
+                              RtbufWidget))
+
+#define RTBUF_WIDGET_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass), RTBUF_WIDGET_TYPE, \
+                           RtbufWidgetClass))
+
+#define IS_RTBUF_WIDGET(object) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((object), RTBUF_WIDGET_TYPE))
+
+#define IS_RTBUF_WIDGET_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass), RTBUF_WIDGET_TYPE))
+
+#define RTBUF_WIDGET_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS((obj), RTBUF_WIDGET_TYPE, \
+                             RtbufWidgetClass))
 
 typedef struct _RtbufWidget RtbufWidget;
 typedef struct _RtbufWidgetClass RtbufWidgetClass;
