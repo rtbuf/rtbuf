@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <template class="RtbufInput" parent="GtkBox">
+  <template class="RtbufInputWidget" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkCheckButton" id="input_check">
+      <object class="GtkCheckButton" id="check">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
@@ -22,7 +22,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="input_label">
+      <object class="GtkLabel" id="label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">input</property>
@@ -34,7 +34,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="input_value">
+      <object class="GtkLabel" id="value">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">0.5</property>
@@ -47,7 +47,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="input_min">
+      <object class="GtkEntry" id="min">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="has_frame">False</property>
@@ -63,7 +63,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkScale" id="input_slider">
+      <object class="GtkScale" id="slider">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="round_digits">1</property>
@@ -78,7 +78,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="input_max">
+      <object class="GtkEntry" id="max">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="has_frame">False</property>
