@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <template class="RtbufOutput" parent="GtkBox">
+  <template class="RtbufOutputWidget" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkCheckButton" id="output_check">
+      <object class="GtkCheckButton" id="check">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
@@ -23,7 +23,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="output_label">
+      <object class="GtkLabel" id="label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">output</property>

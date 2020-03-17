@@ -47,9 +47,13 @@ rtbuf_gtk_SOURCES = \
 	rtbuf_gtk_resources.c \
 	rtbuf_input_widget.c \
 	rtbuf_lib.c \
+	rtbuf_output_widget.c \
 	rtbuf_widget.c
 include_HEADERS += \
-	rtbuf_lib.h
+	rtbuf_input_widget.h \
+	rtbuf_lib.h \
+	rtbuf_output_widget.h \
+	rtbuf_widget.h
 rtbuf_gtk_UI = \
 	rtbuf_input_widget.ui \
 	rtbuf_modular.ui \

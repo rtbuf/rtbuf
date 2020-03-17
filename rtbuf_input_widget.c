@@ -66,13 +66,13 @@ rtbuf_input_widget_class_init (RtbufInputWidgetClass *klass)
                          "Pointer to a s_rtbuf",
                          G_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
   rtbuf_input_widget_props[PROP_IN] =
-    g_param_spec_uint("in",
-                      "Input",
-                      "rtbuf input index",
-                      0,                   /* min */
-                      RTBUF_PROC_IN_MAX,   /* max */
-                      -1,                  /* default */
-                      G_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
+    g_param_spec_int("in",
+                     "Input",
+                     "rtbuf input index",
+                     -1,                  /* min */
+                     RTBUF_PROC_IN_MAX,   /* max */
+                     -1,                  /* default */
+                     G_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
   g_object_class_install_properties(gobject_class, LAST_PROP, rtbuf_input_widget_props);
   gtk_widget_class_set_template_from_resource(widget_class,
                                               "/rtbuf/rtbuf_input_widget.ui");
@@ -110,7 +110,7 @@ rtbuf_input_widget_set_property (GObject *object, guint prop_id,
     rtbuf_input_widget_update(widget);
     break;
   case PROP_IN:
-    priv->in = g_value_get_uint(value);
+    priv->in = g_value_get_int(value);
     rtbuf_input_widget_update(widget);
     break;
   default:      
@@ -131,7 +131,7 @@ rtbuf_input_widget_get_property (GObject *object, guint prop_id,
     g_value_set_pointer(value, priv->rtbuf);
     break;
   case PROP_IN:
-    g_value_set_uint(value, priv->in);
+    g_value_set_int(value, priv->in);
     break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);

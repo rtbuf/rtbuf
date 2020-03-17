@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <gtk/gtk.h>
 #include "rtbuf_input_widget.h"
+#include "rtbuf_output_widget.h"
 #include "rtbuf_widget.h"
 #include "rtbuf.h"
 
@@ -187,20 +188,25 @@ void rtbuf_widget_set_rtbuf (RtbufWidget *widget, s_rtbuf *rtbuf)
   
   RtbufWidgetPrivate *priv = rtbuf_widget_get_instance_private(widget);
   GtkContainer *inputs;
+  GtkContainer *outputs;
   s_rtbuf_proc *proc;
   unsigned int i;
   printf("rtbuf_widget set rtbuf\n");
   priv->rtbuf = rtbuf;
   proc = rtbuf->proc;
   inputs = GTK_CONTAINER(priv->inputs);
+  outputs = GTK_CONTAINER(priv->outputs);
   gtk_container_clear(inputs);
   for (i = 0; i < proc->in_n; i++) {
     RtbufInputWidget *input_widget =
       rtbuf_input_widget_new(priv->rtbuf, i);
     gtk_container_add(inputs, GTK_WIDGET(input_widget));
-    i++;
   }
+  gtk_container_clear(outputs);
   for (i = 0; i < proc->out_n; i++) {
+    RtbufOutputWidget *output_widget =
+      rtbuf_output_widget_new(priv->rtbuf, i);
+    gtk_container_add(outputs, GTK_WIDGET(output_widget));
   }
 }
 

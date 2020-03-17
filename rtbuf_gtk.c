@@ -10,6 +10,7 @@ enum dnd_targets {
   N_TARGETS
 };
 
+unsigned int g_next_id = 0;
 
 GtkBuilder *builder = NULL;
 GtkWindow *modular = NULL;
@@ -133,14 +134,19 @@ gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
 }
 
 
-RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtb,
+RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
                                             const gint x, const gint y)
 {
-  RtbufWidget *widget = rtbuf_widget_new(rtb, "rtbuf");
-  GtkWidget *event_box = rtbuf_widget_get_event_box(widget);
+  RtbufWidget *widget;
+  GtkWidget *event_box;
+  char label[1024];
   printf("rtbuf-gtk modular layout new\n");
+  snprintf(label, sizeof(label), "%s%02d",
+           rtbuf->proc->name,
+           g_next_id++);
+  widget = rtbuf_widget_new(rtbuf, label);
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
-  rtbuf_widget_set_label(widget, "test");
+  event_box = rtbuf_widget_get_event_box(widget);
   g_signal_connect_swapped(G_OBJECT(event_box), "button-press-event",
                            G_CALLBACK(rtbuf_gtk_rtbuf_button_press),
                            widget);
