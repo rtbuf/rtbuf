@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "rtbuf.h"
 #include "rtbuf_lib.h"
+#include "rtbuf_var.h"
 #include "rtbuf_widget.h"
 
 enum dnd_targets {
@@ -144,6 +145,7 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
   snprintf(label, sizeof(label), "%s%02d",
            rtbuf->proc->name,
            g_next_id++);
+  rtbuf_var_rtbuf_set(label, (rtbuf - g_rtbuf) / sizeof(s_rtbuf));
   widget = rtbuf_widget_new(rtbuf, label);
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
   event_box = rtbuf_widget_get_event_box(widget);
