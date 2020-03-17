@@ -14,7 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <gtk/gtk.h>
+#include "rtbuf_input_widget.h"
 #include "rtbuf_widget.h"
 #include "rtbuf.h"
 
@@ -86,6 +88,8 @@ static void
 rtbuf_widget_init (RtbufWidget *widget)
 {
   RtbufWidgetPrivate *priv;
+  s_rtbuf_proc *proc;
+  unsigned int i = 0;
   printf("rtbuf_widget init\n");
   priv = rtbuf_widget_get_instance_private(widget);
   gtk_widget_init_template(GTK_WIDGET(widget));
@@ -104,7 +108,7 @@ rtbuf_widget_set_property (GObject *object, guint prop_id,
     rtbuf_widget_set_label(widget, g_value_get_string(value));
     break;
   case PROP_RTBUF:
-    priv->rtbuf = g_value_get_pointer(value);
+    rtbuf_widget_set_rtbuf(widget, g_value_get_pointer(value));
     break;
   default:      
     G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -162,6 +166,42 @@ rtbuf_widget_new (s_rtbuf *rtb, const gchar *label)
                                      "label", label,
                                      "rtbuf", rtb,
                                      NULL);
+}
+
+void gtk_container_clear_widget (GtkWidget *widget,
+                                 gpointer data)
+{
+  GtkContainer *container = (GtkContainer*) data;
+  gtk_container_remove(container, widget);
+}
+
+void gtk_container_clear (GtkContainer *container)
+{
+  gtk_container_foreach(container,
+                        gtk_container_clear_widget,
+                        container);
+}
+
+void rtbuf_widget_set_rtbuf (RtbufWidget *widget, s_rtbuf *rtbuf)
+{
+  
+  RtbufWidgetPrivate *priv = rtbuf_widget_get_instance_private(widget);
+  GtkContainer *inputs;
+  s_rtbuf_proc *proc;
+  unsigned int i;
+  printf("rtbuf_widget set rtbuf\n");
+  priv->rtbuf = rtbuf;
+  proc = rtbuf->proc;
+  inputs = GTK_CONTAINER(priv->inputs);
+  gtk_container_clear(inputs);
+  for (i = 0; i < proc->in_n; i++) {
+    RtbufInputWidget *input_widget =
+      rtbuf_input_widget_new(priv->rtbuf, i);
+    gtk_container_add(inputs, GTK_WIDGET(input_widget));
+    i++;
+  }
+  for (i = 0; i < proc->out_n; i++) {
+  }
 }
 
 void rtbuf_widget_set_label (RtbufWidget *widget,

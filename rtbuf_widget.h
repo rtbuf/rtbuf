@@ -54,6 +54,8 @@ struct _RtbufWidgetClass {
 
 GType         rtbuf_widget_get_type (void) G_GNUC_CONST;
 RtbufWidget * rtbuf_widget_new (s_rtbuf *rtbuf, const gchar *label);
+void          rtbuf_widget_set_rtbuf (RtbufWidget *widget,
+                                      s_rtbuf *rtbuf);
 void          rtbuf_widget_set_label (RtbufWidget *widget,
                                       const gchar *label);
 const gchar * rtbuf_widget_get_label (RtbufWidget *widget);
