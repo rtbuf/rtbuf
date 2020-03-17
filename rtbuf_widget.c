@@ -28,8 +28,8 @@ struct _RtbufWidgetPrivate {
 
 enum {
       PROP_0,
-      PROP_LABEL,
       PROP_RTBUF,
+      PROP_LABEL,
       LAST_PROP
 };
 
