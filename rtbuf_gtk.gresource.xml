@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/rtbuf/">
-    <file preprocess="xml-stripblanks">rtbuf_input.ui</file>
+    <file preprocess="xml-stripblanks">rtbuf_input_widget.ui</file>
     <file preprocess="xml-stripblanks">rtbuf_modular.ui</file>
-    <file preprocess="xml-stripblanks">rtbuf_output.ui</file>
+    <file preprocess="xml-stripblanks">rtbuf_output_widget.ui</file>
     <file preprocess="xml-stripblanks">rtbuf_widget.ui</file>
   </gresource>
 </gresources>
