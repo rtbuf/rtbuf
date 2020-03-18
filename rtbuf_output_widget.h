@@ -59,5 +59,7 @@ s_rtbuf *     rtbuf_output_widget_get_rtbuf (RtbufOutputWidget *widget);
 unsigned int  rtbuf_output_widget_get_out   (RtbufOutputWidget *widget);
 GtkWidget *   rtbuf_output_widget_get_check (RtbufOutputWidget *widget);
 void          rtbuf_output_widget_update    (RtbufOutputWidget *widget);
+void          rtbuf_output_widget_connect_check (GtkWidget *output,
+                                                 gpointer data);
 
 #endif

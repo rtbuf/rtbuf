@@ -45,6 +45,7 @@ rtbuf_gtk_LDADD = ${GTK3_LIBS} librtbuf.la
 rtbuf_gtk_SOURCES = \
 	rtbuf_gtk.c \
 	rtbuf_gtk_input.c \
+	rtbuf_gtk_output.c \
 	rtbuf_gtk_resources.c \
 	rtbuf_gtk_rtbuf.c \
 	rtbuf_input_widget.c \

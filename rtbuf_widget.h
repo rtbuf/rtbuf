@@ -64,5 +64,8 @@ s_rtbuf *     rtbuf_widget_get_rtbuf (RtbufWidget *widget);
 void          rtbuf_widget_connect_input_checks (RtbufWidget *widget,
                                                  const char *signal,
                                                  GCallback callback);
+void          rtbuf_widget_connect_output_checks (RtbufWidget *widget,
+                                                  const char *signal,
+                                                  GCallback callback);
 
 #endif

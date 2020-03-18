@@ -3,6 +3,7 @@
 
 #include <gtk/gtk.h>
 #include "rtbuf_input_widget.h"
+#include "rtbuf_output_widget.h"
 #include "rtbuf_widget.h"
 
 GtkLayout *modular_layout;
@@ -18,5 +19,8 @@ gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
 
 gboolean rtbuf_gtk_input_check_button_press (RtbufInputWidget *widget,
                                              GdkEvent *event);
+
+gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
+                                              GdkEvent *event);
 
 #endif /* RTBUF_GTK_H */

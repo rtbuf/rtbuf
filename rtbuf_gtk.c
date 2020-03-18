@@ -67,6 +67,9 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
   rtbuf_widget_connect_input_checks
     (widget, "button-press-event",
      G_CALLBACK(rtbuf_gtk_input_check_button_press));
+  rtbuf_widget_connect_output_checks
+    (widget, "button-press-event",
+     G_CALLBACK(rtbuf_gtk_output_check_button_press));
   return widget;
 }
 
