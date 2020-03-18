@@ -16,6 +16,7 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
+#include "rtbuf_gtk_signal_binding.h"
 #include "rtbuf_input_widget.h"
 #include "rtbuf_output_widget.h"
 #include "rtbuf_widget.h"
@@ -224,8 +225,8 @@ void rtbuf_widget_set_label (RtbufWidget *widget,
 const gchar *
 rtbuf_widget_get_label (RtbufWidget *widget)
 {
-  RtbufWidgetPrivate *priv;
-  priv = rtbuf_widget_get_instance_private(widget);
+  RtbufWidgetPrivate *priv =
+    rtbuf_widget_get_instance_private(widget);
   if (priv && priv->label)
     return gtk_label_get_text(GTK_LABEL(priv->label));
   return NULL;
@@ -234,8 +235,8 @@ rtbuf_widget_get_label (RtbufWidget *widget)
 GtkWidget *
 rtbuf_widget_get_event_box (RtbufWidget *widget)
 {
-  RtbufWidgetPrivate *priv;
-  priv = rtbuf_widget_get_instance_private(widget);
+  RtbufWidgetPrivate *priv =
+    rtbuf_widget_get_instance_private(widget);
   if (priv)
     return priv->event_box;
   return NULL;
@@ -244,9 +245,22 @@ rtbuf_widget_get_event_box (RtbufWidget *widget)
 s_rtbuf *
 rtbuf_widget_get_rtbuf (RtbufWidget *widget)
 {
-  RtbufWidgetPrivate *priv;
-  priv = rtbuf_widget_get_instance_private(widget);
+  RtbufWidgetPrivate *priv =
+    rtbuf_widget_get_instance_private(widget);
   if (priv)
     return priv->rtbuf;
   return NULL;
+}
+
+void rtbuf_widget_connect_input_checks (RtbufWidget *widget,
+                                        const char *signal,
+                                        GCallback callback)
+{
+  RtbufWidgetPrivate *priv =
+    rtbuf_widget_get_instance_private(widget);
+  s_signal_binding sb = { signal, callback };
+  gtk_container_foreach(GTK_CONTAINER(priv->inputs),
+                        rtbuf_input_widget_connect_check,
+                        &sb);
+                        
 }

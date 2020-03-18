@@ -16,6 +16,7 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
+#include "rtbuf_gtk_signal_binding.h"
 #include "rtbuf_input_widget.h"
 #include "rtbuf.h"
 
@@ -205,4 +206,15 @@ rtbuf_input_widget_update (RtbufInputWidget *widget)
     label = proc->in[priv->in].name;
     gtk_label_set_text(GTK_LABEL(priv->label), label);
   }
+}
+
+void rtbuf_input_widget_connect_check (GtkWidget *input,
+                                       gpointer data)
+{
+  RtbufInputWidget *widget = RTBUF_INPUT_WIDGET(input);
+  RtbufInputWidgetPrivate *priv =
+    rtbuf_input_widget_get_instance_private(widget);
+  s_signal_binding *sb = (s_signal_binding*) data;
+  g_signal_connect_swapped(G_OBJECT(priv->check), sb->signal,
+                           sb->callback, widget);
 }
