@@ -16,7 +16,7 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
-#include "rtbuf_gtk_signal_binding.h"
+#include "rtbuf_gtk.h"
 #include "rtbuf_output_widget.h"
 #include "rtbuf.h"
 

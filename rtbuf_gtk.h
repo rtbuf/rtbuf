@@ -6,6 +6,11 @@
 #include "rtbuf_output_widget.h"
 #include "rtbuf_widget.h"
 
+typedef struct {
+  const char *signal;
+  GCallback callback;
+} s_signal_binding;
+
 GtkLayout *modular_layout;
 
 GtkTargetList *rtbuf_move_target_list;
