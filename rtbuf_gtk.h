@@ -17,16 +17,24 @@
 #define RTBUF_GTK_H
 
 #include <gtk/gtk.h>
+#include "rtbuf_gtk_connection.h"
 #include "rtbuf_input_widget.h"
 #include "rtbuf_output_widget.h"
 #include "rtbuf_widget.h"
 
-typedef struct {
+enum dnd_targets {
+  TARGET_RTBUF,
+  TARGET_RTBUF_OUTPUT,
+  N_TARGETS
+};
+
+typedef struct signal_binding {
   const char *signal;
   GCallback callback;
 } s_signal_binding;
 
-GtkLayout *modular_layout;
+GtkLayout              *modular_layout;
+s_rtbuf_gtk_connection *modular_connections;
 
 GtkTargetList *rtbuf_move_target_list;
 
@@ -40,6 +48,7 @@ gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
 gboolean rtbuf_gtk_input_check_button_press (RtbufInputWidget *widget,
                                              GdkEvent *event);
 
+void     rtbuf_gtk_output_init ();
 gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
                                               GdkEvent *event);
 

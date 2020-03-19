@@ -21,6 +21,20 @@
 #include "rtbuf_gtk.h"
 #include "rtbuf_output_widget.h"
 
+GtkTargetList *rtbuf_gtk_output_target_list;
+#define RTBUF_GTK_OUTPUT_TARGETS 1
+GtkTargetEntry rtbuf_gtk_output_target_entry[RTBUF_GTK_OUTPUT_TARGETS]
+= {
+  {"RtbufOutputWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF_OUTPUT}
+};
+
+void rtbuf_gtk_output_init ()
+{
+  rtbuf_gtk_output_target_list =
+    gtk_target_list_new(rtbuf_gtk_output_target_entry,
+                        RTBUF_GTK_OUTPUT_TARGETS);
+}
+
 void rtbuf_gtk_output_disconnect (RtbufOutputWidget *widget)
 {
   (void) widget;
@@ -55,9 +69,24 @@ void rtbuf_gtk_output_menu (RtbufOutputWidget *widget, GdkEvent *event)
 }
 
 void rtbuf_gtk_output_drag (RtbufOutputWidget *widget,
-                            GdkEvent *event)
+                            GdkEventButton *event)
 {
+  s_rtbuf_gtk_connection *connection;
   printf("rtbuf-gtk output drag\n");
+  connection = rtbuf_gtk_connection_new();
+  if (!connection) {
+    rtbuf_err("failed to allocate rtbuf_gtk_connection");
+    return;
+  }
+  connection->output_widget = widget;
+  connection->next = modular_connections;
+  modular_connections = connection;
+  gtk_drag_begin_with_coordinates(GTK_WIDGET(widget),
+                                  rtbuf_gtk_output_target_list,
+                                  GDK_ACTION_DEFAULT,
+                                  event->button,
+                                  (GdkEvent*) event,
+                                  -1, -1);
 }
 
 gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
@@ -67,7 +96,7 @@ gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
   if (event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *eb = (GdkEventButton*) event;
     if (eb->button == 1) {
-      rtbuf_gtk_output_drag(widget, event);
+      rtbuf_gtk_output_drag(widget, eb);
       return TRUE;
     }
     else if (eb->button == 3) {

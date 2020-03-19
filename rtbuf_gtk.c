@@ -24,11 +24,6 @@
 #include "rtbuf_var.h"
 #include "rtbuf_widget.h"
 
-enum dnd_targets {
-  TARGET_RTBUF,
-  N_TARGETS
-};
-
 unsigned int g_next_id = 0;
 
 GtkBuilder *builder = NULL;
@@ -36,16 +31,19 @@ GtkWindow *modular = NULL;
 GtkLayout *modular_layout = NULL;
 GtkMenu *library_menu = NULL;
 
-GtkTargetList *rtbuf_move_target_list;
-#define RTBUF_MOVE_TARGETS 1
-GtkTargetEntry rtbuf_move_target_entry[RTBUF_MOVE_TARGETS] = {
-  {"RtbufWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF}
+GtkTargetList *modular_layout_target_list;
+#define MODULAR_LAYOUT_TARGETS 2
+GtkTargetEntry modular_layout_target_entry[MODULAR_LAYOUT_TARGETS] = {
+  {"RtbufWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF},
+  {"RtbufOutputWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF_OUTPUT}
 };
 gint drag_x = 0;
 gint drag_y = 0;
 
 gint rtbuf_x = 100;
 gint rtbuf_y = 100;
+
+s_rtbuf_gtk_connection *modular_connections = NULL;
 
 RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
                                             const gint x, const gint y)
@@ -156,14 +154,69 @@ void rtbuf_gtk_modular_close (GtkWidget *widget,
   gtk_main_quit();
 }
 
+void rtbuf_gtk_modular_draw_arrow (cairo_t *cr, int x1, int y1,
+                                   int x2, int y2)
+{
+  const int arrow_size = 4;
+  int mx = (x2 - x1) / 3;
+  printf("rtbuf-gtk modular draw arrow (%i,%i) -> (%i,%i)\n",
+         x1, y1, x2, y2);
+  if (mx < 0) {
+    mx = -mx;
+    mx += mx / 2;
+  }
+
+  cairo_move_to(cr, x1, y1);
+  cairo_curve_to(cr,
+                 x1 + mx, y1,
+                 x2 - mx - arrow_size, y2,
+                 x2 - arrow_size, y2);
+  cairo_move_to (cr, x2, y2);
+  cairo_line_to (cr, x2 - arrow_size, y2);
+  cairo_move_to (cr, x2 - arrow_size, y2 - arrow_size);
+  cairo_line_to (cr, x2, y2);
+  cairo_line_to (cr, x2 - arrow_size, y2 + arrow_size);
+}
+
+void rtbuf_gtk_modular_draw_connection (s_rtbuf_gtk_connection *c,
+                                        cairo_t *cr)
+{
+  int x1, y1, x2, y2;
+  GtkWidget *out = GTK_WIDGET(c->output_widget);
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(out, &allocation);
+  gtk_widget_translate_coordinates(out, GTK_WIDGET(modular_layout),
+                                   allocation.width,
+                                   allocation.height / 2,
+                                   &x1, &y1);
+  if (c->input_widget) {
+    GtkWidget *in = GTK_WIDGET(c->input_widget);
+    gtk_widget_get_allocation(in, &allocation);
+    gtk_widget_translate_coordinates(in, GTK_WIDGET(modular_layout),
+                                     0,
+                                     allocation.height / 2,
+                                     &x2, &y2);
+  }
+  else
+    gtk_widget_get_pointer(GTK_WIDGET(modular_layout), &x2, &y2);
+  cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+  rtbuf_gtk_modular_draw_arrow(cr, x1, y1, x2, y2);
+  cairo_stroke(cr);
+}
+
 gboolean rtbuf_gtk_modular_draw (GtkWidget *widget,
                                  cairo_t *cr,
                                  gpointer data)
 {
   (void) data;
   if ((GtkLayout*) widget == modular_layout) {
+    s_rtbuf_gtk_connection *c = modular_connections;
     cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
     cairo_paint(cr);
+    while (c) {
+      rtbuf_gtk_modular_draw_connection(c, cr);
+      c = c->next;
+    }
     GTK_WIDGET_GET_CLASS(widget)->draw(widget, cr);
     return TRUE;
   }
@@ -200,9 +253,14 @@ gboolean rtbuf_gtk_modular_drag_motion (GtkWidget      *widget,
   (void) widget;
   (void) time;
   (void) data;
-  GtkWidget *rtbuf_widget = gtk_drag_get_source_widget(context);
+  GtkWidget *drag_widget = gtk_drag_get_source_widget(context);
   printf("rtbuf-gtk modular drag motion %i %i\n", x, y);
-  gtk_layout_move(modular_layout, rtbuf_widget, x - drag_x, y - drag_y);
+  if (IS_RTBUF_WIDGET(drag_widget)) {
+    gtk_layout_move(modular_layout, drag_widget, x - drag_x, y - drag_y);
+  }
+  else if (IS_RTBUF_OUTPUT_WIDGET(drag_widget)) {
+    gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+  }
   return FALSE;
 }
 
@@ -227,10 +285,10 @@ void rtbuf_gtk_modular ()
 
   rtbuf_gtk_library_menu();
 
-  rtbuf_move_target_list = gtk_target_list_new(rtbuf_move_target_entry,
-                                               RTBUF_MOVE_TARGETS);
-  gtk_drag_dest_set(GTK_WIDGET(modular_layout), 0, rtbuf_move_target_entry,
-                    RTBUF_MOVE_TARGETS, GDK_ACTION_DEFAULT);
+  modular_layout_target_list = gtk_target_list_new(modular_layout_target_entry,
+                                                   MODULAR_LAYOUT_TARGETS);
+  gtk_drag_dest_set(GTK_WIDGET(modular_layout), 0, modular_layout_target_entry,
+                    MODULAR_LAYOUT_TARGETS, GDK_ACTION_DEFAULT);
   g_signal_connect(modular_layout, "drag-motion",
                    G_CALLBACK(rtbuf_gtk_modular_drag_motion), NULL);
 }
@@ -251,9 +309,17 @@ int main (int argc, char *argv[])
 {
   librtbuf_init();
   gtk_init(&argc, &argv);
+  rtbuf_gtk_connection_init();
+  rtbuf_gtk_output_init();
   if (rtbuf_gtk_builder())
     return 1;
   rtbuf_gtk_modular();
   gtk_main ();
   return 0;
+}
+
+extern int rtbuf_err (const char *msg)
+{
+  fprintf(stderr, "rtbuf-gtk: %s\n", msg);
+  return -1;
 }

@@ -44,6 +44,7 @@ rtbuf_gtk_CFLAGS = ${GTK3_CFLAGS}
 rtbuf_gtk_LDADD = ${GTK3_LIBS} librtbuf.la
 rtbuf_gtk_SOURCES = \
 	rtbuf_gtk.c \
+	rtbuf_gtk_connection.c \
 	rtbuf_gtk_input.c \
 	rtbuf_gtk_output.c \
 	rtbuf_gtk_resources.c \

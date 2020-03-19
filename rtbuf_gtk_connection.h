@@ -1,0 +1,19 @@
+#ifndef RTBUF_GTK_CONNECTION_H
+#define RTBUF_GTK_CONNECTION_H
+
+#include "rtbuf_input_widget.h"
+#include "rtbuf_output_widget.h"
+
+typedef struct rtbuf_gtk_connection s_rtbuf_gtk_connection;
+
+struct rtbuf_gtk_connection {
+  RtbufOutputWidget *output_widget;
+  RtbufInputWidget *input_widget;
+  s_rtbuf_gtk_connection *next;
+};
+
+void rtbuf_gtk_connection_init ();
+s_rtbuf_gtk_connection * rtbuf_gtk_connection_new ();
+void rtbuf_gtk_connection_delete (s_rtbuf_gtk_connection *connection);
+
+#endif

@@ -89,8 +89,6 @@ void rtbuf_gtk_rtbuf_drag_begin (GtkWidget      *widget,
 void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
                            GdkEventButton *event)
 {
-  (void) widget;
-  (void) event;
   GtkWidget *gtk_widget = GTK_WIDGET(widget);
   printf("rtbuf-gtk rtbuf drag\n");
   g_signal_connect(G_OBJECT(widget), "drag-begin",
