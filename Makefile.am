@@ -12,13 +12,15 @@ else
 AM_CFLAGS = -DNDEBUG -O2
 endif
 
-AM_CFLAGS += -std=c89 -pedantic -W -Wall -Werror
+AM_CFLAGS += -std=c89 -W -Wall -Werror
 
 lib_LTLIBRARIES += librtbuf.la
 librtbuf_la_CFLAGS = ${LIBRTBUF_CFLAGS}
+librtbuf_la_LDFLAGS = -no-undefined
 librtbuf_la_LIBADD = ${LIBRTBUF_LIBS}
 librtbuf_la_SOURCES = \
 	symbol.c \
+	rtbuf_lib.c \
 	rtbuf_type.c \
 	rtbuf_proc.c \
 	rtbuf_var.c \
@@ -26,8 +28,9 @@ librtbuf_la_SOURCES = \
 include_HEADERS += \
 	symbol.h \
 	rtbuf_defs.h \
-	rtbuf_type.h \
+	rtbuf_lib.h \
 	rtbuf_proc.h \
+	rtbuf_type.h \
 	rtbuf_var.h \
 	rtbuf.h
 
@@ -49,13 +52,11 @@ rtbuf_gtk_SOURCES = \
 	rtbuf_gtk_resources.c \
 	rtbuf_gtk_rtbuf.c \
 	rtbuf_input_widget.c \
-	rtbuf_lib.c \
 	rtbuf_output_widget.c \
 	rtbuf_widget.c
 include_HEADERS += \
 	rtbuf_gtk.h \
 	rtbuf_input_widget.h \
-	rtbuf_lib.h \
 	rtbuf_output_widget.h \
 	rtbuf_widget.h
 rtbuf_gtk_UI = \
@@ -71,10 +72,7 @@ if ENABLE_RTBUF
 bin_PROGRAMS += rtbuf
 rtbuf_LDADD = ${RTBUF_LIBS} librtbuf.la
 rtbuf_SOURCES = \
-	rtbuf_lib.c \
 	rtbuf_cli.c
-include_HEADERS += \
-	rtbuf_lib.h
 
 if ENABLE_CLI
 rtbuf_SOURCES += \
@@ -93,6 +91,7 @@ CLEANFILES += rtbuf_music_type rtbuf_music_type.h
 
 lib_LTLIBRARIES += librtbuf_music.la
 librtbuf_music_la_LIBADD = ${MUSIC_LIBS} librtbuf.la
+librtbuf_music_la_LDFLAGS = -no-undefined
 librtbuf_music_la_SOURCES = \
 	rtbuf_music.c
 include_HEADERS += \
@@ -109,6 +108,7 @@ CLEANFILES += rtbuf_signal_type rtbuf_signal_type.h
 rtbuf_signal.lo: rtbuf_signal_type.h
 
 lib_LTLIBRARIES += librtbuf_signal.la
+librtbuf_signal_la_LDFLAGS = -no-undefined
 librtbuf_signal_la_LIBADD = ${SIGNAL_LIBS} librtbuf_music.la librtbuf.la
 librtbuf_signal_la_SOURCES = \
 	rtbuf_signal.c \
@@ -136,6 +136,7 @@ include_HEADERS += \
 endif # ENABLE_SIGNAL
 
 lib_LTLIBRARIES += librtbuf_dynamic.la
+librtbuf_dynamic_la_LDFLAGS = -no-undefined
 librtbuf_dynamic_la_LIBADD = -lm librtbuf_signal.la librtbuf.la
 librtbuf_dynamic_la_SOURCES = \
 	rtbuf_dynamic.c \
@@ -151,6 +152,7 @@ CLEANFILES += rtbuf_synth_type rtbuf_synth_type.h
 rtbuf_synth.lo: rtbuf_synth_type.h
 
 lib_LTLIBRARIES += librtbuf_synth.la
+librtbuf_synth_la_LDFLAGS = -no-undefined
 librtbuf_synth_la_LIBADD = librtbuf_signal.la librtbuf_music.la librtbuf.la
 librtbuf_synth_la_SOURCES = \
 	rtbuf_music_type.h \
@@ -171,6 +173,7 @@ CLEANFILES += rtbuf_sndio_type rtbuf_sndio_type.h
 rtbuf_sndio.lo: rtbuf_sndio_type.h
 
 lib_LTLIBRARIES += librtbuf_sndio.la
+librtbuf_sndio_la_LDFLAGS = -no-undefined
 librtbuf_sndio_la_LIBADD = ${SNDIO_LIBS} librtbuf_signal.la librtbuf.la
 librtbuf_sndio_la_SOURCES = \
 	rtbuf_sndio.c \
@@ -191,6 +194,7 @@ CLEANFILES += rtbuf_portaudio_type rtbuf_portaudio_type.h
 rtbuf_portaudio.lo: rtbuf_portaudio_type.h
 
 lib_LTLIBRARIES += librtbuf_portaudio.la
+librtbuf_portaudio_la_LDFLAGS = -no-undefined
 librtbuf_portaudio_la_LIBADD = ${PORTAUDIO_LIBS} librtbuf_signal.la librtbuf.la
 librtbuf_portaudio_la_SOURCES = \
 	rtbuf_portaudio.c \
@@ -205,6 +209,7 @@ endif # ENABLE_PORTAUDIO
 if ENABLE_GLFW3
 lib_LTLIBRARIES += librtbuf_glfw3.la
 librtbuf_glfw3_la_CPPFLAGS = ${GLFW3_CFLAGS}
+librtbuf_glfw3_la_LDFLAGS = -no-undefined
 librtbuf_glfw3_la_LIBADD = ${GLFW3_LIBS} librtbuf_music.la librtbuf_signal.la librtbuf.la
 librtbuf_glfw3_la_SOURCES = \
 	rtbuf_glfw3.c \

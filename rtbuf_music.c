@@ -20,6 +20,9 @@
 #include "rtbuf.h"
 #include "rtbuf_music.h"
 
+extern double log2 (double);
+extern double exp2 (double);
+
 int    g_rtbuf_music_init = 0;
 double g_rtbuf_music_tune = 0.0;
 

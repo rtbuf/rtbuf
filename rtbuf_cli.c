@@ -382,9 +382,3 @@ int main (int argc, char *argv[])
   rtbuf_cli_args(argc, argv);
   return repl();
 }
-
-extern int rtbuf_err (const char *msg)
-{
-  fprintf(stderr, "%s\n", msg);
-  return -1;
-}

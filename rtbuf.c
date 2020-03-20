@@ -538,3 +538,9 @@ double clamp (double inf, double x, double sup)
 {
   return max(inf, min(x, sup));
 }
+
+int rtbuf_err (const char *msg)
+{
+  fprintf(stderr, "%s\n", msg);
+  return -1;
+}

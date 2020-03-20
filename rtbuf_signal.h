@@ -456,4 +456,11 @@ int rtbuf_signal_square_start (s_rtbuf *rtb);
 
 const double sqrt2_2;
 
+#ifndef M_SQRT2
+#define M_SQRT2 1.41421356237309504880
+#endif
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #endif /* RTBUF_SIGNAL_H */
