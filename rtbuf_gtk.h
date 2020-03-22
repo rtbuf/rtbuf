@@ -38,8 +38,9 @@ s_rtbuf_gtk_connection *modular_connections;
 
 GtkTargetList *rtbuf_move_target_list;
 
-gint drag_x;
-gint drag_y;
+GtkWidget *drag_widget;
+gint       drag_x;
+gint       drag_y;
 
 gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
                                        GdkEvent *event,

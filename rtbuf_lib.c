@@ -150,6 +150,30 @@ void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
   }
 }
 
+void rtbuf_lib_load_path_dll (s_rtbuf_lib *lib, const char *name)
+{
+  char **path = g_rtbuf_lib_path;
+  lib->lib = 0;
+  while (*path && !lib->lib) {
+    const char *in = *path++;
+    lib->path = &g_string[g_string_n];
+    while (*in)
+      g_string[g_string_n++] = *in++;
+    in = "msys-rtbuf_";
+    while (*in)
+      g_string[g_string_n++] = *in++;
+    in = name;
+    while (*in)
+      g_string[g_string_n++] = *in++;
+    in = "-0.dll";
+    while (*in)
+      g_string[g_string_n++] = *in++;
+    g_string[g_string_n++] = 0;
+    printf("lib_load path \"%s\"\n", lib->path);
+    lib->lib = dlopen(lib->path, RTLD_LAZY);
+  }
+}
+
 int rtbuf_lib_proc_p (s_rtbuf_lib_proc *proc)
 {
   return proc->name || proc->f || proc->start || proc->stop;
@@ -169,8 +193,11 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
     return 0;
   rtbuf_lib_load_path(lib, name);
   if (!lib->lib) {
-    rtbuf_lib_delete(lib);
-    return 0;
+    rtbuf_lib_load_path_dll(lib, name);
+    if (!lib->lib) {
+      rtbuf_lib_delete(lib);
+      return 0;
+    }
   }
   ver = dlsym(lib->lib, "rtbuf_lib_ver");
   /* printf("lib_load ver %lu\n", *ver); */

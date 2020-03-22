@@ -24,6 +24,8 @@
 #include "rtbuf_music_type.h"
 #include "rtbuf_glfw3.h"
 
+float ceilf (float x);
+
 #define RTBUF_GLFW3_KEYBOARD_WIDTH 512
 #define RTBUF_GLFW3_KEYBOARD_HEIGHT 256
 

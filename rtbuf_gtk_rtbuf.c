@@ -77,30 +77,14 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
   gtk_menu_popup_at_pointer(menu, event);
 }
 
-void rtbuf_gtk_rtbuf_drag_begin (GtkWidget      *widget,
-                                 GdkDragContext *context,
-                                 gpointer        data)
-{
-  (void) data;
-  (void) context;
-  printf("rtbuf-gtk rtbuf drag begin\n");
-}
-
 void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
                            GdkEventButton *event)
 {
   GtkWidget *gtk_widget = GTK_WIDGET(widget);
   printf("rtbuf-gtk rtbuf drag\n");
-  g_signal_connect(G_OBJECT(widget), "drag-begin",
-                   G_CALLBACK (rtbuf_gtk_rtbuf_drag_begin), NULL);
   gdk_window_get_device_position(event->window, event->device,
                                  &drag_x, &drag_y, NULL);
-  gtk_drag_begin_with_coordinates(GTK_WIDGET(widget),
-                                  rtbuf_move_target_list,
-                                  GDK_ACTION_DEFAULT,
-                                  event->button,
-                                  (GdkEvent*) event,
-                                  -1, -1);
+  drag_widget = gtk_widget;
 }
 
 gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,

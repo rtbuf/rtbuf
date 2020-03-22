@@ -53,6 +53,8 @@ AM_CONDITIONAL([ENABLE_CLI], [test x"$enable_cli" = x"true"])
 AC_SUBST([LIBRTBUF_CFLAGS])
 AC_SUBST([LIBRTBUF_LIBS])
 
+AC_CHECK_LIB(m, log2, [AC_DEFINE([HAVE_LOG2],[1],[Define to 1 if your system has 'log2'.])])
+
 PKG_CHECK_MODULES([GTK3], [gtk+-3.0],
                   [enable_gtk3=true],
                   [enable_gtk3=false])
