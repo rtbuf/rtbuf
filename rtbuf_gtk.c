@@ -41,6 +41,8 @@ GtkTargetList *rtbuf_move_target_list;
 GtkTargetEntry rtbuf_move_target_entry[RTBUF_MOVE_TARGETS] = {
   {"RtbufWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF}
 };
+
+GtkWidget *drag_widget = NULL;
 gint drag_x = 0;
 gint drag_y = 0;
 
@@ -190,19 +192,26 @@ gboolean rtbuf_gtk_modular_button_press (GtkWidget *widget,
   return FALSE;
 }
 
-gboolean rtbuf_gtk_modular_drag_motion (GtkWidget      *widget,
-                                        GdkDragContext *context,
-                                        gint            x,
-                                        gint            y,
-                                        guint           time,
-                                        gpointer        data)
+gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
+                                   GdkEventMotion  *event,
+                                   gpointer         data)
 {
-  (void) widget;
-  (void) time;
-  (void) data;
-  GtkWidget *rtbuf_widget = gtk_drag_get_source_widget(context);
-  printf("rtbuf-gtk modular drag motion %i %i\n", x, y);
-  gtk_layout_move(modular_layout, rtbuf_widget, x - drag_x, y - drag_y);
+  if (drag_widget) {
+    if (!(event->state & GDK_BUTTON1_MASK)) {
+      printf("rtbuf-gtk modular drop\n");
+      drag_widget = NULL;
+      return TRUE;
+    }
+    else {
+      gint x = 0;
+      gint y = 0;
+      gtk_widget_get_pointer(GTK_WIDGET(modular_layout), &x, &y);
+      printf("rtbuf-gtk modular drag motion %i %i\n", x, y);
+      gtk_layout_move(modular_layout, drag_widget, x - drag_x,
+                      y - drag_y);
+      return TRUE;
+    }
+  }
   return FALSE;
 }
 
@@ -227,12 +236,8 @@ void rtbuf_gtk_modular ()
 
   rtbuf_gtk_library_menu();
 
-  rtbuf_move_target_list = gtk_target_list_new(rtbuf_move_target_entry,
-                                               RTBUF_MOVE_TARGETS);
-  gtk_drag_dest_set(GTK_WIDGET(modular_layout), 0, rtbuf_move_target_entry,
-                    RTBUF_MOVE_TARGETS, GDK_ACTION_DEFAULT);
-  g_signal_connect(modular_layout, "drag-motion",
-                   G_CALLBACK(rtbuf_gtk_modular_drag_motion), NULL);
+  g_signal_connect(modular_layout, "motion-notify-event",
+                   G_CALLBACK(rtbuf_gtk_modular_motion), NULL);
 }
 
 int rtbuf_gtk_builder ()
