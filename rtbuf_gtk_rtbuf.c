@@ -77,15 +77,6 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
   gtk_menu_popup_at_pointer(menu, event);
 }
 
-void rtbuf_gtk_rtbuf_drag_begin (GtkWidget      *widget,
-                                 GdkDragContext *context,
-                                 gpointer        data)
-{
-  (void) data;
-  (void) context;
-  printf("rtbuf-gtk rtbuf drag begin\n");
-}
-
 void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
                            GdkEventButton *event)
 {
@@ -93,8 +84,6 @@ void rtbuf_gtk_rtbuf_drag (RtbufWidget *widget,
   (void) event;
   GtkWidget *gtk_widget = GTK_WIDGET(widget);
   printf("rtbuf-gtk rtbuf drag\n");
-  g_signal_connect(G_OBJECT(widget), "drag-begin",
-                   G_CALLBACK (rtbuf_gtk_rtbuf_drag_begin), NULL);
   gdk_window_get_device_position(event->window, event->device,
                                  &drag_x, &drag_y, NULL);
   drag_widget = gtk_widget;

@@ -24,23 +24,12 @@
 #include "rtbuf_var.h"
 #include "rtbuf_widget.h"
 
-enum dnd_targets {
-  TARGET_RTBUF,
-  N_TARGETS
-};
-
 unsigned int g_next_id = 0;
 
 GtkBuilder *builder = NULL;
 GtkWindow *modular = NULL;
 GtkLayout *modular_layout = NULL;
 GtkMenu *library_menu = NULL;
-
-GtkTargetList *rtbuf_move_target_list;
-#define RTBUF_MOVE_TARGETS 1
-GtkTargetEntry rtbuf_move_target_entry[RTBUF_MOVE_TARGETS] = {
-  {"RtbufWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF}
-};
 
 GtkWidget *drag_widget = NULL;
 gint drag_x = 0;
@@ -182,8 +171,10 @@ gboolean rtbuf_gtk_modular_button_press (GtkWidget *widget,
       event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *eb = (GdkEventButton*) event;
     if (eb->button == 3) {
+      GdkWindow *window =
+        gtk_widget_get_window(GTK_WIDGET(modular_layout));
       printf("rtbuf-gtk modular popup\n");
-      gdk_window_get_device_position(eb->window, eb->device,
+      gdk_window_get_device_position(window, eb->device,
                                      &rtbuf_x, &rtbuf_y, NULL);
       gtk_menu_popup_at_pointer(library_menu, event);
       return TRUE;
@@ -205,7 +196,10 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
     else {
       gint x = 0;
       gint y = 0;
-      gtk_widget_get_pointer(GTK_WIDGET(modular_layout), &x, &y);
+      GdkWindow *window =
+        gtk_widget_get_window(GTK_WIDGET(modular_layout));
+      gdk_window_get_device_position(window, event->device,
+                                     &x, &y, NULL);
       printf("rtbuf-gtk modular drag motion %i %i\n", x, y);
       gtk_layout_move(modular_layout, drag_widget, x - drag_x,
                       y - drag_y);
