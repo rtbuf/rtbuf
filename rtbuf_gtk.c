@@ -46,11 +46,15 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
   RtbufWidget *widget;
   GtkWidget *event_box;
   char label[1024];
+  assert(rtbuf);
+  assert(rtbuf >= g_rtbuf && (rtbuf - g_rtbuf) < RTBUF_MAX);
   printf("rtbuf-gtk modular layout new\n");
+  assert(rtbuf->proc);
+  assert(rtbuf->proc->name);
   snprintf(label, sizeof(label), "%s%02d",
            rtbuf->proc->name,
            g_next_id++);
-  rtbuf_var_rtbuf_set(label, (rtbuf - g_rtbuf) / sizeof(s_rtbuf));
+  rtbuf_var_rtbuf_set(label, rtbuf - g_rtbuf);
   widget = rtbuf_widget_new(rtbuf, label);
   gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
   event_box = rtbuf_widget_get_event_box(widget);
@@ -93,6 +97,7 @@ RtbufWidget * rtbuf_gtk_new (gchar *library, gchar *proc,
     return NULL;
   }
   rp = rl->proc[i];
+  assert(g_rtbuf);
   i = rtbuf_new(rp);
   if (i < 0) {
     fprintf(stderr, "rtbuf-gtk new rtbuf_new failed: %s %s\n", library, proc);
@@ -319,7 +324,9 @@ int rtbuf_gtk_builder ()
 
 int main (int argc, char *argv[])
 {
+  symbols_init();
   librtbuf_init();
+  assert(g_rtbuf);
   gtk_init(&argc, &argv);
   rtbuf_gtk_connection_init();
   rtbuf_gtk_output_init();

@@ -376,6 +376,7 @@ int main (int argc, char *argv[])
 {
   symbols_init();
   librtbuf_init();
+  assert(g_rtbuf);
   repl_init();
   rtbuf_cli_args(argc, argv);
   return repl();

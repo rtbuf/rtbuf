@@ -15,6 +15,7 @@ void rtbuf_var_init (void)
 {
   data_alloc_init(&g_rtbuf_var_alloc, &g_rtbuf_var_type, RTBUF_VAR_MAX, NULL, NULL);
   g_rtbuf_var = g_rtbuf_var_alloc.mem;
+  assert(g_rtbuf_var);
 }
 
 s_rtbuf_var * rtbuf_var_new (const char *name)

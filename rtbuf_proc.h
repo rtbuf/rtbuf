@@ -54,8 +54,8 @@ struct rtbuf_proc {
 };
 
 #define RTBUF_PROC_MAX 1024
-s_data_alloc  g_rtbuf_proc_alloc;
-s_rtbuf_proc *g_rtbuf_proc;
+extern s_data_alloc  g_rtbuf_proc_alloc;
+extern s_rtbuf_proc *g_rtbuf_proc;
 
 void           rtbuf_proc_init ();
 int            rtbuf_proc_p (s_rtbuf_proc *proc);

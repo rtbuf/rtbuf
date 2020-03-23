@@ -30,7 +30,7 @@ s_data_type   g_rtbuf_type = {
   DATA_TYPE_BITS
 };
 s_data_alloc  g_rtbuf_alloc;
-s_rtbuf      *g_rtbuf;
+s_rtbuf      *g_rtbuf = 0;
 int           g_rtbuf_run = 0;
 unsigned int  g_rtbuf_sort = 0;
 unsigned int  g_rtbuf_sorted[RTBUF_MAX];
@@ -42,6 +42,7 @@ int librtbuf_init ()
   bzero(g_rtbuf_sorted, sizeof(g_rtbuf_sorted));
   data_alloc_init(&g_rtbuf_alloc, &g_rtbuf_type, RTBUF_MAX, NULL, NULL);
   g_rtbuf = g_rtbuf_alloc.mem;
+  assert(g_rtbuf);
   rtbuf_type_init();
   rtbuf_proc_init();
   rtbuf_lib_init_();
@@ -56,6 +57,7 @@ int rtbuf_new (s_rtbuf_proc *rp)
   void *data;
   unsigned int j = 0;
   assert(rp);
+  assert(g_rtbuf);
   data = data_new(&rp->alloc);
   if (!data)
     return rtbuf_err("rtbuf data allocation failed, "

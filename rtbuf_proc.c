@@ -33,6 +33,8 @@ void rtbuf_proc_init ()
 {
   data_alloc_init(&g_rtbuf_proc_alloc, &g_rtbuf_proc_type,
                   RTBUF_PROC_MAX, 0, 0);
+  g_rtbuf_proc = g_rtbuf_proc_alloc.mem;
+  assert(g_rtbuf_proc);
 }
 
 int rtbuf_proc_p (s_rtbuf_proc *proc)

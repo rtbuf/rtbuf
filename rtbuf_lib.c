@@ -47,6 +47,7 @@ void rtbuf_lib_init_ ()
   data_alloc_init(&g_rtbuf_lib_alloc, &g_rtbuf_lib_type,
                   RTBUF_LIB_MAX, 0, 0);
   g_rtbuf_lib = g_rtbuf_lib_alloc.mem;
+  assert(g_rtbuf_lib);
   if (!in)
     in = ".";
   while (*in)

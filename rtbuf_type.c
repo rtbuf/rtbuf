@@ -34,6 +34,7 @@ void rtbuf_type_init ()
   data_alloc_init(&g_rtbuf_data_type_alloc, &g_rtbuf_data_type_type,
                   RTBUF_TYPE_MAX, 0, 0);
   g_rtbuf_data_type = g_rtbuf_data_type_alloc.mem;
+  assert(g_rtbuf_data_type);
   rtbuf_type_define("char"          , sizeof(char));
   rtbuf_type_define("unsigned char" , sizeof(unsigned char));
   rtbuf_type_define("short"         , sizeof(short));
