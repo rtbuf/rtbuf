@@ -38,7 +38,7 @@ int rtbuf_cli_libs (int argc, const char *argv[])
   printf("Listing %i libraries :\n", n);
   while (i < g_rtbuf_lib_alloc.n && n > 0) {
     if (g_rtbuf_lib[i].path[0]) {
-      rtbuf_lib_print(i);
+      rtbuf_lib_print(&g_rtbuf_lib[i]);
       n--;
     }
     i++;
@@ -62,15 +62,13 @@ int rtbuf_cli_lib (int argc, const char *argv[])
 int rtbuf_cli_load (int argc, const char *argv[])
 {
   s_rtbuf_lib *lib;
-  unsigned int i;
   assert(argc == 1);
   lib = rtbuf_lib_load(argv[1]);
   if (!lib) {
     printf("load failed\n");
     return -1;
   }
-  i = ((char*) lib - (char*) g_rtbuf_lib) / sizeof(s_rtbuf_lib);
-  rtbuf_lib_print(i);
+  rtbuf_lib_print(lib);
   return 0;
 }
 

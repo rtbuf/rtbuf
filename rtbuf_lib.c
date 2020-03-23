@@ -285,10 +285,14 @@ void rtbuf_lib_proc_init_proc (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x)
   rtbuf_lib_proc_out_init_proc(proc, x->out);
 }
 
-void rtbuf_lib_print (unsigned int i)
+void rtbuf_lib_print (const s_rtbuf_lib *lib)
 {
-  assert(i < RTBUF_LIB_MAX);
-  printf("#<lib %i %s>\n", i, g_rtbuf_lib[i].name);
+  unsigned int i;
+  if (lib >= g_rtbuf_lib &&
+      (i = lib - g_rtbuf_lib) < RTBUF_LIB_MAX)
+    printf("#<lib %i %s>\n", i, lib->name);
+  else
+    printf("#<lib %p %s>\n", lib, lib->name);
 }
 
 void rtbuf_lib_print_long (unsigned int i)

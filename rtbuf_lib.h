@@ -60,7 +60,7 @@ int           rtbuf_lib_find_proc (s_rtbuf_lib *rl, const char *str);
 void          rtbuf_lib_init_ ();
 s_rtbuf_lib * rtbuf_lib_load (const char *path);
 s_rtbuf_lib * rtbuf_lib_new ();
-void          rtbuf_lib_print (unsigned int i);
+void          rtbuf_lib_print (const s_rtbuf_lib *lib);
 void          rtbuf_lib_print_long (unsigned int i);
 
 void rtbuf_lib_proc_var_init_proc (s_rtbuf_proc *proc,

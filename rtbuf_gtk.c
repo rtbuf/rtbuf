@@ -81,9 +81,12 @@ RtbufWidget * rtbuf_gtk_new (gchar *library, gchar *proc,
       fprintf(stderr, "rtbuf-gtk: load failed: '%s'\n", library);
       return NULL;
     }
+    rtbuf_lib_print(rl);
   }
-  else
+  else {
+    assert(i < RTBUF_LIB_MAX);
     rl = &g_rtbuf_lib[i];
+  }
   i = rtbuf_lib_find_proc(rl, proc);
   if (i < 0) {
     fprintf(stderr, "rtbuf-gtk new: not found %s %s\n", library, proc);
