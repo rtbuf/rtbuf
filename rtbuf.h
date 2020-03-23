@@ -43,9 +43,9 @@ struct rtbuf
 #define RTBUF_MAX         10000
 #define RTBUF_INSTANCE_MAX  100
 
-s_data_alloc g_rtbuf_alloc;
-s_rtbuf     *g_rtbuf;
-int          g_rtbuf_run;
+extern s_data_alloc g_rtbuf_alloc;
+extern s_rtbuf     *g_rtbuf;
+extern int          g_rtbuf_run;
 
 int   librtbuf_init ();
 

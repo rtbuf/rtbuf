@@ -33,15 +33,15 @@ typedef struct signal_binding {
   GCallback callback;
 } s_signal_binding;
 
-GtkLayout              *modular_layout;
-s_rtbuf_gtk_connection *modular_connections;
+extern GtkLayout              *modular_layout;
+extern s_rtbuf_gtk_connection *modular_connections;
 
-GtkTargetList *rtbuf_move_target_list;
+extern GtkTargetList *rtbuf_move_target_list;
 
-GtkWidget              *drag_widget;
-s_rtbuf_gtk_connection *drag_connection;
-gint                    drag_x;
-gint                    drag_y;
+extern GtkWidget              *drag_widget;
+extern s_rtbuf_gtk_connection *drag_connection;
+extern gint                    drag_x;
+extern gint                    drag_y;
 
 gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
                                        GdkEvent *event,

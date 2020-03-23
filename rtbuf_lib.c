@@ -47,6 +47,7 @@ void rtbuf_lib_init_ ()
   data_alloc_init(&g_rtbuf_lib_alloc, &g_rtbuf_lib_type,
                   RTBUF_LIB_MAX, 0, 0);
   g_rtbuf_lib = g_rtbuf_lib_alloc.mem;
+  assert(g_rtbuf_lib);
   if (!in)
     in = ".";
   while (*in)
@@ -285,10 +286,14 @@ void rtbuf_lib_proc_init_proc (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x)
   rtbuf_lib_proc_out_init_proc(proc, x->out);
 }
 
-void rtbuf_lib_print (unsigned int i)
+void rtbuf_lib_print (const s_rtbuf_lib *lib)
 {
-  assert(i < RTBUF_LIB_MAX);
-  printf("#<lib %i %s>\n", i, g_rtbuf_lib[i].name);
+  unsigned int i;
+  if (lib >= g_rtbuf_lib &&
+      (i = lib - g_rtbuf_lib) < RTBUF_LIB_MAX)
+    printf("#<lib %i %s>\n", i, lib->name);
+  else
+    printf("#<lib %p %s>\n", lib, lib->name);
 }
 
 void rtbuf_lib_print_long (unsigned int i)
