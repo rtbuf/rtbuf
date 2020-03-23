@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include "data.h"
 #include "rtbuf_gtk.h"
 
@@ -39,4 +40,25 @@ s_rtbuf_gtk_connection * rtbuf_gtk_connection_new ()
 void rtbuf_gtk_connection_delete (s_rtbuf_gtk_connection *connection)
 {
   data_delete(&g_rtbuf_gtk_connection_alloc, connection);
+}
+
+void rtbuf_gtk_connection_push (s_rtbuf_gtk_connection **head,
+                                s_rtbuf_gtk_connection *item)
+{
+  assert(!item->next);
+  item->next = *head;
+  *head = item;
+}
+
+int rtbuf_gtk_connection_remove_one (s_rtbuf_gtk_connection **head,
+                                     s_rtbuf_gtk_connection *item)
+{
+  s_rtbuf_gtk_connection **next = head;
+  while (*next && *next != item)
+    next = &(*next)->next;
+  if (*next == item) {
+    *next = item->next;
+    return 1;
+  }
+  return 0;
 }

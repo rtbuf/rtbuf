@@ -208,6 +208,14 @@ rtbuf_input_widget_update (RtbufInputWidget *widget)
   }
 }
 
+void rtbuf_input_widget_connect (GtkWidget *widget,
+                                 gpointer data)
+{
+  s_signal_binding *sb = (s_signal_binding*) data;
+  g_signal_connect(G_OBJECT(widget), sb->signal,
+                   sb->callback, NULL);
+}
+
 void rtbuf_input_widget_connect_check (GtkWidget *input,
                                        gpointer data)
 {

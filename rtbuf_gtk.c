@@ -39,6 +39,42 @@ gint rtbuf_x = 100;
 gint rtbuf_y = 100;
 
 s_rtbuf_gtk_connection *modular_connections = NULL;
+s_rtbuf_gtk_connection *drag_connection = NULL;
+
+void rtbuf_gtk_drag_connection_end (RtbufInputWidget *input_widget)
+{
+  if (drag_connection) {
+    if (input_widget) {
+      printf("rtbuf-gtk drag connection connected to input\n");
+      drag_connection->input_widget = input_widget;
+    }
+    else {
+      printf("rtbuf-gtk drag connection abort\n");
+      rtbuf_gtk_connection_remove_one(&modular_connections,
+                                      drag_connection);
+      drag_connection = NULL;
+      gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+    }
+  }
+}
+
+gboolean rtbuf_gtk_input_motion (RtbufInputWidget *widget,
+                                       GdkEventMotion   *event)
+{
+  printf("rtbuf-gtk input motion\n");
+  if (drag_connection) {
+    if (!(event->state & GDK_BUTTON1_MASK)) {
+      rtbuf_gtk_drag_connection_end(widget);
+      return TRUE;
+    }
+    else {
+      drag_connection->input_widget = widget;
+      gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
 
 RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
                                             const gint x, const gint y)
@@ -57,6 +93,9 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
   g_signal_connect_swapped(G_OBJECT(event_box), "button-press-event",
                            G_CALLBACK(rtbuf_gtk_rtbuf_button_press),
                            widget);
+  rtbuf_widget_connect_inputs
+    (widget, "motion-notify-event",
+     G_CALLBACK(rtbuf_gtk_input_motion));
   rtbuf_widget_connect_input_checks
     (widget, "button-press-event",
      G_CALLBACK(rtbuf_gtk_input_check_button_press));
@@ -154,8 +193,6 @@ void rtbuf_gtk_modular_draw_arrow (cairo_t *cr, int x1, int y1,
 {
   const int arrow_size = 4;
   int mx = (x2 - x1) / 3;
-  printf("rtbuf-gtk modular draw arrow (%i,%i) -> (%i,%i)\n",
-         x1, y1, x2, y2);
   if (mx < 0) {
     mx = -mx;
     mx += mx / 2;
@@ -248,7 +285,7 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
 {
   if (drag_widget) {
     if (!(event->state & GDK_BUTTON1_MASK)) {
-      printf("rtbuf-gtk modular drop\n");
+      printf("rtbuf-gtk modular drop widget\n");
       drag_widget = NULL;
       return TRUE;
     }
@@ -265,15 +302,21 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
       return TRUE;
     }
   }
-  /*
   else if (drag_connection) {
-    GdkWindow *window =
-      gtk_widget_get_window(GTK_WIDGET(modular_layout));
-    gdk_window_get_device_position(window, event->device,
-                                   &drag_x, &drag_y, NULL);
-    gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+    if (!(event->state & GDK_BUTTON1_MASK)) {
+      rtbuf_gtk_drag_connection_end(NULL);
+      return TRUE;
+    }
+    else {
+      GdkWindow *window =
+        gtk_widget_get_window(GTK_WIDGET(modular_layout));
+      gdk_window_get_device_position(window, event->device,
+                                     &drag_x, &drag_y, NULL);
+      drag_connection->input_widget = NULL;
+      gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+      return TRUE;
+    }
   }
-  */
   return FALSE;
 }
 

@@ -16,4 +16,9 @@ void rtbuf_gtk_connection_init ();
 s_rtbuf_gtk_connection * rtbuf_gtk_connection_new ();
 void rtbuf_gtk_connection_delete (s_rtbuf_gtk_connection *connection);
 
+void rtbuf_gtk_connection_push (s_rtbuf_gtk_connection **head,
+                                s_rtbuf_gtk_connection *item);
+int rtbuf_gtk_connection_remove_one (s_rtbuf_gtk_connection **head,
+                                     s_rtbuf_gtk_connection *item);
+
 #endif

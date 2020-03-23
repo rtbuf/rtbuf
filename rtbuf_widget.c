@@ -252,6 +252,18 @@ rtbuf_widget_get_rtbuf (RtbufWidget *widget)
   return NULL;
 }
 
+void rtbuf_widget_connect_inputs (RtbufWidget *widget,
+                                  const char *signal,
+                                  GCallback callback)
+{
+  RtbufWidgetPrivate *priv =
+    rtbuf_widget_get_instance_private(widget);
+  s_signal_binding sb = { signal, callback };
+  gtk_container_foreach(GTK_CONTAINER(priv->inputs),
+                        rtbuf_input_widget_connect,
+                        &sb);
+}
+
 void rtbuf_widget_connect_input_checks (RtbufWidget *widget,
                                         const char *signal,
                                         GCallback callback)

@@ -79,14 +79,8 @@ void rtbuf_gtk_output_drag (RtbufOutputWidget *widget,
     return;
   }
   connection->output_widget = widget;
-  connection->next = modular_connections;
-  modular_connections = connection;
-  gtk_drag_begin_with_coordinates(GTK_WIDGET(widget),
-                                  rtbuf_gtk_output_target_list,
-                                  GDK_ACTION_DEFAULT,
-                                  event->button,
-                                  (GdkEvent*) event,
-                                  -1, -1);
+  rtbuf_gtk_connection_push(&modular_connections, connection);
+  drag_connection = connection;
 }
 
 gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,

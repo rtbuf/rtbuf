@@ -61,6 +61,9 @@ void          rtbuf_widget_set_label (RtbufWidget *widget,
 const gchar * rtbuf_widget_get_label (RtbufWidget *widget);
 GtkWidget *   rtbuf_widget_get_event_box (RtbufWidget *widget);
 s_rtbuf *     rtbuf_widget_get_rtbuf (RtbufWidget *widget);
+void          rtbuf_widget_connect_inputs (RtbufWidget *widget,
+                                           const char *signal,
+                                           GCallback callback);
 void          rtbuf_widget_connect_input_checks (RtbufWidget *widget,
                                                  const char *signal,
                                                  GCallback callback);
