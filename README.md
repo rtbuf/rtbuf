@@ -1,4 +1,4 @@
-# RTBUF 0.2 - Real time buffers
+# RTBUF 0.2.3 - Real time buffers
 
 Real time signal processing in ANSI C.
 

@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([rtbuf], [0.2.2], [kmx.io], [rtbuf], [http://kmx.io/])
+AC_INIT([rtbuf], [0.2.3], [kmx.io], [rtbuf], [http://kmx.io/])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 AC_CONFIG_SRCDIR([rtbuf.c])
