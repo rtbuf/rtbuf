@@ -1,4 +1,3 @@
-
 ACLOCAL_AMFLAGS = -I build-aux/m4
 
 bin_PROGRAMS =
@@ -71,7 +70,7 @@ endif # ENABLE_GTK3
 
 if ENABLE_RTBUF
 bin_PROGRAMS += rtbuf
-rtbuf_LDADD = ${RTBUF_LIBS} librtbuf.la
+rtbuf_LDADD = librtbuf.la ${RTBUF_LIBS}
 rtbuf_SOURCES = \
 	rtbuf_cli.c
 
