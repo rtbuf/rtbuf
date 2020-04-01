@@ -49,8 +49,8 @@ int rtbuf_signal_delay (s_rtbuf *rtb)
     unsigned int p = (data->pos + RTBUF_SIGNAL_DELAY_SAMPLES_MAX - ds) %
       RTBUF_SIGNAL_DELAY_SAMPLES_MAX;
     data->signal[i] = data->in[p];
-    data->in[data->pos++] = (1.0 - fb) * s + fb * data->in[p];
-    data->pos %= RTBUF_SIGNAL_DELAY_SAMPLES_MAX;
+    data->in[data->pos] = (1.0 - fb) * s + fb * data->in[p];
+    data->pos = (data->pos + 1) % RTBUF_SIGNAL_DELAY_SAMPLES_MAX;
     i++;
   }
   return 0;
