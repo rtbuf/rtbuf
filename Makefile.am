@@ -133,6 +133,23 @@ librtbuf_signal_la_SOURCES = \
 include_HEADERS += \
 	rtbuf_signal.h \
 	rtbuf_signal_type.h
+
+rtbuf_reverb_type: rtbuf_reverb_type.c rtbuf_reverb.h
+	${CC} ${CFLAGS} ${CPPFLAGS} -o rtbuf_reverb_type rtbuf_reverb_type.c
+rtbuf_reverb_type.h: rtbuf_reverb_type
+	./rtbuf_reverb_type > rtbuf_reverb_type.h
+CLEANFILES += rtbuf_reverb_type rtbuf_reverb_type.h
+rtbuf_reverb.lo: rtbuf_reverb_type.h
+
+lib_LTLIBRARIES += librtbuf_reverb.la
+librtbuf_reverb_la_LDFLAGS = -no-undefined
+librtbuf_reverb_la_LIBADD = librtbuf_signal.la
+librtbuf_reverb_la_SOURCES = \
+	rtbuf_reverb.c \
+	rtbuf_reverb_fdn4.c
+include_HEADERS += \
+	rtbuf_reverb.h \
+	rtbuf_reverb_type.h
 endif # ENABLE_SIGNAL
 
 lib_LTLIBRARIES += librtbuf_dynamic.la
