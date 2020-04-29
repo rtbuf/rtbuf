@@ -43,6 +43,8 @@ extern s_rtbuf_gtk_connection *drag_connection;
 extern gint                    drag_x;
 extern gint                    drag_y;
 
+void rtbuf_gtk_drag_connection_end (RtbufInputWidget *input_widget);
+
 gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
                                        GdkEvent *event,
                                        gpointer data);
@@ -53,5 +55,7 @@ gboolean rtbuf_gtk_input_check_button_press (RtbufInputWidget *widget,
 void     rtbuf_gtk_output_init ();
 gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
                                               GdkEvent *event);
+gboolean rtbuf_gtk_output_check_button_release (RtbufOutputWidget *widget,
+                                                GdkEvent *event);
 
 #endif /* RTBUF_GTK_H */

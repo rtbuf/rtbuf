@@ -20,5 +20,9 @@ void rtbuf_gtk_connection_push (s_rtbuf_gtk_connection **head,
                                 s_rtbuf_gtk_connection *item);
 int rtbuf_gtk_connection_remove_one (s_rtbuf_gtk_connection **head,
                                      s_rtbuf_gtk_connection *item);
+s_rtbuf_gtk_connection * rtbuf_gtk_connection_find
+(s_rtbuf_gtk_connection *c,
+ RtbufOutputWidget *output_widget,
+ RtbufInputWidget *input_widget);
 
 #endif

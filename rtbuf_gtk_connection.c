@@ -62,3 +62,15 @@ int rtbuf_gtk_connection_remove_one (s_rtbuf_gtk_connection **head,
   }
   return 0;
 }
+
+s_rtbuf_gtk_connection * rtbuf_gtk_connection_find
+(s_rtbuf_gtk_connection *c,
+ RtbufOutputWidget *output_widget,
+ RtbufInputWidget *input_widget)
+{
+  while (c && (c->output_widget != output_widget ||
+               c->input_widget != input_widget))
+    c = c->next;
+  return c;
+}
+

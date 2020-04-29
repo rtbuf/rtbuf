@@ -21,6 +21,20 @@
 #include "rtbuf_gtk.h"
 #include "rtbuf_input_widget.h"
 
+GtkTargetList *rtbuf_gtk_input_target_list;
+#define RTBUF_GTK_INPUT_TARGETS 1
+GtkTargetEntry rtbuf_gtk_input_target_entry[RTBUF_GTK_INPUT_TARGETS]
+= {
+  {"RtbufOutputWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF_OUTPUT}
+};
+
+void rtbuf_gtk_input_init ()
+{
+  rtbuf_gtk_input_target_list =
+    gtk_target_list_new(rtbuf_gtk_input_target_entry,
+                        RTBUF_GTK_INPUT_TARGETS);
+}
+
 void rtbuf_gtk_input_disconnect (RtbufInputWidget *widget)
 {
   (void) widget;
