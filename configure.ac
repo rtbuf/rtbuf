@@ -2,7 +2,7 @@ AC_PREREQ([2.59])
 AC_INIT([rtbuf], [0.2.3], [kmx.io], [rtbuf], [http://kmx.io/])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
-AC_CONFIG_SRCDIR([rtbuf.c])
+AC_CONFIG_SRCDIR([librtbuf/rtbuf.c])
 AC_CONFIG_HEADERS([config.h:config.h.in])
 
 AM_INIT_AUTOMAKE
@@ -28,28 +28,13 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
+CPPFLAGS="-I${PWD}/librtbuf/include -I${PWD}/lib/include $CPPFLAGS"
+CFLAGS="$CFLAGS -std=c89 -W -Wall -Werror"
+
 AC_CHECK_FUNC([strlcpy], [echo using system strlcpy],
 	      AC_SEARCH_LIBS([strlcpy], [bsd],
                	             [LIBRTBUF_CFLAGS="-I/usr/include/bsd -DLIBBSD_OVERLAY"
                              LIBRTBUF_LIBS="$LIBRTBUF_LIBS -lbsd"]))
-
-enable_libdata=true
-AC_SEARCH_LIBS([libdata_init], [data],
-               [LIBRTBUF_LIBS="$LIBRTBUF_LIBS -ldata"
-                enable_libdata=false],
-               [if test x"$with_external_libdata" = x"true"; then
-                  AC_MSG_ERROR([missing libdata for rtbuf])
-                fi])
-AM_CONDITIONAL([ENABLE_LIBDATA], [test x"$enable_libdata" = x"true"])
-
-enable_cli=true
-AC_SEARCH_LIBS([cli_init], [cli],
-               [RTBUF_LIBS="$RTBUF_LIBS -lcli"
-                enable_cli=false],
-               [if test x"$with_external_libcli" = x"true"; then
-                  AC_MSG_ERROR([missing libcli for rtbuf])
-                fi])
-AM_CONDITIONAL([ENABLE_CLI], [test x"$enable_cli" = x"true"])
 AC_SUBST([LIBRTBUF_CFLAGS])
 AC_SUBST([LIBRTBUF_LIBS])
 
@@ -86,23 +71,12 @@ AC_CHECK_LIB([termcap], [tputs],
 AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
 AC_SUBST([RTBUF_LIBS])
 
-enable_music=true
-AM_CONDITIONAL([ENABLE_MUSIC], [test x"$enable_music" = x"true"])
 MUSIC_LIBS="-lm"
 AC_SUBST([MUSIC_LIBS])
 
-enable_signal=true
-AC_ARG_ENABLE(signal,
-  AS_HELP_STRING([--enable-signal],
-                 [enable building librtbuf_signal, default: yes]),
-  [case "${enableval}" in
-     no)  enable_signal=false ;;
-   esac])
 SIGNAL_LIBS="-lm"
 AC_SUBST([SIGNAL_LIBS])
-AM_CONDITIONAL([ENABLE_SIGNAL], [test x"$enable_signal" = x"true"])
 
-enable_sndio=false
 SNDIO_LIBS=
 AC_SEARCH_LIBS([sio_open], [sndio],
                [enable_sndio=true
@@ -142,6 +116,11 @@ AC_CHECK_PROG([enable_nsis], [makensis], [true], [false])
 AM_CONDITIONAL([ENABLE_NSIS], [test x"$enable_nsis" = x"true"])
 
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([cli/Makefile])
+AC_CONFIG_FILES([gtk/Makefile])
+AC_CONFIG_FILES([lib/Makefile])
+AC_CONFIG_FILES([lib/signal/Makefile])
+AC_CONFIG_FILES([librtbuf/Makefile])
 AC_OUTPUT
 
 echo "Building status :"
