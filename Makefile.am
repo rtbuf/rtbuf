@@ -66,6 +66,7 @@ rtbuf_gtk_UI = \
 	rtbuf_widget.ui
 rtbuf_gtk_resources.c: rtbuf_gtk.gresource.xml ${rtbuf_gtk_UI}
 	glib-compile-resources rtbuf_gtk.gresource.xml --target=rtbuf_gtk_resources.c --generate-source
+CLEANFILES += rtbuf_gtk_resources.c
 endif # ENABLE_GTK3
 
 if ENABLE_RTBUF
