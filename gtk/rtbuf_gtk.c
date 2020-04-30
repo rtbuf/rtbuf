@@ -119,14 +119,12 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
   return widget;
 }
 
-RtbufWidget * rtbuf_gtk_new (gchar *library, gchar *proc,
-                             const gint x, const gint y)
+RtbufWidget * rtbuf_gtk_new (gchar *library, const gint x, const gint y)
 {
   int i;
   s_rtbuf_lib *rl = 0;
-  s_rtbuf_proc *rp = 0;
   s_rtbuf *rtb = 0;
-  printf("rtbuf-gtk new %s %s\n", library, proc);
+  printf("rtbuf-gtk new %s\n", library);
   i = rtbuf_lib_find(library);
   if (i < 0) {
     printf("load %s\n", library);
@@ -140,16 +138,10 @@ RtbufWidget * rtbuf_gtk_new (gchar *library, gchar *proc,
     assert(i < RTBUF_LIB_MAX);
     rl = &g_rtbuf_lib[i];
   }
-  i = rtbuf_lib_find_proc(rl, proc);
-  if (i < 0) {
-    fprintf(stderr, "rtbuf-gtk new: not found %s %s\n", library, proc);
-    return NULL;
-  }
-  rp = rl->proc[i];
   assert(g_rtbuf);
-  i = rtbuf_new(rp);
+  i = rtbuf_new(rl->proc);
   if (i < 0) {
-    fprintf(stderr, "rtbuf-gtk new rtbuf_new failed: %s %s\n", library, proc);
+    fprintf(stderr, "rtbuf-gtk new rtbuf_new failed: %s\n", library);
     return NULL;
   }
   rtb = &g_rtbuf[i];
@@ -162,7 +154,7 @@ void rtbuf_gtk_library_menu_activate (GtkMenuItem *menuitem,
   gchar *proc;
   gchar *library = (gchar*) data;
   g_object_get(menuitem, "label", &proc, NULL);
-  rtbuf_gtk_new(library, proc, rtbuf_x, rtbuf_y);
+  rtbuf_gtk_new(library, rtbuf_x, rtbuf_y);
   rtbuf_x = 100;
   rtbuf_y = 100;
   g_free(proc);
@@ -386,6 +378,7 @@ int main (int argc, char *argv[])
   gtk_init(&argc, &argv);
   rtbuf_gtk_connection_init();
   rtbuf_gtk_output_init();
+  rtbuf_gtk_library_load();
   if (rtbuf_gtk_builder())
     return 1;
   rtbuf_gtk_modular();

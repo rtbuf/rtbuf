@@ -498,7 +498,7 @@ void rtbuf_print_long (unsigned int i)
   rtb = &g_rtbuf[i];
   proc = rtb->proc;
   printf("#<rtbuf %i", i);
-  printf(" %s %s", proc->lib->name, proc->name);
+  printf(" %s", proc->lib->name);
   if (rtb->data) {
     printf(" %d", rtb->refc);
     while (j < proc->in_n)

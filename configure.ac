@@ -29,7 +29,7 @@ if test -d /usr/lib; then
 fi
 
 CPPFLAGS="-I${PWD}/librtbuf/include -I${PWD}/lib/include $CPPFLAGS"
-CFLAGS="$CFLAGS -std=c89 -W -Wall -Werror"
+CFLAGS="-std=c89 -W -Wall -Werror"
 
 AC_CHECK_FUNC([strlcpy], [echo using system strlcpy],
 	      AC_SEARCH_LIBS([strlcpy], [bsd],
@@ -110,6 +110,11 @@ AC_ARG_ENABLE(debug,
        *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]);;
    esac],
   [debug=true])
+if test x"$debug" = x"true"; then
+   CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb"
+else
+   CFLAGS="$CFLAGS -DNDEBUG -O2"
+fi
 AM_CONDITIONAL([DEBUG], [test x"$debug" = x"true"])
 
 AC_CHECK_PROG([enable_nsis], [makensis], [true], [false])
@@ -120,6 +125,7 @@ AC_CONFIG_FILES([cli/Makefile])
 AC_CONFIG_FILES([gtk/Makefile])
 AC_CONFIG_FILES([lib/Makefile])
 AC_CONFIG_FILES([lib/signal/Makefile])
+AC_CONFIG_FILES([lib/sndio/Makefile])
 AC_CONFIG_FILES([librtbuf/Makefile])
 AC_OUTPUT
 

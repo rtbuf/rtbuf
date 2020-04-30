@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <unistd.h>
+
 #include <rtbuf/rtbuf.h>
 #include <rtbuf/lib.h>
 #include <rtbuf/symbol.h>
@@ -32,12 +34,11 @@ s_data_alloc g_rtbuf_lib_alloc;
 s_rtbuf_lib *g_rtbuf_lib;
 
 char g_rtbuf_lib_user_dir[1024];
-char *g_rtbuf_lib_path[] = { "",
-                             "./",
+char *g_rtbuf_lib_path[] = { "./",
                              "./.libs/",
                              g_rtbuf_lib_user_dir,
-                             "/usr/local/lib/",
-                             "/usr/lib/",
+                             "/usr/local/lib/rtbuf/",
+                             "/usr/lib/rtbuf/",
                              0 };
 
 void rtbuf_lib_init_ ()
@@ -52,7 +53,7 @@ void rtbuf_lib_init_ ()
     in = ".";
   while (*in)
     *out++ = *in++;
-  in = "/.rtbuf/lib/";
+  in = "/.rtbuf/lib/rtbuf/";
   while (*in)
     *out++ = *in++;
   *out = 0;
@@ -87,25 +88,6 @@ int rtbuf_lib_find (const char *str)
   return -1;
 }
 
-int rtbuf_lib_find_proc (s_rtbuf_lib *rl, const char *str)
-{
-  const char *sym;
-  if ('0' <= str[0] && str[0] <= '9') {
-    int i = atoi(str);
-    if (0 <= i && (unsigned) i < rl->proc_n)
-      return i;
-  }
-  if ((sym = symbol_find(str))) {
-    unsigned int i = 0;
-    while (i < rl->proc_n) {
-      if (sym == rl->proc[i]->name)
-        return i;
-      i++;
-    }
-  }
-  return -1;
-}
-
 s_rtbuf_lib * rtbuf_lib_new ()
 {
   s_rtbuf_lib *lib = data_new(&g_rtbuf_lib_alloc);
@@ -114,63 +96,43 @@ s_rtbuf_lib * rtbuf_lib_new ()
 
 void rtbuf_lib_delete (s_rtbuf_lib *rl)
 {
-  unsigned int i = 0;
   assert(rl);
   if (rl->proc) {
-    while (i < rl->proc_n) {
-      rtbuf_proc_delete(rl->proc[i]);
-      rl->proc[i] = 0;
-      i++;
-    }
-    free(rl->proc);
+    rtbuf_proc_delete(rl->proc);
+    rl->proc = 0;
   }
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
-void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
+const char * rtbuf_lib_find_in_path (const char *name)
 {
   char **path = g_rtbuf_lib_path;
-  lib->lib = 0;
-  while (*path && !lib->lib) {
-    const char *in = *path++;
-    lib->path = &g_string[g_string_n];
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    in = "librtbuf_";
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    in = name;
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    in = ".so";
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    g_string[g_string_n++] = 0;
-    printf("lib_load path \"%s\"\n", lib->path);
-    lib->lib = dlopen(lib->path, RTLD_LAZY);
+  while (*path) {
+    char *lib_path;
+    char *ext;
+    lib_path = g_str_append(*path, strlen(*path));
+    g_str_append(name, strlen(name));
+    ext = g_str_append(".so.0.0", 8);
+    printf("lib find in path \"%s\"\n", lib_path);
+    if (access(lib_path, R_OK) == 0)
+      return lib_path;
+    g_str_reset(ext);
+    g_str_append(".dll", 5);
+    printf("lib find in path \"%s\"\n", lib_path);
+    if (access(lib_path, R_OK) == 0)
+      return lib_path;
+    g_str_reset(lib_path);
+    path++;
   }
+  return 0;
 }
 
-void rtbuf_lib_load_path_dll (s_rtbuf_lib *lib, const char *name)
+void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
 {
-  char **path = g_rtbuf_lib_path;
-  lib->lib = 0;
-  while (*path && !lib->lib) {
-    const char *in = *path++;
-    lib->path = &g_string[g_string_n];
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    in = "msys-rtbuf_";
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    in = name;
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    in = "-0.dll";
-    while (*in)
-      g_string[g_string_n++] = *in++;
-    g_string[g_string_n++] = 0;
-    printf("lib_load path \"%s\"\n", lib->path);
+  const char *path = rtbuf_lib_find_in_path(name);
+  if (path) {
+    printf("lib load path \"%s\"\n", path);
+    lib->path = path;
     lib->lib = dlopen(lib->path, RTLD_LAZY);
   }
 }
@@ -185,7 +147,6 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   s_rtbuf_lib *lib = rtbuf_lib_new();
   s_rtbuf_lib_proc *proc;
   unsigned long *ver;
-  unsigned int i = 0;
   union {
     void *ptr;
     f_rtbuf_lib_init *init;
@@ -194,11 +155,8 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
     return 0;
   rtbuf_lib_load_path(lib, name);
   if (!lib->lib) {
-    rtbuf_lib_load_path_dll(lib, name);
-    if (!lib->lib) {
-      rtbuf_lib_delete(lib);
-      return 0;
-    }
+    rtbuf_lib_delete(lib);
+    return 0;
   }
   ver = dlsym(lib->lib, "rtbuf_lib_ver");
   /* printf("lib_load ver %lu\n", *ver); */
@@ -211,20 +169,10 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
       return 0;
     }
   proc = dlsym(lib->lib, "rtbuf_lib_proc");
-  lib->proc_n = 0;
-  while (lib->proc_n < RTBUF_PROC_MAX &&
-         rtbuf_lib_proc_p(&proc[lib->proc_n]))
-    lib->proc_n++;
-  lib->proc = malloc(sizeof(s_rtbuf_proc*) * (lib->proc_n + 1));
-  while (i < lib->proc_n) {
-    lib->proc[i] = rtbuf_proc_new();
-    assert(lib->proc[i]);
-    rtbuf_lib_proc_init_proc(lib->proc[i], &proc[i]);
-    lib->proc[i]->lib = lib;
-    lib->proc[i]->lib_proc = i;
-    i++;
-  }
-  lib->proc[i] = 0;
+  lib->proc = rtbuf_proc_new();
+  assert(lib->proc);
+  rtbuf_lib_proc_init_proc(lib->proc, proc);
+  lib->proc->lib = lib;
   return lib;
 }
 
@@ -299,16 +247,12 @@ void rtbuf_lib_print (const s_rtbuf_lib *lib)
 void rtbuf_lib_print_long (unsigned int i)
 {
   s_rtbuf_lib *lib;
-  unsigned int j = 0;
   assert(i < RTBUF_LIB_MAX);
   lib = &g_rtbuf_lib[i];
   printf("#<lib %i %s", i, lib->name);
   printf("\n  %s", lib->path);
-  while (j < lib->proc_n) {
-    printf("\n  ");
-    rtbuf_proc_print(lib->proc[j]);
-    j++;
-  }
+  printf("\n  ");
+  rtbuf_proc_print(lib->proc);
   printf(">\n");
   fflush(stdout);
 }

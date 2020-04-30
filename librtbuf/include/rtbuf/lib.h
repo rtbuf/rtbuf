@@ -19,7 +19,7 @@
 #include <rtbuf/defs.h>
 
 #define RTBUF_LIB_MAX 1000
-#define RTBUF_LIB_VER 0x00010001
+#define RTBUF_LIB_VER 0x00020001
 
 struct rtbuf_lib_proc_in {
   const char *name;
@@ -45,8 +45,7 @@ struct rtbuf_lib_proc {
 
 struct rtbuf_lib {
   const char *name;
-  s_rtbuf_proc **proc;
-  unsigned int proc_n;
+  s_rtbuf_proc *proc;
   void *lib;
   const char *path;
 };
@@ -56,7 +55,6 @@ extern s_rtbuf_lib *g_rtbuf_lib;
 
 void          rtbuf_lib_delete (s_rtbuf_lib *rl);
 int           rtbuf_lib_find (const char *str);
-int           rtbuf_lib_find_proc (s_rtbuf_lib *rl, const char *str);
 void          rtbuf_lib_init_ ();
 s_rtbuf_lib * rtbuf_lib_load (const char *path);
 s_rtbuf_lib * rtbuf_lib_new ();

@@ -94,7 +94,7 @@ int rtbuf_proc_out_find (s_rtbuf_proc *proc, const char *x)
 void rtbuf_proc_print (s_rtbuf_proc *proc)
 {
   unsigned int i = 0;
-  printf("#<proc %i %s (", proc->lib_proc, proc->name);
+  printf("#<proc %s (", proc->name);
   while (i < proc->in_n) {
     if (i > 0)
       fputs(" ", stdout);

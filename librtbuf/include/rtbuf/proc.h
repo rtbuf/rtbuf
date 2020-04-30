@@ -48,7 +48,6 @@ struct rtbuf_proc {
   unsigned int     out_n;                    /* number of outputs */
   unsigned int     out_bytes;  /* size of output data in bytes */
   s_rtbuf_lib     *lib;        /* the library this procedure comes from */
-  unsigned int     lib_proc;   /* the procedure index in library */
   s_data_type      type;
   s_data_alloc     alloc;
 };

@@ -230,7 +230,7 @@ AUTOMAKE = ${SHELL} /home/dx/c/rtbuf/rtbuf/build-aux/missing automake-1.16
 AWK = awk
 CC = cc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2 -std=c89 -W -Wall -Werror
+CFLAGS = -std=c89 -W -Wall -Werror -DDEBUG -O0 -ggdb
 CPP = cc -E
 CPPFLAGS = -I/home/dx/c/rtbuf/rtbuf/librtbuf/include -I/home/dx/c/rtbuf/rtbuf/lib/include  -I/usr/local/include -I/usr/include
 CYGPATH_W = echo

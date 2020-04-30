@@ -18,7 +18,19 @@
 #include <math.h>
 #include <stdio.h>
 #include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
 #include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_signal_sinus_in[] = {
+  { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_signal_sinus_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "phase", "double" },
+  { 0, 0 } };
 
 int rtbuf_signal_sinus_start (s_rtbuf *rtb)
 {
@@ -51,3 +63,9 @@ int rtbuf_signal_sinus (s_rtbuf *rtb)
   }
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "sinus", rtbuf_signal_sinus, rtbuf_signal_sinus_start, 0,
+    rtbuf_signal_sinus_in, rtbuf_signal_sinus_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

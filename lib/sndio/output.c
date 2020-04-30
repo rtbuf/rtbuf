@@ -18,8 +18,22 @@
 #include <sndio.h>
 #include <stdio.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_sndio.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/sndio.h>
+#include <rtbuf/sndio_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_sndio_output_in[] = {
+  { "left",  RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "right", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_sndio_output_out[] = {
+  { "samples", RTBUF_SNDIO_SAMPLES_TYPE },
+  { "reserved", RTBUF_SNDIO_OUTPUT_RESERVED_TYPE },
+  { 0, 0 } };
 
 void rtbuf_sndio_output_parameters (struct sio_par *want)
 {
@@ -124,4 +138,20 @@ int rtbuf_sndio_output (s_rtbuf *rtb)
             sizeof(t_rtbuf_sndio_samples));
   /* printf("\n"); */
   return 0;
+}
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "output",
+    rtbuf_sndio_output,
+    rtbuf_sndio_output_start,
+    rtbuf_sndio_output_stop,
+    rtbuf_sndio_output_in,
+    rtbuf_sndio_output_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;
+
+void print_sio_par (struct sio_par *par)
+{
+  printf("#<sio_par bits=%i sig=%i rchan=%i pchan=%i rate=%i>",
+         par->bits, par->sig, par->rchan, par->pchan, par->rate);
 }

@@ -1,9 +1,9 @@
-load signal
-load sndio
-new signal sinus
-new sndio output
-bind 0 0 1 0
-bind 0 0 1 1
+load signal/sinus
+load sndio/output
+let sinus00 = new signal/sinus
+let output00 = new sndio/output
+bind sinus00 signal output00 left
+bind sinus00 signal output00 right
 buffer 0
 buffer 1
 start

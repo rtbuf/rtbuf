@@ -14,19 +14,42 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
 #include <rtbuf/symbol.h>
 
-char         g_string[STRING_MAX];
-unsigned int g_string_n = 0;
+char         g_str_start[STRING_MAX];
+char        *g_str = g_str_start;
+unsigned int g_str_n = 0;
+unsigned int g_str_last = 0;
+
+char * g_str_append (const char *str, size_t len)
+{
+  char *s = 0;
+  if (len <= STRING_MAX - g_str_n) {
+    s = g_str;
+    memcpy(s, str, len);
+    g_str_n += len;
+    g_str += len;
+  }
+  return s;
+}
+
+void g_str_reset (char *head)
+{
+  assert(head > g_str_start);
+  assert(head <= g_str_start + STRING_MAX);
+  g_str = head;
+  g_str_n = head - g_str_start;
+}
 
 const char  *g_symbols[SYMBOL_MAX];
 unsigned int g_symbols_n = 0;
 
 void symbols_init () {
-  bzero(g_string, sizeof(g_string));
+  bzero(g_str_start, sizeof(g_str_start));
   bzero(g_symbols, sizeof(g_symbols));
 }
 
@@ -39,15 +62,7 @@ symbol symbol_new (const char *name)
   }
   while (i < SYMBOL_MAX) {
     if (g_symbols[i] == 0) {
-      const char *in = name;
-      char *out = &g_string[g_string_n];
-      g_symbols[i] = out;
-      while (*in) {
-        *out++ = *in++;
-        g_string_n++;
-      }
-      *out = 0;
-      g_string_n++;
+      g_symbols[i] = g_str_append(name, strlen(name) + 1);
       g_symbols_n++;
       return g_symbols[i];
     }
