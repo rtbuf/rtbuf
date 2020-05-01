@@ -95,6 +95,8 @@ AM_CONDITIONAL([ENABLE_PORTAUDIO], [test x"$enable_portaudio" = x"true"])
 PKG_CHECK_MODULES([GLFW3], [glfw3],
                   [enable_glfw3=true],
                   [enable_glfw3=false])
+AC_SUBST([GLFW3_CFLAGS])
+AC_SUBST([GLFW3_LIBS])
 AM_CONDITIONAL([ENABLE_GLFW3], [test x"$enable_glfw3" = x"true"])
 
 LIBS=
@@ -124,8 +126,12 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([cli/Makefile])
 AC_CONFIG_FILES([gtk/Makefile])
 AC_CONFIG_FILES([lib/Makefile])
+AC_CONFIG_FILES([lib/dynamic/Makefile])
+AC_CONFIG_FILES([lib/glfw3/Makefile])
+AC_CONFIG_FILES([lib/portaudio/Makefile])
 AC_CONFIG_FILES([lib/signal/Makefile])
 AC_CONFIG_FILES([lib/sndio/Makefile])
+AC_CONFIG_FILES([lib/synth/Makefile])
 AC_CONFIG_FILES([librtbuf/Makefile])
 AC_OUTPUT
 

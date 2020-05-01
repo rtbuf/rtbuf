@@ -16,8 +16,24 @@
  */
 
 #include <math.h>
-#include "rtbuf.h"
-#include "rtbuf_dynamic.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/dynamic.h>
+
+s_rtbuf_lib_proc_in rtbuf_dynamic_limiter_in[] = {
+  { "signal"  , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "gain"    , RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { "treshold", RTBUF_SIGNAL_TYPE, 0.9, 0.0, 1.0 },
+  { "attack"  , RTBUF_SIGNAL_TYPE, 0.1, 0.0, 1.0 },
+  { "release" , RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 }};
+
+s_rtbuf_lib_proc_out rtbuf_dynamic_limiter_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "ratio"  , RTBUF_SIGNAL_SAMPLE_TYPE },
+  { 0, 0 }};
 
 int rtbuf_dynamic_limiter (s_rtbuf *rtb)
 {
@@ -74,3 +90,13 @@ int rtbuf_dynamic_limiter_start (s_rtbuf *rtb)
   data->ratio = 1.0;
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "limiter",
+    rtbuf_dynamic_limiter,
+    rtbuf_dynamic_limiter_start,
+    0,
+    rtbuf_dynamic_limiter_in,
+    rtbuf_dynamic_limiter_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

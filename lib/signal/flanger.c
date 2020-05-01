@@ -20,7 +20,25 @@
 #include <string.h>
 #include <strings.h>
 #include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
 #include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_signal_flanger_in[] = {
+  { "signal",    RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "frequency", RTBUF_SIGNAL_TYPE, 0.5, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { "amplitude", RTBUF_SIGNAL_TYPE, 0.02, 0.0, 1.0 },
+  { "delay",     RTBUF_SIGNAL_TYPE, 0.0001, 0.0, 1.0 },
+  { "feedback",  RTBUF_SIGNAL_TYPE, 0.01, 0.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_signal_flanger_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "phase", "double" },
+  { "in", RTBUF_SIGNAL_FLANGER_TYPE },
+  { "pos", "unsigned int" },
+  { "ds", "unsigned int" },
+  { 0, 0 } };
 
 int rtbuf_signal_flanger_start (s_rtbuf *rtb)
 {
@@ -73,3 +91,13 @@ int rtbuf_signal_flanger (s_rtbuf *rtb)
   }
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "flanger",
+    rtbuf_signal_flanger,
+    rtbuf_signal_flanger_start,
+    0,
+    rtbuf_signal_flanger_in,
+    rtbuf_signal_flanger_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

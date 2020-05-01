@@ -15,10 +15,29 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <float.h>
 #include <stdio.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_synth.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/music.h>
+#include <rtbuf/music_type.h>
+#include <rtbuf/synth.h>
+
+s_rtbuf_lib_proc_in rtbuf_synth_adsr_in[] = {
+  RTBUF_MUSIC_NOTE_IN(),
+  { "attack",  RTBUF_SIGNAL_TYPE, 0.02, 0.0,  2.0 },
+  { "decay",   RTBUF_SIGNAL_TYPE, 0.01, 0.0,  2.0 },
+  { "sustain", RTBUF_SIGNAL_TYPE, 0.4,  0.0,  1.0 },
+  { "release", RTBUF_SIGNAL_TYPE, 0.3,  0.0, 10.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_synth_adsr_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "state", "int" },
+  { 0, 0 } };
 
 static
 double adsr (double attack, double decay, double sustain,
@@ -115,3 +134,13 @@ int rtbuf_synth_adsr_start (s_rtbuf *rtb)
   bzero(data->signal, sizeof(t_rtbuf_signal));
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "adsr",
+    rtbuf_synth_adsr,
+    rtbuf_synth_adsr_start,
+    0,
+    rtbuf_synth_adsr_in,
+    rtbuf_synth_adsr_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

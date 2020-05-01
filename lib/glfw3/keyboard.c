@@ -18,16 +18,32 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_signal.h"
-#include "rtbuf_music.h"
-#include "rtbuf_music_type.h"
-#include "rtbuf_glfw3.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/music.h>
+#include <rtbuf/music_type.h>
+#include <rtbuf/glfw3.h>
 
 float ceilf (float x);
 
 #define RTBUF_GLFW3_KEYBOARD_WIDTH 512
 #define RTBUF_GLFW3_KEYBOARD_HEIGHT 256
+
+s_rtbuf_lib_proc_out rtbuf_glfw3_keyboard_out[] = {
+  RTBUF_MUSIC_NOTES_OUT("note"),
+  { "window", "void*" },
+  { "octave", "unsigned int" },
+  { 0, 0 } };
+
+int rtbuf_lib_init (s_rtbuf_lib *lib)
+{
+  (void) lib;
+  rtbuf_music_init();
+  glfwInit();
+  return 0;
+}
 
 double scancode_frequency (int scancode, unsigned int octave)
 {
@@ -279,3 +295,13 @@ int rtbuf_glfw3_keyboard (s_rtbuf *rtb)
   glfwPollEvents();
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "keyboard",
+    rtbuf_glfw3_keyboard,
+    rtbuf_glfw3_keyboard_start,
+    rtbuf_glfw3_keyboard_stop,
+    0,
+    rtbuf_glfw3_keyboard_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

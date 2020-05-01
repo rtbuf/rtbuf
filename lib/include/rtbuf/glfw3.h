@@ -17,8 +17,8 @@
 #define RTBUF_GLFW3_H
 
 #include <GLFW/glfw3.h>
-#include "rtbuf.h"
-#include "rtbuf_music.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/music.h>
 
 #pragma pack(push,1)
 typedef struct rtbuf_glfw3_keyboard_data {
@@ -27,10 +27,6 @@ typedef struct rtbuf_glfw3_keyboard_data {
   unsigned int octave;
 } s_rtbuf_glfw3_keyboard_data;
 #pragma pack(pop)
-
-int rtbuf_glfw3_keyboard (s_rtbuf *rtb);
-int rtbuf_glfw3_keyboard_start (s_rtbuf *rtb);
-int rtbuf_glfw3_keyboard_stop (s_rtbuf *rtb);
 
 enum {
   RTBUF_GLFW3_OSCILLOSCOPE_IN_BLACK,
@@ -45,8 +41,5 @@ typedef struct rtbuf_glfw3_oscilloscope_data {
   GLFWwindow *window;
 } s_rtbuf_glfw3_oscilloscope_data;
 #pragma pack(pop)
-
-int rtbuf_glfw3_oscilloscope (s_rtbuf *rtb);
-int rtbuf_glfw3_oscilloscope_start (s_rtbuf *rtb);
 
 #endif

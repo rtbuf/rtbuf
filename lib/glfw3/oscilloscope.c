@@ -14,9 +14,31 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "rtbuf.h"
-#include "rtbuf_signal.h"
-#include "rtbuf_glfw3.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/music.h>
+#include <rtbuf/music_type.h>
+#include <rtbuf/glfw3.h>
+
+s_rtbuf_lib_proc_in rtbuf_glfw3_oscilloscope_in[] = {
+  { "black", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "red"  , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "green", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "blue" , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_glfw3_oscilloscope_out[] = {
+  { "window", "void*" },
+  { 0, 0 } };
+
+int rtbuf_lib_init (s_rtbuf_lib *lib)
+{
+  (void) lib;
+  glfwInit();
+  return 0;
+}
 
 void rtbuf_glfw3_oscilloscope_size (GLFWwindow *w, int width,
                                     int height)
@@ -97,3 +119,13 @@ int rtbuf_glfw3_oscilloscope (s_rtbuf *rtb)
   glfwPollEvents();
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "oscilloscope",
+    rtbuf_glfw3_oscilloscope,
+    rtbuf_glfw3_oscilloscope_start,
+    0,
+    rtbuf_glfw3_oscilloscope_in,
+    rtbuf_glfw3_oscilloscope_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

@@ -17,9 +17,18 @@
 #include <portaudio.h>
 #include <stdio.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_signal.h"
-#include "rtbuf_portaudio.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/portaudio.h>
+#include <rtbuf/portaudio_type.h>
+
+s_rtbuf_lib_proc_out rtbuf_portaudio_input_out[] = {
+  { "left",    RTBUF_SIGNAL_TYPE },
+  { "right",   RTBUF_SIGNAL_TYPE },
+  { "samples", RTBUF_PORTAUDIO_SAMPLES_TYPE },
+  { 0, 0 }};
 
 int rtbuf_portaudio_input (s_rtbuf *rtb)
 {
@@ -43,3 +52,13 @@ int rtbuf_portaudio_input_stop (s_rtbuf *rtb)
   (void) rtb;
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "input",
+    rtbuf_portaudio_input,
+    rtbuf_portaudio_input_start,
+    rtbuf_portaudio_input_stop,
+    0,
+    rtbuf_portaudio_input_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

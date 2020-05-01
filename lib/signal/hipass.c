@@ -16,7 +16,20 @@
 
 #include <math.h>
 #include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
 #include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_signal_hipass_in[] = {
+  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "cutoff",   RTBUF_SIGNAL_TYPE, 8000.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_signal_hipass_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "x", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { 0, 0 } };
 
 int rtbuf_signal_hipass_start (s_rtbuf *rtb)
 {
@@ -49,3 +62,13 @@ int rtbuf_signal_hipass (s_rtbuf *rtb)
   }
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "hipass",
+    rtbuf_signal_hipass,
+    rtbuf_signal_hipass_start,
+    0,
+    rtbuf_signal_hipass_in,
+    rtbuf_signal_hipass_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

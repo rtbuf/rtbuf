@@ -52,7 +52,81 @@ q: 2
 */
 #include <math.h>
 #include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
 #include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_signal_equalizer10_in[] = {
+  { "signal", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "amp32",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp64",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp128", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp256", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp512", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp1k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp2k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp4k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp8k",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { "amp16k", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 2.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_signal_equalizer10_out[] = {
+  { "signal",    RTBUF_SIGNAL_TYPE },
+  { "signal32",  RTBUF_SIGNAL_TYPE },
+  { "signal64",  RTBUF_SIGNAL_TYPE },
+  { "signal128", RTBUF_SIGNAL_TYPE },
+  { "signal256", RTBUF_SIGNAL_TYPE },
+  { "signal512", RTBUF_SIGNAL_TYPE },
+  { "signal1k",  RTBUF_SIGNAL_TYPE },
+  { "signal2k",  RTBUF_SIGNAL_TYPE },
+  { "signal4k",  RTBUF_SIGNAL_TYPE },
+  { "signal8k",  RTBUF_SIGNAL_TYPE },
+  { "signal16k", RTBUF_SIGNAL_TYPE },
+  { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y0_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y0_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y0_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y0_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y4_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y4_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y4_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y4_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y5_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y5_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y5_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y5_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y6_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y6_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y6_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y6_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y7_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y7_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y7_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y7_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y8_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y8_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y8_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y8_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y9_1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y9_2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y9_3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y9_4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { 0, 0 } };
 
 double sqrt2_3 = 0.0;
 double sqrt2_5;
@@ -301,3 +375,13 @@ int rtbuf_signal_equalizer10 (s_rtbuf *rtb)
   }
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "equalizer10",
+    rtbuf_signal_equalizer10,
+    rtbuf_signal_equalizer10_start,
+    0,
+    rtbuf_signal_equalizer10_in,
+    rtbuf_signal_equalizer10_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

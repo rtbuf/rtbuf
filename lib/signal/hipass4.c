@@ -47,7 +47,26 @@ y: f4 (16 (x4 + x) - 64 (x3 + x1) + 96 x2 - (e y4 + d y3 + c y2 + b y1)) / a $
 */
 #include <math.h>
 #include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
 #include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_signal_hipass4_in[] = {
+  { "signal", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "cutoff", RTBUF_SIGNAL_TYPE, 8000.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_signal_hipass4_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { 0, 0 } };
 
 int rtbuf_signal_hipass4_start (s_rtbuf *rtb)
 {
@@ -124,3 +143,13 @@ int rtbuf_signal_hipass4 (s_rtbuf *rtb)
   }
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "hipass4",
+    rtbuf_signal_hipass4,
+    rtbuf_signal_hipass4_start,
+    0,
+    rtbuf_signal_hipass4_in,
+    rtbuf_signal_hipass4_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

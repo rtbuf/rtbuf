@@ -15,11 +15,35 @@
  */
 
 #include <assert.h>
+#include <float.h>
 #include <stdio.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_synth.h"
-#include "rtbuf_synth_type.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/music.h>
+#include <rtbuf/music_type.h>
+#include <rtbuf/synth.h>
+#include <rtbuf/synth_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_synth_synth_in[] = {
+  { "envelope",   RTBUF_SIGNAL_TYPE, 1.0,  0.0, 1.0 },
+  { "oscillator", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  RTBUF_MUSIC_NOTES_IN("note"),
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_synth_synth_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "note_n", "unsigned int" },
+  { 0, 0 } };
+
+int rtbuf_lib_init (s_rtbuf_lib *lib)
+{
+  (void) lib;
+  rtbuf_music_init();
+  return 0;
+}
 
 s_rtbuf * rtbuf_in_rtbuf (s_rtbuf *rtb, unsigned int in)
 {
@@ -242,3 +266,13 @@ int rtbuf_synth_synth_stop (s_rtbuf *rtb)
   rtbuf_synth_synth_delete_notes(rtb);
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "synth",
+    rtbuf_synth_synth,
+    rtbuf_synth_synth_start,
+    0,
+    rtbuf_synth_synth_in,
+    rtbuf_synth_synth_out };
+
+unsigned long    rtbuf_lib_ver = RTBUF_LIB_VER;

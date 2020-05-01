@@ -5,7 +5,7 @@ rtbuf_libdir = $(libdir)/rtbuf
 rtbuf_lib_LTLIBRARIES =
 lib_LTLIBRARIES =
 
-SUBDIRS = . signal sndio # dynamic glfw3 portaudio reverb sndio synth
+SUBDIRS = . signal dynamic glfw3 portaudio sndio synth # reverb
 
 # music
 
@@ -14,10 +14,13 @@ music_type: music_type.c include/rtbuf/music.h
 include/rtbuf/music_type.h: music_type
 	./music_type > include/rtbuf/music_type.h
 CLEANFILES += music_type include/rtbuf/music_type.h
+music.lo: include/rtbuf/music_type.h
 
-rtbuf_lib_LTLIBRARIES += music.la
-music_la_LIBADD = ${MUSIC_LIBS} ../librtbuf/librtbuf.la
-music_la_LDFLAGS = -no-undefined -module
+lib_LTLIBRARIES += librtbuf_music.la
+librtbuf_music_la_LIBADD = ${MUSIC_LIBS} ../librtbuf/librtbuf.la
+librtbuf_music_la_LDFLAGS = -no-undefined -module
+librtbuf_music_la_SOURCES = \
+	music.c
 
 rtbuf_include_HEADERS += \
 	include/rtbuf/music.h \
@@ -31,9 +34,8 @@ portaudio_type: portaudio_type.c include/rtbuf/portaudio.h
 include/rtbuf/portaudio_type.h: portaudio_type
 	./portaudio_type > include/rtbuf/portaudio_type.h
 CLEANFILES += portaudio_type include/rtbuf/portaudio_type.h
-portaudio.lo: include/rtbuf/portaudio_type.h
+all-local: include/rtbuf/portaudio_type.h
 endif # ENABLE_PORTAUDIO
-
 
 # reverb
 
@@ -81,4 +83,4 @@ synth_type: synth_type.c include/rtbuf/synth.h include/rtbuf/music_type.h includ
 include/rtbuf/synth_type.h: synth_type
 	./synth_type > include/rtbuf/synth_type.h
 CLEANFILES += synth_type include/rtbuf/synth_type.h
-synth.lo: include/rtbuf/synth_type.h
+all-local: include/rtbuf/synth_type.h

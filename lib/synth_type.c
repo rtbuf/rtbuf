@@ -1,8 +1,8 @@
 
 #include <stdio.h>
-#include "rtbuf.h"
-#include "rtbuf_music.h"
-#include "rtbuf_music_type.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/music.h>
+#include <rtbuf/music_type.h>
 
 void notes_in ()
 {
@@ -37,7 +37,7 @@ int main ()
   printf("#ifndef RTBUF_SYNTH_TYPE_H\n"
          "#define RTBUF_SYNTH_TYPE_H\n"
          "\n"
-         "#include \"rtbuf_signal_type.h\"\n");
+         "#include <rtbuf/signal_type.h>\n");
   notes_in();
   printf("\n"
          "#endif\n");

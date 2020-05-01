@@ -42,7 +42,24 @@ y: (8 F³ ((x - x3) + 3 (x2 - x1)) - (a y3 + b y2 + c y1)) / d
 */
 #include <math.h>
 #include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
 #include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+
+s_rtbuf_lib_proc_in rtbuf_signal_hipass3_in[] = {
+  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "cutoff",   RTBUF_SIGNAL_TYPE, 8000.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
+  { 0, 0, 0.0, 0.0, 0.0 } };
+
+s_rtbuf_lib_proc_out rtbuf_signal_hipass3_out[] = {
+  { "signal", RTBUF_SIGNAL_TYPE },
+  { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
+  { 0, 0 } };
 
 int rtbuf_signal_hipass3_start (s_rtbuf *rtb)
 {
@@ -102,3 +119,13 @@ int rtbuf_signal_hipass3 (s_rtbuf *rtb)
   }
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "hipass3",
+    rtbuf_signal_hipass3,
+    rtbuf_signal_hipass3_start,
+    0,
+    rtbuf_signal_hipass3_in,
+    rtbuf_signal_hipass3_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

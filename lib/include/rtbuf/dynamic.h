@@ -32,7 +32,4 @@ typedef struct rtbuf_dynamic_limiter_data {
   t_rtbuf_signal_sample ratio;
 } s_rtbuf_dynamic_limiter_data;
 
-int rtbuf_dynamic_limiter (s_rtbuf *rtb);
-int rtbuf_dynamic_limiter_start (s_rtbuf *rtb);
-
 #endif

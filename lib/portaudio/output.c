@@ -18,10 +18,24 @@
 #include <portaudio.h>
 #include <stdio.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_portaudio.h"
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/lib.h>
+#include <rtbuf/signal.h>
+#include <rtbuf/signal_type.h>
+#include <rtbuf/portaudio.h>
+#include <rtbuf/portaudio_type.h>
 
 int g_initialized = 0;
+
+s_rtbuf_lib_proc_in rtbuf_portaudio_output_in[] = {
+  { "left",  RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { "right", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
+  { 0, 0, 0.0, 0.0, 0.0 }};
+
+s_rtbuf_lib_proc_out rtbuf_portaudio_output_out[] = {
+  { "samples", RTBUF_PORTAUDIO_SAMPLES_TYPE },
+  { "reserved", RTBUF_PORTAUDIO_OUTPUT_RESERVED_TYPE },
+  { 0, 0 }};
 
 int rtbuf_portaudio_output_start (s_rtbuf *rtb)
 {
@@ -107,3 +121,13 @@ int rtbuf_portaudio_output (s_rtbuf *rtb)
   /* printf("\n"); */
   return 0;
 }
+
+s_rtbuf_lib_proc rtbuf_lib_proc =
+  { "output",
+    rtbuf_portaudio_output,
+    rtbuf_portaudio_output_start,
+    rtbuf_portaudio_output_stop,
+    rtbuf_portaudio_output_in,
+    rtbuf_portaudio_output_out };
+
+unsigned long rtbuf_lib_ver = RTBUF_LIB_VER;

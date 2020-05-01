@@ -1,8 +1,9 @@
-load signal
-load glfw3
-new signal sinus
-new signal square
-new glfw3 oscilloscope
-bind 0 0 2 0
-bind 1 0 2 1
+load signal/sinus
+load signal/square
+load glfw3/oscilloscope
+let sin00 = new signal/sinus
+let sq00 = new signal/square
+let osc00 = new glfw3/oscilloscope
+bind sin00 signal osc00 black
+bind sq00 signal osc00 red
 start
