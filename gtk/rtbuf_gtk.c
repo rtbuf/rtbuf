@@ -18,11 +18,13 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <rtbuf/rtbuf.h>
-#include "rtbuf_gtk.h"
-#include "rtbuf_input_widget.h"
 #include <rtbuf/lib.h>
 #include <rtbuf/var.h>
+#include "rtbuf_gtk.h"
+#include "rtbuf_gtk_library.h"
+#include "rtbuf_input_widget.h"
 #include "rtbuf_widget.h"
+#include "stack.h"
 
 unsigned int g_next_id = 0;
 
@@ -160,33 +162,56 @@ void rtbuf_gtk_library_menu_activate (GtkMenuItem *menuitem,
   g_free(proc);
 }
 
-void rtbuf_gtk_library_menu_library_item (GtkWidget *menuitem, gpointer data)
+void rtbuf_gtk_library_menu_library_item (GtkWidget *menuitem,
+                                          gpointer data)
 {
   gchar *library = (gchar*) data;
-  g_signal_connect(menuitem, "activate", G_CALLBACK(rtbuf_gtk_library_menu_activate), library);
+  g_signal_connect(menuitem, "activate",
+                   G_CALLBACK(rtbuf_gtk_library_menu_activate),
+                   library);
 }
 
-void rtbuf_gtk_library_menu_library (GtkWidget *menuitem, gpointer data)
+void rtbuf_gtk_destroy (GtkWidget *widget, gpointer data)
 {
-  GtkContainer *submenu;
-  gchar *library;
   (void) data;
-  g_object_get(menuitem,
-               "label", &library,
-               "submenu", &submenu,
-               NULL);
-  gtk_container_foreach(submenu,
-                        rtbuf_gtk_library_menu_library_item,
-                        library);
-  g_object_unref(G_OBJECT(submenu));
+  gtk_widget_destroy(widget);
 }
 
 void rtbuf_gtk_library_menu ()
 {
-  library_menu = GTK_MENU(gtk_builder_get_object(builder, "library_menu"));
-  gtk_container_foreach(GTK_CONTAINER(library_menu),
-                        rtbuf_gtk_library_menu_library,
+  if (!library_menu)
+    library_menu = GTK_MENU(gtk_builder_get_object(builder,
+                                                   "library_menu"));
+  gtk_container_foreach(GTK_CONTAINER(library_menu), rtbuf_gtk_destroy,
                         NULL);
+  if (g_rtbuf_gtk_library_tree) {
+    s_stack s;
+    stack_init(&s);
+    g_rtbuf_gtk_library_tree->menu = library_menu;
+    stack_push(&s, g_rtbuf_gtk_library_tree);
+    while (s.length) {
+      s_rtbuf_gtk_library_tree *tree = stack_pop(&s);
+      GtkMenu *menu = tree->menu;
+      while (tree) {
+        GtkWidget *item = gtk_menu_item_new_with_label(tree->dir_name);
+        gtk_container_add(GTK_CONTAINER(menu), item);
+        gtk_widget_show(item);
+        if (tree->children) {
+          GtkWidget *m = gtk_menu_new();
+          tree->children->menu = GTK_MENU(m);
+          gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), m);
+          stack_push(&s, tree->children);
+        }
+        else {
+          g_signal_connect(item, "activate",
+                           G_CALLBACK(rtbuf_gtk_library_menu_activate),
+                           (gpointer) tree->leaf_name);
+        }
+        tree = tree->next;
+      }
+    }
+    stack_destroy(&s);
+  }
 }
 
 void rtbuf_gtk_modular_close (GtkWidget *widget,

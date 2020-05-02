@@ -58,6 +58,4 @@ gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
 gboolean rtbuf_gtk_output_check_button_release (RtbufOutputWidget *widget,
                                                 GdkEvent *event);
 
-void rtbuf_gtk_library_load ();
-
 #endif /* RTBUF_GTK_H */

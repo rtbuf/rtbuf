@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018,2020 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,6 +49,8 @@ struct rtbuf_lib {
   void *lib;
   const char *path;
 };
+
+extern char *g_rtbuf_lib_path[];
 
 extern s_data_alloc g_rtbuf_lib_alloc;
 extern s_rtbuf_lib *g_rtbuf_lib;
