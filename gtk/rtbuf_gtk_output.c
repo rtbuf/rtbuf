@@ -23,8 +23,23 @@
 
 void rtbuf_gtk_output_disconnect (RtbufOutputWidget *widget)
 {
-  (void) widget;
+  s_rtbuf *rtbuf;
+  unsigned int out;
+  s_rtbuf_gtk_connection **conn = &modular_connections;
   printf("rtbuf-gtk output disconnect\n");
+  rtbuf = rtbuf_output_widget_get_rtbuf(widget);
+  out = rtbuf_output_widget_get_out(widget);
+  rtbuf_out_unbind(rtbuf, out);
+  while (*conn) {
+    if ((*conn)->output_widget == widget) {
+      s_rtbuf_gtk_connection *tmp = *conn;
+      *conn = tmp->next;
+      rtbuf_gtk_connection_delete(tmp);
+    }
+    else
+      conn = &(*conn)->next;
+  }
+  gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
 }
 
 void rtbuf_gtk_output_menu (RtbufOutputWidget *widget, GdkEvent *event)

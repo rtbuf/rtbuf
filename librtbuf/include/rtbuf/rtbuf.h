@@ -51,7 +51,8 @@ int   librtbuf_init ();
 
 int   rtbuf_err (const char *msg);
 int   rtbuf_new (s_rtbuf_proc *rp);
-void  rtbuf_in_unbind (s_rtbuf *rtb, unsigned int var);
+void  rtbuf_in_unbind (s_rtbuf *rtb, unsigned int in);
+void  rtbuf_out_unbind (s_rtbuf *rtb, unsigned int out);
 void  rtbuf_unbind_all (s_rtbuf *rtb);
 void  rtbuf_delete (s_rtbuf *rtb);
 int   rtbuf_clone (s_rtbuf *rtb);

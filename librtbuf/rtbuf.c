@@ -90,6 +90,44 @@ void rtbuf_in_unbind (s_rtbuf *rtb, unsigned int in)
 }
 
 static
+void rtbuf_out_unbind_rtbuf (s_rtbuf *rtb, unsigned int rtb_i,
+                             unsigned int out, s_rtbuf *dest)
+{
+  unsigned int i = 0;
+  unsigned int n;
+  assert(dest);
+  n = dest->in_n;
+  while (i < dest->proc->in_n && n > 0 && rtb->refc) {
+    s_rtbuf_binding *v = &dest->in[i];
+    if (v->rtb >= 0) {
+      if ((unsigned int) v->rtb == rtb_i &&
+          v->out == out)
+        rtbuf_in_unbind(dest, i);
+      n--;
+    }
+    i++;
+  }
+}
+
+void rtbuf_out_unbind (s_rtbuf *rtb, unsigned int out)
+{
+  unsigned int rtb_i;
+  unsigned int i = 0;
+  unsigned int n = g_rtbuf_alloc.n - g_rtbuf_alloc.free_n;
+  assert(rtb);
+  assert(g_rtbuf <= rtb);
+  assert(rtb < g_rtbuf + RTBUF_MAX);
+  rtb_i = rtb - g_rtbuf;
+  while (i < g_rtbuf_alloc.n && n > 0) {
+    if (g_rtbuf[i].data) {
+      rtbuf_out_unbind_rtbuf(rtb, rtb_i, out, &g_rtbuf[i]);
+      n--;
+    }
+    i++;
+  }
+}
+
+static
 void rtbuf_unbind_all_out_rtbuf (s_rtbuf *rtb, unsigned int rtb_i,
                                  s_rtbuf *dest)
 {
