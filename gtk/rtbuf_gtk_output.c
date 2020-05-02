@@ -21,20 +21,6 @@
 #include "rtbuf_gtk.h"
 #include "rtbuf_output_widget.h"
 
-GtkTargetList *rtbuf_gtk_output_target_list;
-#define RTBUF_GTK_OUTPUT_TARGETS 1
-GtkTargetEntry rtbuf_gtk_output_target_entry[RTBUF_GTK_OUTPUT_TARGETS]
-= {
-  {"RtbufOutputWidget", GTK_TARGET_SAME_APP, TARGET_RTBUF_OUTPUT}
-};
-
-void rtbuf_gtk_output_init ()
-{
-  rtbuf_gtk_output_target_list =
-    gtk_target_list_new(rtbuf_gtk_output_target_entry,
-                        RTBUF_GTK_OUTPUT_TARGETS);
-}
-
 void rtbuf_gtk_output_disconnect (RtbufOutputWidget *widget)
 {
   (void) widget;

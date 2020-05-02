@@ -22,12 +22,6 @@
 #include "rtbuf_output_widget.h"
 #include "rtbuf_widget.h"
 
-enum dnd_targets {
-  TARGET_RTBUF,
-  TARGET_RTBUF_OUTPUT,
-  N_TARGETS
-};
-
 typedef struct signal_binding {
   const char *signal;
   GCallback callback;
@@ -35,8 +29,6 @@ typedef struct signal_binding {
 
 extern GtkLayout              *modular_layout;
 extern s_rtbuf_gtk_connection *modular_connections;
-
-extern GtkTargetList *rtbuf_move_target_list;
 
 extern GtkWidget              *drag_widget;
 extern s_rtbuf_gtk_connection *drag_connection;
@@ -52,7 +44,6 @@ gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
 gboolean rtbuf_gtk_input_check_button_press (RtbufInputWidget *widget,
                                              GdkEvent *event);
 
-void     rtbuf_gtk_output_init ();
 gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
                                               GdkEvent *event);
 gboolean rtbuf_gtk_output_check_button_release (RtbufOutputWidget *widget,

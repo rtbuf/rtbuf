@@ -402,7 +402,6 @@ int main (int argc, char *argv[])
   assert(g_rtbuf);
   gtk_init(&argc, &argv);
   rtbuf_gtk_connection_init();
-  rtbuf_gtk_output_init();
   rtbuf_gtk_library_load();
   if (rtbuf_gtk_builder())
     return 1;
