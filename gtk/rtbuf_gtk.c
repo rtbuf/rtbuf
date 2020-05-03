@@ -15,8 +15,9 @@
  */
 
 #include <assert.h>
-#include <gtk/gtk.h>
 #include <stdio.h>
+#include <pthread.h>
+#include <gtk/gtk.h>
 #include <rtbuf/rtbuf.h>
 #include <rtbuf/lib.h>
 #include <rtbuf/var.h>
@@ -30,7 +31,10 @@ unsigned int g_next_id = 0;
 
 GtkBuilder *builder = NULL;
 
+pthread_t g_rtbuf_gtk_thread = NULL;
+
 GtkWindow              *modular = NULL;
+GtkToolbar             *modular_toolbar = NULL;
 s_rtbuf_gtk_connection *modular_connections = NULL;
 GtkLayout              *modular_layout = NULL;
 
@@ -358,6 +362,90 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
   return FALSE;
 }
 
+void * rtbuf_gtk_thread_proc (void *arg)
+{
+  (void) arg;
+  printf("rtbuf thread: start\n");
+  if (!rtbuf_start())
+    g_rtbuf_run = 1;
+  while (g_rtbuf_run) {
+    if (rtbuf_run())
+      g_rtbuf_run = 0;
+  }
+  printf("rtbuf thread: stop\n");
+  rtbuf_stop();
+  return 0;
+}
+
+int rtbuf_gtk_start ()
+{
+  if (!g_rtbuf_run && g_rtbuf_gtk_thread) {
+    if (pthread_join(g_rtbuf_gtk_thread, 0))
+      return rtbuf_err("pthread_join failed");
+    g_rtbuf_gtk_thread = 0;
+  }
+  if (!g_rtbuf_gtk_thread) {
+    if (pthread_create(&g_rtbuf_gtk_thread, 0, &rtbuf_gtk_thread_proc,
+                       0))
+      return rtbuf_err("pthread_create failed");
+  }
+  return 0;
+}
+
+int rtbuf_gtk_stop ()
+{
+  if (g_rtbuf_run)
+    g_rtbuf_run = 0;
+  if (g_rtbuf_gtk_thread) {
+    if (pthread_join(g_rtbuf_gtk_thread, 0))
+      return rtbuf_err("pthread_join failed");
+    g_rtbuf_gtk_thread = 0;
+  }
+  return 0;
+}
+
+void rtbuf_gtk_modular_start (GtkWidget *widget, gpointer data)
+{
+  (void) widget;
+  (void) data;
+  printf("rtbuf> start\n");
+  rtbuf_gtk_start();
+}
+
+void rtbuf_gtk_modular_stop (GtkWidget *widget, gpointer data)
+{
+  (void) widget;
+  (void) data;
+  printf("rtbuf> stop\n");
+  rtbuf_gtk_stop();
+}
+
+void rtbuf_gtk_modular_toolbar ()
+{
+  GtkWidget *image;
+  GtkToolItem *item;
+  modular_toolbar = GTK_TOOLBAR(gtk_builder_get_object(builder,
+                                                       "toolbar"));
+  image = gtk_image_new_from_icon_name("player_play",
+                                       GTK_ICON_SIZE_LARGE_TOOLBAR);
+  gtk_widget_show(image);
+  item = gtk_tool_button_new(image, "Start");
+  gtk_widget_show(GTK_WIDGET(item));
+  g_signal_connect(item, "clicked",
+                   G_CALLBACK(rtbuf_gtk_modular_start),
+                   NULL);
+  gtk_toolbar_insert(modular_toolbar, item, -1);
+  image = gtk_image_new_from_icon_name("player_stop",
+                                       GTK_ICON_SIZE_LARGE_TOOLBAR);
+  gtk_widget_show(image);
+  item = gtk_tool_button_new(image, "Stop");
+  gtk_widget_show(GTK_WIDGET(item));
+  g_signal_connect(item, "clicked",
+                   G_CALLBACK(rtbuf_gtk_modular_stop),
+                   NULL);
+  gtk_toolbar_insert(modular_toolbar, item, -1);
+}
+
 void rtbuf_gtk_modular ()
 {
   GObject *button;
@@ -378,6 +466,7 @@ void rtbuf_gtk_modular ()
                    G_CALLBACK(rtbuf_gtk_modular_draw), NULL);
 
   rtbuf_gtk_library_menu();
+  rtbuf_gtk_modular_toolbar();
 
   g_signal_connect(modular_layout, "motion-notify-event",
                    G_CALLBACK(rtbuf_gtk_modular_motion), NULL);
