@@ -25,4 +25,7 @@ s_rtbuf_gtk_connection * rtbuf_gtk_connection_find
  RtbufOutputWidget *output_widget,
  RtbufInputWidget *input_widget);
 
+void rtbuf_gtk_connection_remove_rtbuf (s_rtbuf_gtk_connection **head,
+                                        s_rtbuf *rtbuf);
+
 #endif

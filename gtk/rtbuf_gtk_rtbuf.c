@@ -31,8 +31,10 @@ void rtbuf_gtk_rtbuf_delete (RtbufWidget *widget)
 {
   s_rtbuf *rtbuf = rtbuf_widget_get_rtbuf(widget);
   printf("rtbuf-gtk rtbuf delete\n");
+  rtbuf_gtk_connection_remove_rtbuf(&modular_connections, rtbuf);
   gtk_container_remove(GTK_CONTAINER(modular_layout),
                        GTK_WIDGET(widget));
+  gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
   rtbuf_delete(rtbuf);
 }
 

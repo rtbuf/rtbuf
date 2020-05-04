@@ -74,3 +74,20 @@ s_rtbuf_gtk_connection * rtbuf_gtk_connection_find
   return c;
 }
 
+void rtbuf_gtk_connection_remove_rtbuf (s_rtbuf_gtk_connection **conn,
+                                        s_rtbuf *rtbuf)
+{
+  while (*conn) {
+    s_rtbuf *output_rtbuf;
+    output_rtbuf = rtbuf_output_widget_get_rtbuf((*conn)->output_widget);
+    if (output_rtbuf != rtbuf) {
+      s_rtbuf *input_rtbuf;
+      input_rtbuf = rtbuf_input_widget_get_rtbuf((*conn)->input_widget);
+      if (input_rtbuf != rtbuf) {
+        conn = &(*conn)->next;
+        continue;
+      }
+    }
+    *conn = (*conn)->next;
+  }
+}
