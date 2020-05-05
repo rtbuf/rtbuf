@@ -331,7 +331,7 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
         gtk_widget_get_window(GTK_WIDGET(modular_layout));
       gdk_window_get_device_position(window, event->device,
                                      &x, &y, NULL);
-      printf("rtbuf-gtk modular drag motion %i %i\n", x, y);
+      /* printf("rtbuf-gtk modular drag motion %i %i\n", x, y); */
       gtk_layout_move(modular_layout, drag_widget, x - drag_x,
                       y - drag_y);
       return TRUE;
