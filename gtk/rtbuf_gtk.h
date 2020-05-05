@@ -41,8 +41,8 @@ gboolean rtbuf_gtk_rtbuf_button_press (GtkWidget *widget,
                                        GdkEvent *event,
                                        gpointer data);
 
-gboolean rtbuf_gtk_input_check_button_press (RtbufInputWidget *widget,
-                                             GdkEvent *event);
+gboolean rtbuf_gtk_input_button_press (RtbufInputWidget *widget,
+                                       GdkEvent *event);
 
 gboolean rtbuf_gtk_output_check_button_press (RtbufOutputWidget *widget,
                                               GdkEvent *event);

@@ -79,19 +79,6 @@ void rtbuf_gtk_drag_connection_end (RtbufInputWidget *input_widget)
   }
 }
 
-gboolean rtbuf_gtk_input_button_press (RtbufInputWidget *widget,
-                                       GdkEvent *event)
-{
-  printf("rtbuf-gtk input button press\n");
-  (void) widget;
-  (void) event;
-  if (drag_connection) {
-    rtbuf_gtk_drag_connection_end(widget);
-    return TRUE;
-  }
-  return TRUE;
-}
-
 RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
                                             const gint x, const gint y)
 {

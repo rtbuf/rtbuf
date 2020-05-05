@@ -23,8 +23,23 @@
 
 void rtbuf_gtk_input_disconnect (RtbufInputWidget *widget)
 {
-  (void) widget;
+  s_rtbuf *rtbuf;
+  unsigned int in;
+  s_rtbuf_gtk_connection **conn = &modular_connections;
   printf("rtbuf-gtk input disconnect\n");
+    rtbuf = rtbuf_input_widget_get_rtbuf(widget);
+  in = rtbuf_input_widget_get_in(widget);
+  rtbuf_in_unbind(rtbuf, in);
+  while (*conn) {
+    if ((*conn)->input_widget == widget) {
+      s_rtbuf_gtk_connection *tmp = *conn;
+      *conn = tmp->next;
+      rtbuf_gtk_connection_delete(tmp);
+    }
+    else
+      conn = &(*conn)->next;
+  }
+  gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
 }
 
 void rtbuf_gtk_input_menu (RtbufInputWidget *widget, GdkEvent *event)
@@ -54,13 +69,18 @@ void rtbuf_gtk_input_menu (RtbufInputWidget *widget, GdkEvent *event)
   gtk_menu_popup_at_pointer(menu, event);
 }
 
-gboolean rtbuf_gtk_input_check_button_press (RtbufInputWidget *widget,
-                                             GdkEvent *event)
+gboolean rtbuf_gtk_input_button_press (RtbufInputWidget *widget,
+                                       GdkEvent *event)
 {
   printf("rtbuf-gtk input check button press\n");
   if (event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *eb = (GdkEventButton*) event;
-    if (eb->button == 3) {
+    if (eb->button == 1) {
+      if (drag_connection)
+        rtbuf_gtk_drag_connection_end(widget);
+      return TRUE;
+    }
+    else if (eb->button == 3) {
       rtbuf_gtk_input_menu(widget, event);
       return TRUE;
     }
