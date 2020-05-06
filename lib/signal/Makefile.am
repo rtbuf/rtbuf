@@ -1,4 +1,3 @@
-
 CLEANFILES =
 rtbuf_includedir = $(includedir)/rtbuf/signal
 rtbuf_include_HEADERS =

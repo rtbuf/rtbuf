@@ -1,0 +1,21 @@
+load glfw3/keyboard
+let Keyboard00 = new glfw3/keyboard
+load synth/adsr
+let ADSR00 = new synth/adsr
+load signal/sinus
+let Osc00 = new signal/sinus
+load synth/synth
+let Synth00 = new synth/synth
+bind Keyboard00 notes Synth00 notes
+bind ADSR00 signal Synth00 envelope
+bind Osc00 signal Synth00 oscillator
+
+load signal/bandpass2
+let Fx00 = new signal/bandpass2
+bind Synth00 signal Fx00 signal
+
+load portaudio/output
+let Output = new portaudio/output
+bind Synth00 signal Output left
+bind Fx00 signal Output right
+start
