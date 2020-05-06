@@ -1,14 +1,15 @@
+
 load glfw3/keyboard
 let Keyboard00 = new glfw3/keyboard
 load synth/adsr
 let ADSR00 = new synth/adsr
-load signal/sawtooth
-let Osc00 = new signal/sawtooth
+load signal/square
+let Square00 = new signal/square
 load synth/synth
 let Synth00 = new synth/synth
 bind Keyboard00 notes Synth00 notes
 bind ADSR00 signal Synth00 envelope
-bind Osc00 signal Synth00 oscillator
+bind Square00 signal Synth00 oscillator
 
 load signal/delay
 let Delay00 = new signal/delay
@@ -29,15 +30,15 @@ bind LP00 signal Limiter00 signal
 let Flanger01 = new signal/flanger
 bind Synth00 signal Flanger01 signal
 
-load signal/equalizer10
-let EQ00 = new signal/equalizer10
-bind Flanger01 signal EQ00 signal
+load signal/bandpass2
+let HP01 = new signal/bandpass2
+bind Flanger01 signal HP01 signal
 
 let Limiter01 = new dynamic/limiter
-bind EQ00 signal Limiter01 signal
+bind HP01 signal Limiter01 signal
 
 load portaudio/output
 let Output = new portaudio/output
-bind Limiter00 signal Output left
-bind Limiter01 signal Output right
+bind Limiter01 signal Output left
+bind Limiter00 signal Output right
 start
