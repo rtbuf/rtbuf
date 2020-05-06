@@ -27,11 +27,13 @@
 #include "rtbuf_widget.h"
 #include "stack.h"
 
+extern int snprintf (char *, size_t, const char *, ...);
+
 unsigned int g_next_id = 0;
 
 GtkBuilder *builder = NULL;
 
-pthread_t g_rtbuf_gtk_thread = NULL;
+pthread_t g_rtbuf_gtk_thread = 0;
 
 GtkWindow              *modular = NULL;
 GtkToolbar             *modular_toolbar = NULL;

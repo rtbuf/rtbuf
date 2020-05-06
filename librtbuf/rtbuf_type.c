@@ -22,6 +22,8 @@
 #include <rtbuf/type.h>
 #include <rtbuf/symbol.h>
 
+extern int snprintf (char *, size_t, const char *, ...);
+
 s_data_type   g_rtbuf_data_type_type = {
   sizeof(s_rtbuf_type) * 8,
   DATA_TYPE_BITS
