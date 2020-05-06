@@ -112,7 +112,12 @@ const char * rtbuf_lib_find_in_path (const char *name)
     char *ext;
     lib_path = g_str_append(*path, strlen(*path));
     g_str_append(name, strlen(name));
-    ext = g_str_append(".so.0.0", 8);
+    ext = g_str_append(".so", 4);
+    printf("lib find in path \"%s\"\n", lib_path);
+    if (access(lib_path, R_OK) == 0)
+      return lib_path;
+    g_str_reset(ext);
+    g_str_append(".so.0.0", 8);
     printf("lib find in path \"%s\"\n", lib_path);
     if (access(lib_path, R_OK) == 0)
       return lib_path;

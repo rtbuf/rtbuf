@@ -134,7 +134,9 @@ void rtbuf_gtk_library_load_file (const char *path, size_t prefix_len)
 {
   size_t len = strlen(path);
   printf("file %s\n", path);
-  if (strncmp(&path[len - 7], ".so.0.0", 7) == 0)
+  if (strncmp(&path[len - 3], ".so", 3) == 0)
+    rtbuf_gtk_library_load_file_1(path, len, prefix_len, 3);
+  else if (strncmp(&path[len - 7], ".so.0.0", 7) == 0)
     rtbuf_gtk_library_load_file_1(path, len, prefix_len, 7);
   else if (strncmp(&path[len - 4], ".dll", 4) == 0)
     rtbuf_gtk_library_load_file_1(path, len, prefix_len, 4);
