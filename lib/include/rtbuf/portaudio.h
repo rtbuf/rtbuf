@@ -32,10 +32,12 @@ enum {
 typedef short                    t_rtbuf_portaudio_sample;
 typedef t_rtbuf_portaudio_sample t_rtbuf_portaudio_samples[RTBUF_PORTAUDIO_SAMPLES];
 
+#pragma pack(push,1)
 typedef struct rtbuf_portaudio_input_data {
   t_rtbuf_signal signal[RTBUF_PORTAUDIO_CHANNELS];
   t_rtbuf_portaudio_samples samples;
 } s_rtbuf_portaudio_input_data;
+#pragma pack(pop)
 
 int rtbuf_portaudio_input (s_rtbuf *rtb);
 int rtbuf_portaudio_input_start (s_rtbuf *rtb);
@@ -45,10 +47,12 @@ typedef struct rtbuf_portaudio_output_reserved {
   PaStream *stream;
 } s_rtbuf_portaudio_output_reserved;
 
+#pragma pack(push,1)
 typedef struct rtbuf_portaudio_output_data {
   t_rtbuf_portaudio_samples samples;
   s_rtbuf_portaudio_output_reserved reserved;
 } s_rtbuf_portaudio_output_data;
+#pragma pack(pop)
 
 #define RTBUF_PORTAUDIO_OUTPUT_RESERVED_SIZE \
   sizeof(s_rtbuf_portaudio_output_reserved)

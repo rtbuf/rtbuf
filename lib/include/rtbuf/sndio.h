@@ -34,10 +34,12 @@ enum {
 typedef short                t_rtbuf_sndio_sample;
 typedef t_rtbuf_sndio_sample t_rtbuf_sndio_samples[RTBUF_SNDIO_SAMPLES];
 
+#pragma pack(push,1)
 typedef struct rtbuf_sndio_input_data {
   t_rtbuf_signal signal[RTBUF_SNDIO_CHANNELS];
   t_rtbuf_sndio_samples samples;
 } s_rtbuf_sndio_input_data;
+#pragma pack(pop)
 
 int rtbuf_sndio_input (s_rtbuf *rtb);
 int rtbuf_sndio_input_start (s_rtbuf *rtb);
@@ -49,10 +51,12 @@ typedef struct rtbuf_sndio_output_reserved {
   struct sio_par have;
 } s_rtbuf_sndio_output_reserved;
 
+#pragma pack(push,1)
 typedef struct rtbuf_sndio_output_data {
   t_rtbuf_sndio_samples samples;
   s_rtbuf_sndio_output_reserved reserved;
 } s_rtbuf_sndio_output_data;
+#pragma pack(pop)
 
 #define RTBUF_SNDIO_OUTPUT_RESERVED_SIZE \
   sizeof(s_rtbuf_sndio_output_reserved)
