@@ -415,8 +415,7 @@ void rtbuf_gtk_modular_toolbar ()
   GtkToolItem *item;
   modular_toolbar = GTK_TOOLBAR(gtk_builder_get_object(builder,
                                                        "toolbar"));
-  image = gtk_image_new_from_icon_name("player_play",
-                                       GTK_ICON_SIZE_LARGE_TOOLBAR);
+  image = gtk_image_new_from_resource("/rtbuf/player_play.png");
   gtk_widget_show(image);
   item = gtk_tool_button_new(image, "Start");
   gtk_widget_show(GTK_WIDGET(item));
@@ -424,8 +423,7 @@ void rtbuf_gtk_modular_toolbar ()
                    G_CALLBACK(rtbuf_gtk_modular_start),
                    NULL);
   gtk_toolbar_insert(modular_toolbar, item, -1);
-  image = gtk_image_new_from_icon_name("player_stop",
-                                       GTK_ICON_SIZE_LARGE_TOOLBAR);
+  image = gtk_image_new_from_resource("/rtbuf/player_stop.png");
   gtk_widget_show(image);
   item = gtk_tool_button_new(image, "Stop");
   gtk_widget_show(GTK_WIDGET(item));
