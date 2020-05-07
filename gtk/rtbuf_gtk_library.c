@@ -142,8 +142,8 @@ void rtbuf_gtk_library_load_file (const char *path, size_t prefix_len)
     rtbuf_gtk_library_load_file_1(path, len, prefix_len, 3);
   else if (strncmp(&path[len - 7], ".so.0.0", 7) == 0)
     rtbuf_gtk_library_load_file_1(path, len, prefix_len, 7);
-  else if (strncmp(&path[len - 4], ".dll", 4) == 0)
-    rtbuf_gtk_library_load_file_1(path, len, prefix_len, 4);
+  else if (strncmp(&path[len - 6], "-0.dll", 6) == 0)
+    rtbuf_gtk_library_load_file_1(path, len, prefix_len, 6);
 }
 
 int is_directory (const char *path)

@@ -1,3 +1,4 @@
+if ENABLE_PORTAUDIO
 CLEANFILES =
 rtbuf_includedir = $(includedir)/rtbuf/portaudio
 rtbuf_include_HEADERS =
@@ -11,3 +12,4 @@ input_la_LIBADD = ${PORTAUDIO_LIBS} ../librtbuf_signal.la
 rtbuf_lib_LTLIBRARIES += output.la
 output_la_LDFLAGS = -no-undefined -module -shared
 output_la_LIBADD = ${PORTAUDIO_LIBS} ../librtbuf_signal.la
+endif

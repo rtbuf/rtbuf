@@ -122,7 +122,7 @@ const char * rtbuf_lib_find_in_path (const char *name)
     if (access(lib_path, R_OK) == 0)
       return lib_path;
     g_str_reset(ext);
-    g_str_append(".dll", 5);
+    g_str_append("-0.dll", 7);
     printf("lib find in path \"%s\"\n", lib_path);
     if (access(lib_path, R_OK) == 0)
       return lib_path;
