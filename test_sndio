@@ -1,8 +1,8 @@
 load signal/sinus
-load portaudio/output
+load sndio/output
 
 let Osc00 = new signal/sinus
-let Output = new portaudio/output
+let Output = new sndio/output
 bind Osc00 signal Output left
 bind Osc00 signal Output right
 buffer 0
