@@ -15,8 +15,11 @@
  */
 
 #include <assert.h>
+#include <err.h>
 #include <stdio.h>
-#include <gio/gio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include <rtbuf/rtbuf.h>
 #include <rtbuf/lib.h>
 #include "rtbuf_gtk_library.h"
@@ -142,37 +145,41 @@ void rtbuf_gtk_library_load_file (const char *path, size_t prefix_len)
     rtbuf_gtk_library_load_file_1(path, len, prefix_len, 4);
 }
 
+int is_directory (const char *path)
+{
+  struct stat sb;
+  if (stat(path, &sb)) {
+    warn("stat: %s", path);
+    return -1;
+  }
+  return S_ISDIR(sb.st_mode);
+}
+
 void rtbuf_gtk_library_load_directory (const char *path, size_t prefix_len)
 {
-  GFile *gf = g_file_new_for_path(path);
-  GError *error = NULL;
-  GFileEnumerator *dir_enum =
-    g_file_enumerate_children(gf, G_FILE_ATTRIBUTE_STANDARD_NAME,
-                              G_FILE_QUERY_INFO_NONE, NULL, &error);
-  char child_path[PATH_MAX];
-  char *out = child_path;
-  const char *in = path;
-  while (*in)
-    *out++ = *in++;
+  DIR *dir;
   printf("dir %s\n", path);
-  if (dir_enum) {
-    while (1) {
-      GFileInfo *info;
-      GFileType type;
-      char *name;
+  dir = opendir(path);
+  if (dir) {
+    struct dirent *dp;
+    char child_path[PATH_MAX];
+    const char *in = path;
+    char *out = child_path;
+    while (*in)
+      *out++ = *in++;
+    while ((dp = readdir(dir)) != NULL) {
+      char *name = dp->d_name;
       char *filename = out;
-      if (!g_file_enumerator_iterate(dir_enum, &info, NULL, NULL, &error))
-        goto out;
-      if (!info)
-        break;
-      type = g_file_info_get_file_type(info);
-      name = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_NAME);
+      int dir_p;
       if (name[0] != '.') {
         in = name;
         while (*in)
           *filename++ = *in++;
         *filename = 0;
-        if (type == G_FILE_TYPE_DIRECTORY) {
+        dir_p = is_directory(child_path);
+        if (dir_p < 0)
+          continue;
+        else if (dir_p) {
           *filename++ = '/';
           *filename = 0;
           rtbuf_gtk_library_load_directory(child_path, prefix_len);
@@ -182,9 +189,6 @@ void rtbuf_gtk_library_load_directory (const char *path, size_t prefix_len)
       }
     }
   }
-  return;
- out:
-  g_object_unref(dir_enum);
 }
 
 void rtbuf_gtk_library_load ()
