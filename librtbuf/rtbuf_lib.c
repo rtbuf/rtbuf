@@ -34,8 +34,7 @@ s_data_alloc g_rtbuf_lib_alloc;
 s_rtbuf_lib *g_rtbuf_lib;
 
 char g_rtbuf_lib_user_dir[1024];
-char *g_rtbuf_lib_path[] = { "./",
-                             "./.libs/",
+char *g_rtbuf_lib_path[] = { "./lib/",
                              g_rtbuf_lib_user_dir,
                              "/usr/local/lib/rtbuf/",
                              "/usr/lib/rtbuf/",
