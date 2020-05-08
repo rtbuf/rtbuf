@@ -180,27 +180,6 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   return lib;
 }
 
-void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
-                                  s_rtbuf_lib_proc_in *in)
-{
-  unsigned int i = 0;
-  bzero(proc->in, sizeof(proc->in));
-  if (in) {
-    while (in->name && i < RTBUF_PROC_IN_MAX) {
-      s_rtbuf_proc_in *v = &proc->in[i];
-      v->name = symbol_intern(in->name);
-      v->type = rtbuf_type(in->type);
-      v->def = in->def;
-      v->min = in->min;
-      v->max = in->max;
-      in++;
-      i++;
-    }
-    assert(i < RTBUF_PROC_IN_MAX);
-  }
-  proc->in_n = i;
-}
-
 unsigned int add_padding (unsigned int offset, unsigned int size)
 {
   unsigned int align = 1;
@@ -215,6 +194,41 @@ unsigned int add_padding (unsigned int offset, unsigned int size)
   return (offset + align - 1) / align * align;
 }
 
+void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
+                                  s_rtbuf_lib_proc_in *in)
+{
+  unsigned int i = 0;
+  bzero(proc->in, sizeof(proc->in));
+  if (in) {
+    unsigned int offset = proc->out_bytes;
+    while (in->name && i < RTBUF_PROC_IN_MAX) {
+      s_rtbuf_proc_in *v = &proc->in[i];
+      unsigned int size;
+      v->name = symbol_intern(in->name);
+      v->type = rtbuf_type(in->type);
+      v->def = in->def;
+      v->min = in->min;
+      v->max = in->max;
+      assert(v->type);
+      size = (v->type->t.bits + 7) / 8;
+      offset = add_padding(offset, size);
+      v->offset = offset;
+      offset += size;
+      in++;
+      i++;
+    }
+    assert(i < RTBUF_PROC_IN_MAX);
+    offset = add_padding(offset, 8);
+    proc->in_bytes = offset - proc->out_bytes;
+    proc->bytes = offset;
+    proc->type.bits = offset * 8;
+    proc->type.type = DATA_TYPE_BITS;
+    data_alloc_init(&proc->alloc, &proc->type, RTBUF_INSTANCE_MAX,
+                    NULL, NULL);
+  }
+  proc->in_n = i;
+}
+
 void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
                                    s_rtbuf_lib_proc_out *out)
 {
@@ -224,7 +238,7 @@ void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
     unsigned int offset = 0;
     while (out->name && i < RTBUF_PROC_OUT_MAX) {
       s_rtbuf_proc_out *o = &proc->out[i];
-      size_t size;
+      unsigned int size;
       o->name = symbol_intern(out->name);
       o->type = rtbuf_type(out->type);
       assert(o->type);
@@ -238,10 +252,6 @@ void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
     assert(i < RTBUF_PROC_OUT_MAX);
     offset = add_padding(offset, 8);
     proc->out_bytes = offset;
-    proc->type.bits = offset * 8;
-    proc->type.type = DATA_TYPE_BITS;
-    data_alloc_init(&proc->alloc, &proc->type, RTBUF_INSTANCE_MAX,
-                    NULL, NULL);
   }
   proc->out_n = i;
 }
@@ -252,8 +262,8 @@ void rtbuf_lib_proc_init_proc (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x)
   proc->f = x->f;
   proc->start = x->start;
   proc->stop = x->stop;
-  rtbuf_lib_proc_in_init_proc(proc, x->in);
   rtbuf_lib_proc_out_init_proc(proc, x->out);
+  rtbuf_lib_proc_in_init_proc(proc, x->in);
 }
 
 void rtbuf_lib_print (const s_rtbuf_lib *lib)

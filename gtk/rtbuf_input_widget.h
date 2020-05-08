@@ -58,7 +58,7 @@ RtbufInputWidget * rtbuf_input_widget_new (s_rtbuf *rtbuf,
 s_rtbuf *     rtbuf_input_widget_get_rtbuf (RtbufInputWidget *widget);
 unsigned int  rtbuf_input_widget_get_in    (RtbufInputWidget *widget);
 GtkWidget *   rtbuf_input_widget_get_check (RtbufInputWidget *widget);
-void          rtbuf_input_widget_update    (RtbufInputWidget *widget);
+void          rtbuf_input_widget_update_rtbuf_in (RtbufInputWidget *widget);
 void          rtbuf_input_widget_connect (GtkWidget *input,
                                           gpointer data);
 void          rtbuf_input_widget_connect_check (GtkWidget *input,

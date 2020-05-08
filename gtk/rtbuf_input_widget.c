@@ -108,11 +108,11 @@ rtbuf_input_widget_set_property (GObject *object, guint prop_id,
   switch (prop_id) {
   case PROP_RTBUF:
     priv->rtbuf = g_value_get_pointer(value);
-    rtbuf_input_widget_update(widget);
+    rtbuf_input_widget_update_rtbuf_in(widget);
     break;
   case PROP_IN:
     priv->in = g_value_get_int(value);
-    rtbuf_input_widget_update(widget);
+    rtbuf_input_widget_update_rtbuf_in(widget);
     break;
   default:      
     G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -195,8 +195,9 @@ rtbuf_input_widget_get_check (RtbufInputWidget *widget)
 }
 
 void
-rtbuf_input_widget_update (RtbufInputWidget *widget)
+rtbuf_input_widget_update_rtbuf_in (RtbufInputWidget *widget)
 {
+  static const char *sym_double = NULL;
   const RtbufInputWidgetPrivate *priv =
     rtbuf_input_widget_get_instance_private(widget);
   if (priv && priv->rtbuf && priv->in >= 0) {
@@ -205,6 +206,11 @@ rtbuf_input_widget_update (RtbufInputWidget *widget)
     assert((long long) priv->in < (long long) proc->in_n);
     label = proc->in[priv->in].name;
     gtk_label_set_text(GTK_LABEL(priv->label), label);
+    if (!sym_double)
+      sym_double = symbol_intern("double");
+    if (proc->in[priv->in].type->name == sym_double) {
+      printf("%lf\n", proc->in[priv->in].def);
+    }
   }
 }
 

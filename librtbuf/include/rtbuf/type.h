@@ -23,7 +23,6 @@
 struct rtbuf_type {
   symbol       name;
   s_data_type  t;
-  s_data_alloc alloc;
 };
 
 #define RTBUF_TYPE_MAX 1024

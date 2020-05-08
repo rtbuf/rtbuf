@@ -26,6 +26,7 @@ struct rtbuf_proc_in {
   double def;
   double min;
   double max;
+  unsigned int offset;
 };
 
 struct rtbuf_proc_out {
@@ -44,10 +45,12 @@ struct rtbuf_proc {
   f_rtbuf_proc    *stop;
   s_rtbuf_proc_in  in[RTBUF_PROC_IN_MAX];    /* inputs */
   unsigned int     in_n;                     /* number of inputs */
+  unsigned int     in_bytes;   /* size of input data in bytes */
   s_rtbuf_proc_out out[RTBUF_PROC_OUT_MAX];  /* outputs */
   unsigned int     out_n;                    /* number of outputs */
   unsigned int     out_bytes;  /* size of output data in bytes */
   s_rtbuf_lib     *lib;        /* the library this procedure comes from */
+  unsigned int     bytes;      /* size of buffer data in bytes */
   s_data_type      type;
   s_data_alloc     alloc;
 };
