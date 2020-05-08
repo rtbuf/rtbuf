@@ -29,7 +29,7 @@ if test -d /usr/lib; then
 fi
 
 CPPFLAGS="-I${PWD}/librtbuf/include -I${PWD}/lib/include $CPPFLAGS"
-CFLAGS="$CFLAGS -std=c89 -W -Wall -Werror -D_BSD_SOURCE"
+CFLAGS="$CFLAGS -std=c89 -W -Wall -Werror -D_DEFAULT_SOURCE"
 
 AC_CHECK_FUNC([strlcpy], [echo using system strlcpy],
 	      AC_SEARCH_LIBS([strlcpy], [bsd],
