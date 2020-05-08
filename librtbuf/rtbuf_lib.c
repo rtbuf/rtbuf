@@ -206,11 +206,14 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
       unsigned int size;
       v->name = symbol_intern(in->name);
       v->type = rtbuf_type(in->type);
+      v->name_type = g_str;
+      g_str_append(v->name, strlen(v->name));
+      g_str_append(": ", 2);
+      g_str_append(v->type->name, strlen(v->type->name) + 1);
       v->def = in->def;
       v->min = in->min;
       v->max = in->max;
-      assert(v->type);
-      size = (v->type->t.bits + 7) / 8;
+      size = sizeof(double);
       offset = add_padding(offset, size);
       v->offset = offset;
       offset += size;
@@ -241,6 +244,10 @@ void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
       unsigned int size;
       o->name = symbol_intern(out->name);
       o->type = rtbuf_type(out->type);
+      o->name_type = g_str;
+      g_str_append(o->name, strlen(o->name));
+      g_str_append(": ", 2);
+      g_str_append(o->type->name, strlen(o->type->name) + 1);
       assert(o->type);
       size = (o->type->t.bits + 7) / 8;
       offset = add_padding(offset, size);

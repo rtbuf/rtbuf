@@ -63,7 +63,6 @@ void  rtbuf_bind (unsigned int src, unsigned int out,
 int   rtbuf_out_find (s_rtbuf *rtb, symbol sym);
 int   rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                       unsigned int size);
-void *rtbuf_in_unbound_value (s_rtbuf *rtb, unsigned int in);
 void  rtbuf_sort ();
 int   rtbuf_start ();
 int   rtbuf_run ();
@@ -73,6 +72,8 @@ void  rtbuf_print_long (unsigned int i);
 void  rtbuf_print_sorted ();
 
 int  rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value);
+
+double * rtbuf_in_unbound_value (s_rtbuf *rtb, unsigned int in);
 
 double min (double a, double b);
 double max (double a, double b);

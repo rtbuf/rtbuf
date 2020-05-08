@@ -194,23 +194,46 @@ rtbuf_input_widget_get_check (RtbufInputWidget *widget)
   return NULL;
 }
 
+void rtbuf_input_widget_slider_value_changed (RtbufInputWidgetPrivate *priv)
+{
+  double value;
+  char str[64];
+  value = gtk_range_get_value(GTK_RANGE(priv->slider));
+  snprintf(str, sizeof(str), "%lg", value);
+  gtk_entry_set_text(GTK_ENTRY(priv->value), str);
+}
+ 
 void
 rtbuf_input_widget_update_rtbuf_in (RtbufInputWidget *widget)
 {
   static const char *sym_double = NULL;
-  const RtbufInputWidgetPrivate *priv =
+  RtbufInputWidgetPrivate *priv =
     rtbuf_input_widget_get_instance_private(widget);
+  if (!sym_double)
+    sym_double = symbol_intern("double");
   if (priv && priv->rtbuf && priv->in >= 0) {
     const s_rtbuf_proc *proc = priv->rtbuf->proc;
+    const s_rtbuf_proc_in *in = &proc->in[priv->in];
     const char *label;
+    char min[64];
+    char max[64];
+    char value[64];
+    double unbound_value;
     assert((long long) priv->in < (long long) proc->in_n);
-    label = proc->in[priv->in].name;
+    label = in->name_type;
     gtk_label_set_text(GTK_LABEL(priv->label), label);
-    if (!sym_double)
-      sym_double = symbol_intern("double");
-    if (proc->in[priv->in].type->name == sym_double) {
-      printf("%lf\n", proc->in[priv->in].def);
-    }
+    snprintf(min, sizeof(min), "%lg", in->min);
+    gtk_entry_set_text(GTK_ENTRY(priv->min), min);
+    snprintf(max, sizeof(max), "%lg", in->max);
+    gtk_entry_set_text(GTK_ENTRY(priv->max), max);
+    unbound_value = *rtbuf_in_unbound_value(priv->rtbuf, priv->in);
+    snprintf(value, sizeof(value), "%lg", unbound_value);
+    gtk_entry_set_text(GTK_ENTRY(priv->value), value);
+    gtk_range_set_range(GTK_RANGE(priv->slider), in->min, in->max);
+    gtk_range_set_value(GTK_RANGE(priv->slider), unbound_value);
+    g_signal_connect_swapped(priv->slider, "value-changed",
+                             G_CALLBACK(rtbuf_input_widget_slider_value_changed),
+                             priv);
   }
 }
 

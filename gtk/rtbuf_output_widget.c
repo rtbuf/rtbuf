@@ -188,7 +188,7 @@ rtbuf_output_widget_update (RtbufOutputWidget *widget)
     const s_rtbuf_proc *proc = priv->rtbuf->proc;
     const char *label;
     assert((long long) priv->out < (long long) proc->out_n);
-    label = proc->out[priv->out].name;
+    label = proc->out[priv->out].name_type;
     gtk_label_set_text(GTK_LABEL(priv->label), label);
   }
 }

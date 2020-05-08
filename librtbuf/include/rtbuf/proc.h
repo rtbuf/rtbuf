@@ -22,6 +22,7 @@
 
 struct rtbuf_proc_in {
   symbol name;
+  const char *name_type;
   s_rtbuf_type *type;
   double def;
   double min;
@@ -31,6 +32,7 @@ struct rtbuf_proc_in {
 
 struct rtbuf_proc_out {
   symbol name;
+  const char *name_type;
   s_rtbuf_type *type;
   unsigned int offset;
 };

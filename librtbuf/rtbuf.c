@@ -56,9 +56,6 @@ int rtbuf_new (s_rtbuf_proc *rp)
   s_rtbuf *rtb;
   void *data;
   unsigned int j;
-  static const char *sym_double = NULL;
-  if (!sym_double)
-    sym_double = symbol_intern("double");
   assert(rp);
   assert(g_rtbuf);
   data = data_new(&rp->alloc);
@@ -79,10 +76,8 @@ int rtbuf_new (s_rtbuf_proc *rp)
   }
   j = 0;
   while (j < rp->in_n) {
-    if (rp->in[j].type->name == sym_double) {
-      memcpy(rtbuf_in_unbound_value(rtb, j), &rp->in[j].def,
-             sizeof(double));
-    }
+    double *uv = rtbuf_in_unbound_value(rtb, j);
+    *uv = rp->in[j].def;
     j++;
   }
   g_rtbuf_sort = 1;
@@ -597,7 +592,7 @@ int rtbuf_err (const char *msg)
   return -1;
 }
 
-void * rtbuf_in_unbound_value (s_rtbuf *rtb, unsigned int in)
+double * rtbuf_in_unbound_value (s_rtbuf *rtb, unsigned int in)
 {
   unsigned int offset;
   void *p;
@@ -607,5 +602,5 @@ void * rtbuf_in_unbound_value (s_rtbuf *rtb, unsigned int in)
   offset = rtb->proc->in[in].offset;
   assert(offset < rtb->proc->bytes);
   p = rtb->data + offset;
-  return p;
+  return (double*) p;
 }

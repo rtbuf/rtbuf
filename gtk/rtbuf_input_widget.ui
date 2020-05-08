@@ -34,11 +34,14 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="value">
+      <object class="GtkEntry" id="value">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">0.5</property>
+        <property name="can_focus">True</property>
+        <property name="has_frame">False</property>
         <property name="width_chars">9</property>
+        <property name="text" translatable="yes">0.0</property>
+        <property name="caps_lock_warning">False</property>
+        <property name="input_purpose">number</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -64,6 +67,7 @@
     </child>
     <child>
       <object class="GtkScale" id="slider">
+        <property name="width_request">128</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="round_digits">1</property>
@@ -84,6 +88,7 @@
         <property name="has_frame">False</property>
         <property name="width_chars">9</property>
         <property name="text" translatable="yes">1.0</property>
+        <property name="caps_lock_warning">False</property>
         <property name="input_purpose">number</property>
       </object>
       <packing>
