@@ -27,8 +27,10 @@ struct _RtbufInputWidgetPrivate {
   GtkWidget *label;
   GtkWidget *value;
   GtkWidget *min;
+  double     min_value;
   GtkWidget *slider;
   GtkWidget *max;
+  double     max_value;
 };
 
 enum {
@@ -227,6 +229,46 @@ gboolean rtbuf_input_widget_value_key_press_event
   }
   return FALSE;
 }
+
+gboolean rtbuf_input_widget_min_key_press_event
+(RtbufInputWidgetPrivate *priv, GdkEventKey *event)
+{
+  const char *str;
+  char str_mut[64];
+  double min;
+  if (event->keyval == GDK_KEY_Return) {
+    str = gtk_entry_get_text(GTK_ENTRY(priv->min));
+    if (sscanf(str, "%lg", &min) == 1) {
+      snprintf(str_mut, sizeof(str_mut), "%lg", min);
+      gtk_entry_set_text(GTK_ENTRY(priv->min), str_mut);
+      priv->min_value = min;
+      gtk_range_set_range(GTK_RANGE(priv->slider), priv->min_value,
+                          priv->max_value);
+    }
+    return TRUE;
+  }
+  return FALSE;
+}
+
+gboolean rtbuf_input_widget_max_key_press_event
+(RtbufInputWidgetPrivate *priv, GdkEventKey *event)
+{
+  const char *str;
+  char str_mut[64];
+  double max;
+  if (event->keyval == GDK_KEY_Return) {
+    str = gtk_entry_get_text(GTK_ENTRY(priv->max));
+    if (sscanf(str, "%lg", &max) == 1) {
+      snprintf(str_mut, sizeof(str_mut), "%lg", max);
+      gtk_entry_set_text(GTK_ENTRY(priv->max), str_mut);
+      priv->max_value = max;
+      gtk_range_set_range(GTK_RANGE(priv->slider), priv->min_value,
+                          priv->max_value);
+    }
+    return TRUE;
+  }
+  return FALSE;
+}
  
 void
 rtbuf_input_widget_update_rtbuf_in (RtbufInputWidget *widget)
@@ -254,13 +296,22 @@ rtbuf_input_widget_update_rtbuf_in (RtbufInputWidget *widget)
     unbound_value = *rtbuf_in_unbound_value(priv->rtbuf, priv->in);
     snprintf(value, sizeof(value), "%lg", unbound_value);
     gtk_entry_set_text(GTK_ENTRY(priv->value), value);
-    gtk_range_set_range(GTK_RANGE(priv->slider), in->min, in->max);
+    priv->min_value = in->min;
+    priv->max_value = in->max;
+    gtk_range_set_range(GTK_RANGE(priv->slider), priv->min_value,
+                        priv->max_value);
     gtk_range_set_value(GTK_RANGE(priv->slider), unbound_value);
     g_signal_connect_swapped(priv->slider, "value-changed",
                              G_CALLBACK(rtbuf_input_widget_slider_value_changed),
                              priv);
     g_signal_connect_swapped(priv->value, "key-press-event",
                              G_CALLBACK(rtbuf_input_widget_value_key_press_event),
+                             priv);
+    g_signal_connect_swapped(priv->min, "key-press-event",
+                             G_CALLBACK(rtbuf_input_widget_min_key_press_event),
+                             priv);
+    g_signal_connect_swapped(priv->max, "key-press-event",
+                             G_CALLBACK(rtbuf_input_widget_max_key_press_event),
                              priv);
   }
 }
