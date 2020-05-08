@@ -201,6 +201,20 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
   proc->in_n = i;
 }
 
+unsigned int add_padding (unsigned int offset, unsigned int size)
+{
+  unsigned int align = 1;
+  if (size == 2)
+    align = 2;
+  else if (size == 4)
+    align = 4;
+  else if (size == 8)
+    align = 8;
+  else if (size == 16)
+    align = 16;
+  return (offset + align - 1) / align * align;
+}
+
 void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
                                    s_rtbuf_lib_proc_out *out)
 {
@@ -210,15 +224,19 @@ void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
     unsigned int offset = 0;
     while (out->name && i < RTBUF_PROC_OUT_MAX) {
       s_rtbuf_proc_out *o = &proc->out[i];
+      size_t size;
       o->name = symbol_intern(out->name);
       o->type = rtbuf_type(out->type);
       assert(o->type);
+      size = (o->type->t.bits + 7) / 8;
+      offset = add_padding(offset, size);
       o->offset = offset;
-      offset += (o->type->t.bits + 7) / 8;
+      offset += size;
       out++;
       i++;
     }
     assert(i < RTBUF_PROC_OUT_MAX);
+    offset = add_padding(offset, 8);
     proc->out_bytes = offset;
     proc->type.bits = offset * 8;
     proc->type.type = DATA_TYPE_BITS;

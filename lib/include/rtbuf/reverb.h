@@ -25,7 +25,6 @@
 #define RTBUF_REVERB_FDN4_DELAY_SAMPLES_MAX \
   RTBUF_SIGNAL_SAMPLERATE
 
-#pragma pack(push,1)
 typedef struct rtbuf_reverb_fdn4_data {
         t_rtbuf_signal signal;
         t_rtbuf_signal_sample d0[RTBUF_REVERB_FDN4_DELAY_SAMPLES_MAX];
@@ -34,7 +33,6 @@ typedef struct rtbuf_reverb_fdn4_data {
         t_rtbuf_signal_sample d3[RTBUF_REVERB_FDN4_DELAY_SAMPLES_MAX];
         unsigned int pos;
 } s_rtbuf_reverb_fdn4_data;
-#pragma pack(pop)
 
 enum {
         RTBUF_REVERB_FDN4_IN_SIGNAL = 0,

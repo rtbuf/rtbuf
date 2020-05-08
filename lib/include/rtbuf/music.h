@@ -26,14 +26,12 @@
 #define RTBUF_MUSIC_NOTE_SIZE RTBUF_SIGNAL_SAMPLE_SIZE
 #define RTBUF_MUSIC_NOTE_TYPE "music_note"
 
-#pragma pack(push,1)
 typedef struct rtbuf_music_note {
   t_rtbuf_signal_sample velocity; /* between 0.0 and 1.0 */
   t_rtbuf_signal_sample freq;     /* above 0.0 */
   t_rtbuf_signal_sample start;    /* time since start */
   t_rtbuf_signal_sample stop;     /* time since stop, or -1.0 */
 } s_rtbuf_music_note;
-#pragma pack(pop)
 
 #define RTBUF_MUSIC_NOTE_IN(note)                                       \
   { note "velocity",  RTBUF_SIGNAL_SAMPLE_TYPE, 1.0, 0.0, 1.0 },        \
@@ -69,12 +67,10 @@ enum {
 
 #define RTBUF_MUSIC_NOTE_MAX 32
 
-#pragma pack(push,1)
 typedef struct rtbuf_music_notes {
   unsigned int note_n;
   s_rtbuf_music_note note[RTBUF_MUSIC_NOTE_MAX];
 } s_rtbuf_music_notes;
-#pragma pack(pop)
 
 #define RTBUF_MUSIC_NOTES_SIZE sizeof(unsigned int)
 #define RTBUF_MUSIC_NOTES_TYPE "music_notes"

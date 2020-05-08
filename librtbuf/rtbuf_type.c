@@ -106,7 +106,7 @@ s_rtbuf_type * rtbuf_type_parse_array (const char *name)
       return 0;
     buf[rb] = 0;
     size = atoi(&buf[lb + 1]);
-    return rtbuf_type_new(name, element_type->t.bits / 8 * size);
+    return rtbuf_type_new(name, (element_type->t.bits + 7) / 8 * size);
   }
   return 0;
 }
