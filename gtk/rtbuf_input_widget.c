@@ -197,10 +197,13 @@ rtbuf_input_widget_get_check (RtbufInputWidget *widget)
 void rtbuf_input_widget_slider_value_changed (RtbufInputWidgetPrivate *priv)
 {
   double value;
+  double *unbound_value;
   char str[64];
   value = gtk_range_get_value(GTK_RANGE(priv->slider));
   snprintf(str, sizeof(str), "%lg", value);
   gtk_entry_set_text(GTK_ENTRY(priv->value), str);
+  unbound_value = rtbuf_in_unbound_value(priv->rtbuf, priv->in);
+  *unbound_value = value;
 }
  
 void

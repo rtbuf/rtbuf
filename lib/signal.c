@@ -88,7 +88,7 @@ void rtbuf_signal_fun (s_rtbuf *rtb,
   assert(rtb->proc);
   assert(in < rtb->proc->in_n);
   assert(rsf);
-  default_value = &rtb->proc->in[in].def;
+  default_value = rtbuf_in_unbound_value(rtb, in);
   rsf->signal = default_value;
   rsf->sample_fun = rtbuf_signal_sample_from_sample;
   v = &rtb->in[in];
