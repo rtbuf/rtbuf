@@ -194,7 +194,8 @@ rtbuf_input_widget_get_check (RtbufInputWidget *widget)
   return NULL;
 }
 
-void rtbuf_input_widget_slider_value_changed (RtbufInputWidgetPrivate *priv)
+void rtbuf_input_widget_slider_value_changed
+(const RtbufInputWidgetPrivate *priv)
 {
   double value;
   double *unbound_value;
@@ -204,6 +205,27 @@ void rtbuf_input_widget_slider_value_changed (RtbufInputWidgetPrivate *priv)
   gtk_entry_set_text(GTK_ENTRY(priv->value), str);
   unbound_value = rtbuf_in_unbound_value(priv->rtbuf, priv->in);
   *unbound_value = value;
+}
+
+gboolean rtbuf_input_widget_value_key_press_event
+(const RtbufInputWidgetPrivate *priv, GdkEventKey *event)
+{
+  const char *str;
+  char str_mut[64];
+  double value;
+  double *unbound_value;
+  if (event->keyval == GDK_KEY_Return) {
+    str = gtk_entry_get_text(GTK_ENTRY(priv->value));
+    if (sscanf(str, "%lg", &value) == 1) {
+      snprintf(str_mut, sizeof(str_mut), "%lg", value);
+      gtk_entry_set_text(GTK_ENTRY(priv->value), str_mut);
+      gtk_range_set_value(GTK_RANGE(priv->slider), value);
+      unbound_value = rtbuf_in_unbound_value(priv->rtbuf, priv->in);
+      *unbound_value = value;
+    }
+    return TRUE;
+  }
+  return FALSE;
 }
  
 void
@@ -236,6 +258,9 @@ rtbuf_input_widget_update_rtbuf_in (RtbufInputWidget *widget)
     gtk_range_set_value(GTK_RANGE(priv->slider), unbound_value);
     g_signal_connect_swapped(priv->slider, "value-changed",
                              G_CALLBACK(rtbuf_input_widget_slider_value_changed),
+                             priv);
+    g_signal_connect_swapped(priv->value, "key-press-event",
+                             G_CALLBACK(rtbuf_input_widget_value_key_press_event),
                              priv);
   }
 }
