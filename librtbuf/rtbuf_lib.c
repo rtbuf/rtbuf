@@ -198,9 +198,9 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
                                   s_rtbuf_lib_proc_in *in)
 {
   unsigned int i = 0;
+  unsigned int offset = proc->out_bytes;
   bzero(proc->in, sizeof(proc->in));
   if (in) {
-    unsigned int offset = proc->out_bytes;
     while (in->name && i < RTBUF_PROC_IN_MAX) {
       s_rtbuf_proc_in *v = &proc->in[i];
       unsigned int size;
@@ -223,13 +223,13 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
     assert(i < RTBUF_PROC_IN_MAX);
     offset = add_padding(offset, 8);
     proc->in_bytes = offset - proc->out_bytes;
-    proc->bytes = offset;
-    proc->type.bits = offset * 8;
-    proc->type.type = DATA_TYPE_BITS;
-    data_alloc_init(&proc->alloc, &proc->type, RTBUF_INSTANCE_MAX,
-                    NULL, NULL);
   }
   proc->in_n = i;
+  proc->bytes = offset;
+  proc->type.bits = offset * 8;
+  proc->type.type = DATA_TYPE_BITS;
+  data_alloc_init(&proc->alloc, &proc->type, RTBUF_INSTANCE_MAX,
+                  NULL, NULL);
 }
 
 void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
