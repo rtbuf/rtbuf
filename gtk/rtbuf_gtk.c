@@ -38,6 +38,7 @@ pthread_t g_rtbuf_gtk_thread = 0;
 GtkWindow              *modular = NULL;
 GtkToolbar             *modular_toolbar = NULL;
 s_rtbuf_gtk_connection *modular_connections = NULL;
+GtkScrolledWindow      *modular_scrolled_window = NULL;
 GtkLayout              *modular_layout = NULL;
 
 GtkMenu *library_menu = NULL;
@@ -329,11 +330,15 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
     else {
       gint x = 0;
       gint y = 0;
+      GtkAdjustment *adjustment;
       GdkWindow *window =
         gtk_widget_get_window(GTK_WIDGET(modular_layout));
       gdk_window_get_device_position(window, event->device,
                                      &x, &y, NULL);
-      /* printf("rtbuf-gtk modular drag motion %i %i\n", x, y); */
+      adjustment = gtk_scrolled_window_get_hadjustment(modular_scrolled_window);
+      x += gtk_adjustment_get_value(adjustment);
+      adjustment = gtk_scrolled_window_get_vadjustment(modular_scrolled_window);
+      y += gtk_adjustment_get_value(adjustment);
       gtk_layout_move(modular_layout, drag_widget, x - drag_x,
                       y - drag_y);
       return TRUE;
@@ -444,6 +449,9 @@ void rtbuf_gtk_modular ()
   button = gtk_builder_get_object(builder, "quit");
   g_signal_connect(button, "activate",
                    G_CALLBACK(rtbuf_gtk_modular_close), NULL);
+
+  modular_scrolled_window =
+    GTK_SCROLLED_WINDOW(gtk_builder_get_object(builder, "scrolled_window"));
 
   modular_layout = GTK_LAYOUT(gtk_builder_get_object(builder, "modular_layout"));
   gtk_widget_add_events(GTK_WIDGET(modular_layout), GDK_BUTTON_PRESS_MASK);

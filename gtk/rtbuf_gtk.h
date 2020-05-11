@@ -27,6 +27,7 @@ typedef struct signal_binding {
   GCallback callback;
 } s_signal_binding;
 
+extern GtkScrolledWindow      *modular_scrolled_window;
 extern GtkLayout              *modular_layout;
 extern s_rtbuf_gtk_connection *modular_connections;
 
