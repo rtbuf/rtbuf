@@ -28,7 +28,7 @@ if test -d /usr/lib; then
   LDFLAGS="$LDFLAGS -L/usr/lib"
 fi
 
-CPPFLAGS="-I${PWD}/librtbuf/include -I${PWD}/lib/include $CPPFLAGS"
+CPPFLAGS="-I${PWD}/librtbuf/include -I${PWD}/cli/include -I${PWD}/lib/include $CPPFLAGS"
 CFLAGS="$CFLAGS -std=c89 -W -Wall -Werror -D_DEFAULT_SOURCE"
 
 AC_CHECK_FUNC([strlcpy], [echo using system strlcpy],
