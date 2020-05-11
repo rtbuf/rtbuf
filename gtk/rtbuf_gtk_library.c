@@ -101,7 +101,7 @@ void rtbuf_gtk_library_load_file_1 (const char *path,
   int leaf = 0;
   s_rtbuf_gtk_library_tree **tree = &g_rtbuf_gtk_library_tree;
   s_rtbuf_gtk_library_tree *found;
-  printf("Found library %s\n", path);
+  /* printf("Found library %s\n", path); */
   dir_name = path + prefix_len;
   while (!leaf) {
     sep = strchr(dir_name, '/');
@@ -126,9 +126,9 @@ void rtbuf_gtk_library_load_file_1 (const char *path,
       }
       found = rtbuf_gtk_library_tree_insert(tree, m_dir_name, m_leaf_name);
     }
-    printf("dir_name %s\n", found->dir_name);
+    /* printf("dir_name %s\n", found->dir_name);
     if (leaf)
-      printf("leaf_name %s\n", found->leaf_name);
+      printf("leaf_name %s\n", found->leaf_name); */
     tree = &found->children;
     dir_name = sep + 1;
   }
@@ -137,7 +137,7 @@ void rtbuf_gtk_library_load_file_1 (const char *path,
 void rtbuf_gtk_library_load_file (const char *path, size_t prefix_len)
 {
   size_t len = strlen(path);
-  printf("file %s\n", path);
+  /* printf("file %s\n", path); */
   if (strncmp(&path[len - 3], ".so", 3) == 0)
     rtbuf_gtk_library_load_file_1(path, len, prefix_len, 3);
   else if (strncmp(&path[len - 7], ".so.0.0", 7) == 0)
@@ -159,7 +159,7 @@ int is_directory (const char *path)
 void rtbuf_gtk_library_load_directory (const char *path, size_t prefix_len)
 {
   DIR *dir;
-  printf("dir %s\n", path);
+  /* printf("dir %s\n", path); */
   dir = opendir(path);
   if (dir) {
     struct dirent *dp;
