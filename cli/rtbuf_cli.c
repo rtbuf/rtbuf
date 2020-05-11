@@ -263,9 +263,9 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " load LIB                    Load library LIB.\n"
          " buffers                     List buffers.\n"
          " buffer N                    Show buffer N.\n"
-         " let VAR = buffer N          Set variable.\n");
-  printf(" new LIB                     Instanciate library procedure.\n"
-         " let VAR = new LIB           Set variable.\n"
+         " let VAR = buffer N          Set variable to buffer.\n");
+  printf(" new LIB                     Instanciate library.\n"
+         " let VAR = new LIB           Set variable to new instance.\n"
          " delete BUFFER               Unlink and delete BUFFER.\n"
          " bind SOURCE OUT DEST IN     Bind SOURCE OUT to DEST IN.\n"
          " unbind BUFFER IN            Unbind BUFFER IN.\n"
