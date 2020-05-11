@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <rtbuf/rtbuf.h>
@@ -21,16 +22,16 @@
 #include <rtbuf/signal.h>
 #include <rtbuf/signal_type.h>
 
-s_rtbuf_lib_proc_in rtbuf_signal_square_in[] = {
-  { "frequency", RTBUF_SIGNAL_TYPE, 220.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
-  { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1.0 },
-  { "pulse",     RTBUF_SIGNAL_TYPE, 0.5, 0.0, 1.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_signal_square_in[] =
+  {{ "frequency", RTBUF_SIGNAL_TYPE, 220.0, 20.0, RTBUF_SIGNAL_SAMPLERATE / 2.0, 2.0 },
+   { "amplitude", RTBUF_SIGNAL_TYPE, 1.0, 0.001, 1.0, 10.0 },
+   { "pulse",     RTBUF_SIGNAL_TYPE, 0.5, 0.0, 1.0, 1.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_signal_square_out[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
-  { "phase", "double" },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_signal_square_out[] =
+  {{ "signal", RTBUF_SIGNAL_TYPE },
+   { "phase", "double" },
+   { 0, 0 }};
 
 static
 double square (double amp, double phase, double pulse)

@@ -24,14 +24,14 @@ void notes_in ()
   const char *st = "RTBUF_SIGNAL_SAMPLE_TYPE";
   printf("\n"
          "#define RTBUF_MUSIC_NOTES_IN(note) \\\n"
-         "  { note \"s\"            , RTBUF_MUSIC_NOTES_TYPE, 0.0, 0.0, 0.0 }"
+         "  { note \"s\"            , RTBUF_MUSIC_NOTES_TYPE, 0.0, 0.0, 0.0, 1.0 }"
          ", \\\n");
   while (i < RTBUF_MUSIC_NOTE_MAX) {
-    printf("  { note \"[%u].velocity\" , %s, 0.0, 0.0, 1.0 }, \\\n", i, st);
+    printf("  { note \"[%u].velocity\" , %s, 0.0, 0.0, 1.0, 1.0 }, \\\n", i, st);
     printf("  { note \"[%u].frequency\", %s, 0.0, 0.0, "
-           "RTBUF_SIGNAL_SAMPLERATE / 2.0 }, \\\n", i, st);
-    printf("  { note \"[%u].start\"    , %s, -1.0, -1.0, FLT_MAX }, \\\n", i, st);
-    printf("  { note \"[%u].stop\"     , %s, -1.0, -1.0, FLT_MAX }", i, st);
+           "RTBUF_SIGNAL_SAMPLERATE / 2.0, 1.0 }, \\\n", i, st);
+    printf("  { note \"[%u].start\"    , %s, -1.0, -1.0, DBL_MAX, 1.0 }, \\\n", i, st);
+    printf("  { note \"[%u].stop\"     , %s, -1.0, -1.0, DBL_MAX, 1.0 }", i, st);
     if (i < RTBUF_MUSIC_NOTE_MAX - 1)
       printf(", \\");
     printf("\n");

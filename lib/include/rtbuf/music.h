@@ -33,12 +33,12 @@ typedef struct rtbuf_music_note {
   t_rtbuf_signal_sample stop;     /* time since stop, or -1.0 */
 } s_rtbuf_music_note;
 
-#define RTBUF_MUSIC_NOTE_IN(note)                                       \
-  { note "velocity",  RTBUF_SIGNAL_SAMPLE_TYPE, 1.0, 0.0, 1.0 },        \
-  { note "frequency", RTBUF_SIGNAL_SAMPLE_TYPE, 220.0, 0.0,             \
-                  RTBUF_SIGNAL_SAMPLERATE / 2.0 },                      \
-  { note "start",     RTBUF_SIGNAL_SAMPLE_TYPE, -1.0, -1.0, FLT_MAX },   \
-  { note "stop",      RTBUF_SIGNAL_SAMPLE_TYPE, -1.0, -1.0, FLT_MAX }
+#define RTBUF_MUSIC_NOTE_IN(note)                                           \
+  { note "velocity",  RTBUF_SIGNAL_SAMPLE_TYPE, 1.0, 0.0, 1.0, 1.0 },       \
+  { note "frequency", RTBUF_SIGNAL_SAMPLE_TYPE, 220.0, 0.0,                 \
+      RTBUF_SIGNAL_SAMPLERATE / 2.0, 1.0 },                                 \
+  { note "start",     RTBUF_SIGNAL_SAMPLE_TYPE, -1.0, -1.0, DBL_MAX, 1.0 }, \
+  { note "stop",      RTBUF_SIGNAL_SAMPLE_TYPE, -1.0, -1.0, DBL_MAX, 1.0 }
           
 #define RTBUF_MUSIC_NOTE_IN_ENUM(note) \
   note ## _VELOCITY , \

@@ -21,17 +21,17 @@
 #include <rtbuf/signal.h>
 #include <rtbuf/signal_type.h>
 
-s_rtbuf_lib_proc_in rtbuf_signal_delay_in[] = {
-  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "delay",    RTBUF_SIGNAL_TYPE, 0.4, 0.0, RTBUF_SIGNAL_DELAY_MAX },
-  { "feedback", RTBUF_SIGNAL_TYPE, 0.5, 0.0, 1.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_signal_delay_in[] =
+  {{ "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "delay",    RTBUF_SIGNAL_TYPE, 0.4, 0.0, RTBUF_SIGNAL_DELAY_MAX, 1.0 },
+   { "feedback", RTBUF_SIGNAL_TYPE, 0.5, 0.0, 1.0, 1.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_signal_delay_out[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
-  { "in", RTBUF_SIGNAL_DELAY_TYPE },
-  { "pos", "unsigned int" },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_signal_delay_out[] =
+  {{ "signal", RTBUF_SIGNAL_TYPE },
+   { "in", RTBUF_SIGNAL_DELAY_TYPE },
+   { "pos", "unsigned int" },
+   { 0, 0 }};
 
 int rtbuf_signal_delay_start (s_rtbuf *rtb)
 {

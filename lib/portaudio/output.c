@@ -27,15 +27,15 @@
 
 int g_initialized = 0;
 
-s_rtbuf_lib_proc_in rtbuf_portaudio_output_in[] = {
-  { "left",  RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "right", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { 0, 0, 0.0, 0.0, 0.0 }};
+s_rtbuf_lib_proc_in rtbuf_portaudio_output_in[] =
+  {{ "left",  RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "right", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_portaudio_output_out[] = {
-  { "samples", RTBUF_PORTAUDIO_SAMPLES_TYPE },
-  { "reserved", RTBUF_PORTAUDIO_OUTPUT_RESERVED_TYPE },
-  { 0, 0 }};
+s_rtbuf_lib_proc_out rtbuf_portaudio_output_out[] =
+  {{ "samples", RTBUF_PORTAUDIO_SAMPLES_TYPE },
+   { "reserved", RTBUF_PORTAUDIO_OUTPUT_RESERVED_TYPE },
+   { 0, 0 }};
 
 int rtbuf_portaudio_output_start (s_rtbuf *rtb)
 {

@@ -51,23 +51,23 @@ y: (4 f2 w2 (x4 - 2 x2 + x) - (b y1 + c y2 + d y3 + e y4)) / a;
 #include <rtbuf/signal.h>
 #include <rtbuf/signal_type.h>
 
-s_rtbuf_lib_proc_in rtbuf_signal_bandpass2_in[] = {
-  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "cutoff",   RTBUF_SIGNAL_TYPE, 400.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
-  { "qfactor",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1000.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_signal_bandpass2_in[] =
+  {{ "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "cutoff",   RTBUF_SIGNAL_TYPE, 400.0, 20.0, RTBUF_SIGNAL_SAMPLERATE / 2.0, 2.0 },
+   { "qfactor",  RTBUF_SIGNAL_TYPE, 1.0, 0.0, 1000.0, 1.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_signal_bandpass2_out[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
-  { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_signal_bandpass2_out[] =
+  {{ "signal", RTBUF_SIGNAL_TYPE },
+   { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { 0, 0 }};
 
 int rtbuf_signal_bandpass2_start (s_rtbuf *rtb)
 {

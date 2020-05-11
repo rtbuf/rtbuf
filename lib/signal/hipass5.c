@@ -63,24 +63,24 @@ y: (f5 (32 (x - x5) + 160 (x4 - x1) + 320 (x2 - x3)) - (b y1 + c y2 + d y3 + e y
 #include <rtbuf/signal.h>
 #include <rtbuf/signal_type.h>
 
-s_rtbuf_lib_proc_in rtbuf_signal_hipass5_in[] = {
-  { "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "cutoff",   RTBUF_SIGNAL_TYPE, 400.0, 0.0, RTBUF_SIGNAL_SAMPLERATE / 2.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_signal_hipass5_in[] =
+  {{ "signal", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "cutoff", RTBUF_SIGNAL_TYPE, 400.0, 1.0, RTBUF_SIGNAL_SAMPLERATE / 2.0, 2.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_signal_hipass5_out[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
-  { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "x5", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { "y5", RTBUF_SIGNAL_SAMPLE_TYPE },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_signal_hipass5_out[] =
+  {{ "signal", RTBUF_SIGNAL_TYPE },
+   { "x1", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "x2", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "x3", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "x4", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "x5", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y1", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y2", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y3", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y4", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { "y5", RTBUF_SIGNAL_SAMPLE_TYPE },
+   { 0, 0 }};
 
 int rtbuf_signal_hipass5_start (s_rtbuf *rtb)
 {

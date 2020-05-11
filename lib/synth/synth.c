@@ -27,16 +27,16 @@
 #include <rtbuf/synth.h>
 #include <rtbuf/synth_type.h>
 
-s_rtbuf_lib_proc_in rtbuf_synth_synth_in[] = {
-  { "envelope",   RTBUF_SIGNAL_TYPE, 1.0,  0.0, 1.0 },
-  { "oscillator", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  RTBUF_MUSIC_NOTES_IN("note"),
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_synth_synth_in[] =
+  {{ "envelope",   RTBUF_SIGNAL_TYPE, 1.0,  0.0, 1.0, 1.0 },
+   { "oscillator", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   RTBUF_MUSIC_NOTES_IN("note"),
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_synth_synth_out[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
-  { "note_n", "unsigned int" },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_synth_synth_out[] =
+  {{ "signal", RTBUF_SIGNAL_TYPE },
+   { "note_n", "unsigned int" },
+   { 0, 0 }};
 
 int rtbuf_lib_init (s_rtbuf_lib *lib)
 {

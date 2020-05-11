@@ -26,18 +26,18 @@
 #include <rtbuf/music_type.h>
 #include <rtbuf/synth.h>
 
-s_rtbuf_lib_proc_in rtbuf_synth_adsr_in[] = {
-  RTBUF_MUSIC_NOTE_IN(),
-  { "attack",  RTBUF_SIGNAL_TYPE, 0.02, 0.0,  2.0 },
-  { "decay",   RTBUF_SIGNAL_TYPE, 0.01, 0.0,  2.0 },
-  { "sustain", RTBUF_SIGNAL_TYPE, 0.4,  0.0,  1.0 },
-  { "release", RTBUF_SIGNAL_TYPE, 0.3,  0.0, 10.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_synth_adsr_in[] =
+  {RTBUF_MUSIC_NOTE_IN(),
+   { "attack",  RTBUF_SIGNAL_TYPE, 0.02, 0.0,  2.0, 1.0 },
+   { "decay",   RTBUF_SIGNAL_TYPE, 0.01, 0.0,  2.0, 1.0 },
+   { "sustain", RTBUF_SIGNAL_TYPE, 0.4,  0.0,  1.0, 1.0 },
+   { "release", RTBUF_SIGNAL_TYPE, 0.3,  0.0, 10.0, 1.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_synth_adsr_out[] = {
-  { "signal", RTBUF_SIGNAL_TYPE },
-  { "state", "int" },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_synth_adsr_out[] =
+  {{ "signal", RTBUF_SIGNAL_TYPE },
+   { "state", "int" },
+   { 0, 0 }};
 
 static
 double adsr (double attack, double decay, double sustain,

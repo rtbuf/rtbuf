@@ -27,6 +27,7 @@ struct rtbuf_lib_proc_in {
   double def;
   double min;
   double max;
+  double log_base;
 };
 
 struct rtbuf_lib_proc_out {

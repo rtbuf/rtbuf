@@ -25,15 +25,15 @@
 #include <rtbuf/sndio.h>
 #include <rtbuf/sndio_type.h>
 
-s_rtbuf_lib_proc_in rtbuf_sndio_output_in[] = {
-  { "left",  RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "right", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_sndio_output_in[] =
+  {{ "left",  RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "right", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_sndio_output_out[] = {
-  { "samples", RTBUF_SNDIO_SAMPLES_TYPE },
-  { "reserved", RTBUF_SNDIO_OUTPUT_RESERVED_TYPE },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_sndio_output_out[] =
+  {{ "samples", RTBUF_SNDIO_SAMPLES_TYPE },
+   { "reserved", RTBUF_SNDIO_OUTPUT_RESERVED_TYPE },
+   { 0, 0 }};
 
 void rtbuf_sndio_output_parameters (struct sio_par *want)
 {

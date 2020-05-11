@@ -213,6 +213,7 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
       v->def = in->def;
       v->min = in->min;
       v->max = in->max;
+      v->log_base = in->log_base;
       size = sizeof(double);
       offset = add_padding(offset, size);
       v->offset = offset;

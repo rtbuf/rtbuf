@@ -22,16 +22,16 @@
 #include <rtbuf/music_type.h>
 #include <rtbuf/glfw3.h>
 
-s_rtbuf_lib_proc_in rtbuf_glfw3_oscilloscope_in[] = {
-  { "black", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "red"  , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "green", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "blue" , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+s_rtbuf_lib_proc_in rtbuf_glfw3_oscilloscope_in[] =
+  {{ "black", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "red"  , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "green", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { "blue" , RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },
+   { 0, 0, 0.0, 0.0, 0.0, 0.0 }};
 
-s_rtbuf_lib_proc_out rtbuf_glfw3_oscilloscope_out[] = {
-  { "window", "void*" },
-  { 0, 0 } };
+s_rtbuf_lib_proc_out rtbuf_glfw3_oscilloscope_out[] =
+  {{ "window", "void*" },
+   { 0, 0 }};
 
 int rtbuf_lib_init (s_rtbuf_lib *lib)
 {
