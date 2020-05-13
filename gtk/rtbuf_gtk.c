@@ -339,8 +339,17 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
       x += gtk_adjustment_get_value(adjustment);
       adjustment = gtk_scrolled_window_get_vadjustment(modular_scrolled_window);
       y += gtk_adjustment_get_value(adjustment);
-      gtk_layout_move(modular_layout, drag_widget, x - drag_x,
-                      y - drag_y);
+      x -= drag_x;
+      y -= drag_y;
+      if (x < 1)
+        x = 1;
+      if (y < 1)
+        y = 1;
+      if (x > 8100)
+        x = 8100;
+      if (y > 8100)
+        y = 8100;
+      gtk_layout_move(modular_layout, drag_widget, x, y);
       return TRUE;
     }
   }
