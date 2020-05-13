@@ -303,11 +303,16 @@ gboolean rtbuf_gtk_modular_button_press (GtkWidget *widget,
       }
     }
     else if (eb->button == 3) {
+      GtkAdjustment *adjustment;
       GdkWindow *window =
         gtk_widget_get_window(GTK_WIDGET(modular_layout));
       printf("rtbuf-gtk modular popup\n");
       gdk_window_get_device_position(window, eb->device,
                                      &rtbuf_x, &rtbuf_y, NULL);
+      adjustment = gtk_scrolled_window_get_hadjustment(modular_scrolled_window);
+      rtbuf_x += gtk_adjustment_get_value(adjustment);
+      adjustment = gtk_scrolled_window_get_vadjustment(modular_scrolled_window);
+      rtbuf_y += gtk_adjustment_get_value(adjustment);
       gtk_menu_popup_at_pointer(library_menu, event);
       return TRUE;
     }
