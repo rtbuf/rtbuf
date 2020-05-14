@@ -21,8 +21,10 @@
 #include <rtbuf/type.h>
 #include <rtbuf/proc.h>
 
-#define RTBUF_SORT   0x0001
-#define RTBUF_DELETE 0x0002
+#define RTBUF_SORT     0x0001
+#define RTBUF_DELETE   0x0002
+#define RTBUF_NEW      0x0004
+#define RTBUF_READY    0x0008
 
 struct rtbuf_binding
 {
@@ -38,6 +40,7 @@ struct rtbuf
   unsigned int    refc;
   s_rtbuf_binding in[RTBUF_PROC_IN_MAX];
   unsigned int    in_n;
+  void           *user_ptr;
 };
 
 #define RTBUF_MAX         10000
@@ -47,10 +50,23 @@ extern s_data_alloc g_rtbuf_alloc;
 extern s_rtbuf     *g_rtbuf;
 extern int          g_rtbuf_run;
 
+typedef void (*f_rtbuf_new_cb) (s_rtbuf *rtb);
+typedef void (*f_rtbuf_delete_cb) (s_rtbuf *rtb);
+typedef void (*f_rtbuf_bind_cb) (s_rtbuf *src, unsigned int out,
+                                 s_rtbuf *dest, unsigned int in);
+typedef void (*f_rtbuf_unbind_cb) (s_rtbuf *src, unsigned int out,
+                                   s_rtbuf *dest, unsigned int in);
+
+extern f_rtbuf_new_cb    g_rtbuf_new_cb;
+extern f_rtbuf_delete_cb g_rtbuf_delete_cb;
+extern f_rtbuf_bind_cb   g_rtbuf_bind_cb;
+extern f_rtbuf_unbind_cb g_rtbuf_unbind_cb;
+
 int   librtbuf_init ();
 
 int   rtbuf_err (const char *msg);
 int   rtbuf_new (s_rtbuf_proc *rp);
+int   rtbuf_new_ptr (s_rtbuf_proc *rp, void *user_ptr);
 void  rtbuf_in_unbind (s_rtbuf *rtb, unsigned int in);
 void  rtbuf_out_unbind (s_rtbuf *rtb, unsigned int out);
 void  rtbuf_unbind_all (s_rtbuf *rtb);
@@ -59,7 +75,7 @@ int   rtbuf_clone (s_rtbuf *rtb);
 int   rtbuf_find (symbol sym);
 int   rtbuf_in_find (s_rtbuf *rtb, const char *x);
 void  rtbuf_bind (unsigned int src, unsigned int out,
-                  s_rtbuf *dest, unsigned int var);
+                  s_rtbuf *dest, unsigned int in);
 int   rtbuf_out_find (s_rtbuf *rtb, symbol sym);
 int   rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                       unsigned int size);

@@ -36,6 +36,11 @@ unsigned int  g_rtbuf_sort = 0;
 unsigned int  g_rtbuf_sorted[RTBUF_MAX];
 unsigned int  g_rtbuf_sorted_n = 0;
 
+f_rtbuf_new_cb    g_rtbuf_new_cb = 0;
+f_rtbuf_delete_cb g_rtbuf_delete_cb = 0;
+f_rtbuf_bind_cb   g_rtbuf_bind_cb = 0;
+f_rtbuf_unbind_cb g_rtbuf_unbind_cb = 0;
+
 int librtbuf_init ()
 {
   libdata_init();
@@ -52,6 +57,11 @@ int librtbuf_init ()
 
 int rtbuf_new (s_rtbuf_proc *rp)
 {
+  return rtbuf_new_ptr(rp, NULL);
+}
+
+int rtbuf_new_ptr (s_rtbuf_proc *rp, void *user_ptr)
+{
   int i;
   s_rtbuf *rtb;
   void *data;
@@ -67,8 +77,9 @@ int rtbuf_new (s_rtbuf_proc *rp)
                      "please increase RTBUF_MAX");
   rtb = &g_rtbuf[i];
   rtb->data = data;
-  rtb->flags = 0;
+  rtb->flags = RTBUF_NEW;
   rtb->proc = rp;
+  rtb->user_ptr = user_ptr;
   j = 0;
   while (j < RTBUF_PROC_IN_MAX) {
     rtb->in[j].rtb = -1;
@@ -80,7 +91,10 @@ int rtbuf_new (s_rtbuf_proc *rp)
     *uv = rp->in[j].def;
     j++;
   }
+  rtb->flags |= RTBUF_READY;
   g_rtbuf_sort = 1;
+  if (g_rtbuf_new_cb)
+    g_rtbuf_new_cb(rtb);
   return i;
 }
 
@@ -89,10 +103,13 @@ void rtbuf_in_unbind (s_rtbuf *rtb, unsigned int in)
   s_rtbuf_binding *v = &rtb->in[in];
   if (v->rtb >= 0) {
     s_rtbuf *src = &g_rtbuf[v->rtb];
+    unsigned int out = v->out;
     src->refc--;
     v->rtb = -1;
     v->out = 0;
     rtb->in_n--;
+    if (g_rtbuf_unbind_cb)
+      g_rtbuf_unbind_cb(src, out, rtb, in);
   }
 }
 
@@ -196,7 +213,10 @@ void rtbuf_delete (s_rtbuf *rtb)
 {
   assert(rtb);
   rtb->flags |= RTBUF_DELETE;
+  rtbuf_unbind_all(rtb);
   g_rtbuf_sort = 1;
+  if (g_rtbuf_delete_cb)
+    g_rtbuf_delete_cb(rtb);
 }
 
 int rtbuf_clone (s_rtbuf *rtb)
@@ -210,6 +230,9 @@ int rtbuf_clone (s_rtbuf *rtb)
   new = &g_rtbuf[new_i];
   while (j < rtb->proc->in_n) {
     new->in[j] = rtb->in[j];
+    if (g_rtbuf_bind_cb && new->in[j].rtb >= 0)
+      g_rtbuf_bind_cb(&g_rtbuf[new->in[j].rtb], new->in[j].out,
+                      new, j);
     j++;
   }
   new->in_n = rtb->in_n;
@@ -228,6 +251,8 @@ void rtbuf_bind (unsigned int src, unsigned int out,
   dest->in_n++;
   g_rtbuf[src].refc++;
   g_rtbuf_sort = 1;
+  if (g_rtbuf_bind_cb)
+    g_rtbuf_bind_cb(&g_rtbuf[src], out, dest, in);
 }
 
 int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
@@ -245,6 +270,7 @@ int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
   return 0;
 }
 
+/* XXX needs rewrite */
 typedef struct rtbuf_in_ptr {
   unsigned int rtb;
   unsigned int in;
@@ -324,6 +350,7 @@ void rtbuf_find_roots (s_rtbuf_in_stack *rvs)
   /* printf(" rtbuf_find_roots => %u\n", c); */
 }
 
+/* XXX needs rewrite */
 void rtbuf_sort_push_child (s_rtbuf_in_stack *rvs,
                             s_rtbuf_in_ptr *ptr)
 {
@@ -350,6 +377,7 @@ void rtbuf_sort_push_child (s_rtbuf_in_stack *rvs,
   }
 }
 
+/* XXX needs rewrite */
 void rtbuf_sort ()
 {
   s_rtbuf_in_stack rvs;
@@ -380,7 +408,7 @@ int rtbuf_start ()
   while (i < g_rtbuf_sorted_n) {
     s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
     assert(rtb->data);
-    if (rtb->proc->start) {
+    if (rtb->flags & RTBUF_READY && rtb->proc->start) {
       /* printf(" start ");
          rtbuf_print(g_rtbuf_sorted[i]);
          printf(" ");
@@ -388,6 +416,7 @@ int rtbuf_start ()
          printf("\n"); */
       if (rtb->proc->start(rtb))
         return 1;
+      rtb->flags &= ~RTBUF_NEW;
     }
     i++;
   }
@@ -405,10 +434,17 @@ int rtbuf_run ()
     /* printf(" rtbuf_run %i ", i);
        rtbuf_print(g_rtbuf_sorted[i]);
        printf("\n"); */
-    assert(rtb->data);
-    if (rtb->proc->f)
-      if (rtb->proc->f(rtb))
-        return 1;
+    if (rtb->flags & RTBUF_READY) {
+      if (rtb->flags & RTBUF_NEW) {
+        if (rtb->proc->start)
+          if (rtb->proc->start(rtb))
+            return 1;
+        rtb->flags &= ~RTBUF_NEW;
+      }
+      if (rtb->proc->f)
+        if (rtb->proc->f(rtb))
+          return 1;
+    }
     i++;
   }
   /* printf(" rtbuf_run => %u\n", i); */
