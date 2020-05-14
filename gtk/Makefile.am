@@ -1,6 +1,6 @@
 bin_PROGRAMS = rtbuf-gtk
 rtbuf_gtk_CFLAGS = ${GTK3_CFLAGS}
-rtbuf_gtk_LDADD = ${GTK3_LIBS} ../librtbuf/librtbuf.la
+rtbuf_gtk_LDADD = ${GTK3_LIBS} ../librtbuf/librtbuf.la ../cli/librtbuf_cli.la
 rtbuf_gtk_SOURCES = \
 	list.c \
 	queue.c \

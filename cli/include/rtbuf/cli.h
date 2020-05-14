@@ -23,4 +23,7 @@ int load (const char *path);
 int repl ();
 void rtbuf_cli_args (int argc, char *argv[]);
 
+int rtbuf_cli_start ();
+int rtbuf_cli_stop ();
+
 #endif /* RTBUF_CLI_H */

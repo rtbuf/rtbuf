@@ -220,11 +220,8 @@ void * rtbuf_cli_thread_proc (void *arg)
   return 0;
 }
 
-int rtbuf_cli_start (int argc, const char *argv[])
+int rtbuf_cli_start ()
 {
-  (void) argv;
-  if (argc != 0)
-    return rtbuf_err("usage: start");
   if (!g_rtbuf_run && g_rtbuf_cli_thread) {
     if (pthread_join(g_rtbuf_cli_thread, 0))
       return rtbuf_err("pthread_join failed");
@@ -238,11 +235,16 @@ int rtbuf_cli_start (int argc, const char *argv[])
   return 0;
 }
 
-int rtbuf_cli_stop (int argc, const char *argv[])
+int rtbuf_cli_start_ (int argc, const char *argv[])
 {
   (void) argv;
   if (argc != 0)
-    return rtbuf_err("usage: stop");
+    return rtbuf_err("usage: start");
+  return rtbuf_cli_start();
+}
+
+int rtbuf_cli_stop ()
+{
   if (g_rtbuf_run)
     g_rtbuf_run = 0;
   if (g_rtbuf_cli_thread) {
@@ -251,6 +253,14 @@ int rtbuf_cli_stop (int argc, const char *argv[])
     g_rtbuf_cli_thread = 0;
   }
   return 0;
+}
+
+int rtbuf_cli_stop_ (int argc, const char *argv[])
+{
+  (void) argv;
+  if (argc != 0)
+    return rtbuf_err("usage: stop");
+  return rtbuf_cli_stop();
 }
 
 int rtbuf_cli_help (int argc, const char *argv[])
@@ -278,7 +288,7 @@ int rtbuf_cli_exit (int argc, const char *argv[])
 {
   (void) argc;
   (void) argv;
-  rtbuf_cli_stop(0, 0);
+  rtbuf_cli_stop();
   close(0);
   exit(0);
   return 0;
@@ -296,8 +306,8 @@ s_cli_function rtbuf_cli_functions[] = {
   { "unbind",  1, rtbuf_cli_unbind },
   { "unbind",  2, rtbuf_cli_unbind },
   { "let",    -1, rtbuf_cli_let },
-  { "start",   0, rtbuf_cli_start },
-  { "stop",    0, rtbuf_cli_stop },
+  { "start",   0, rtbuf_cli_start_ },
+  { "stop",    0, rtbuf_cli_stop_ },
   { "h",       0, rtbuf_cli_help },
   { "help",    0, rtbuf_cli_help },
   { "exit",    0, rtbuf_cli_exit },

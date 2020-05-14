@@ -21,6 +21,7 @@
 #include <rtbuf/rtbuf.h>
 #include <rtbuf/lib.h>
 #include <rtbuf/var.h>
+#include <rtbuf/cli.h>
 #include "rtbuf_gtk.h"
 #include "rtbuf_gtk_library.h"
 #include "rtbuf_input_widget.h"
@@ -378,54 +379,12 @@ gboolean rtbuf_gtk_modular_motion (GtkWidget       *widget,
   return FALSE;
 }
 
-void * rtbuf_gtk_thread_proc (void *arg)
-{
-  (void) arg;
-  printf("rtbuf thread: start\n");
-  if (!rtbuf_start())
-    g_rtbuf_run = 1;
-  while (g_rtbuf_run) {
-    if (rtbuf_run())
-      g_rtbuf_run = 0;
-  }
-  printf("rtbuf thread: stop\n");
-  rtbuf_stop();
-  return 0;
-}
-
-int rtbuf_gtk_start ()
-{
-  if (!g_rtbuf_run && g_rtbuf_gtk_thread) {
-    if (pthread_join(g_rtbuf_gtk_thread, 0))
-      return rtbuf_err("pthread_join failed");
-    g_rtbuf_gtk_thread = 0;
-  }
-  if (!g_rtbuf_gtk_thread) {
-    if (pthread_create(&g_rtbuf_gtk_thread, 0, &rtbuf_gtk_thread_proc,
-                       0))
-      return rtbuf_err("pthread_create failed");
-  }
-  return 0;
-}
-
-int rtbuf_gtk_stop ()
-{
-  if (g_rtbuf_run)
-    g_rtbuf_run = 0;
-  if (g_rtbuf_gtk_thread) {
-    if (pthread_join(g_rtbuf_gtk_thread, 0))
-      return rtbuf_err("pthread_join failed");
-    g_rtbuf_gtk_thread = 0;
-  }
-  return 0;
-}
-
 void rtbuf_gtk_modular_start (GtkWidget *widget, gpointer data)
 {
   (void) widget;
   (void) data;
   printf("rtbuf> start\n");
-  rtbuf_gtk_start();
+  rtbuf_cli_start();
 }
 
 void rtbuf_gtk_modular_stop (GtkWidget *widget, gpointer data)
@@ -433,7 +392,7 @@ void rtbuf_gtk_modular_stop (GtkWidget *widget, gpointer data)
   (void) widget;
   (void) data;
   printf("rtbuf> stop\n");
-  rtbuf_gtk_stop();
+  rtbuf_cli_stop();
 }
 
 void rtbuf_gtk_modular_toolbar ()
