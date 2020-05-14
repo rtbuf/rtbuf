@@ -53,7 +53,6 @@ rtbuf_output_widget_class_init (RtbufOutputWidgetClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass*) klass;
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
-  printf("rtbuf_output_widget class init\n");
   gobject_class->finalize = rtbuf_output_widget_finalize;
   gobject_class->set_property = rtbuf_output_widget_set_property;
   gobject_class->get_property = rtbuf_output_widget_get_property;
@@ -82,7 +81,6 @@ rtbuf_output_widget_class_init (RtbufOutputWidgetClass *klass)
 static void
 rtbuf_output_widget_init (RtbufOutputWidget *widget)
 {
-  printf("rtbuf_output_widget init\n");
   gtk_widget_init_template(GTK_WIDGET(widget));
 }
 

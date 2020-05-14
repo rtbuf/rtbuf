@@ -92,7 +92,6 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf)
   s_rtbuf_gtk_rtbuf_info *info;
   assert(rtbuf);
   assert(rtbuf >= g_rtbuf && (rtbuf - g_rtbuf) < RTBUF_MAX);
-  printf("rtbuf-gtk modular layout new\n");
   assert(rtbuf->proc);
   assert(rtbuf->proc->name);
   snprintf(label, sizeof(label), "%s%02d",
@@ -581,8 +580,10 @@ void main_loop (void)
     if (rtbuf_cli_do_event())
       sleep = 0;
     if (gtk_events_pending()) {
+      int i = 100;
       g_mutex_lock(&g_mutex);
-      gtk_main_iteration();
+      while (gtk_events_pending() && i--)
+        gtk_main_iteration();
       g_mutex_unlock(&g_mutex);
       sleep = 0;
     }

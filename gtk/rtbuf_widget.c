@@ -58,7 +58,6 @@ rtbuf_widget_class_init (RtbufWidgetClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass*) klass;
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
-  printf("rtbuf_widget class init\n");
   gobject_class->finalize = rtbuf_widget_finalize;
   gobject_class->set_property = rtbuf_widget_set_property;
   gobject_class->get_property = rtbuf_widget_get_property;
@@ -90,7 +89,6 @@ static void
 rtbuf_widget_init (RtbufWidget *widget)
 {
   RtbufWidgetPrivate *priv;
-  printf("rtbuf_widget init\n");
   priv = rtbuf_widget_get_instance_private(widget);
   gtk_widget_init_template(GTK_WIDGET(widget));
   g_signal_connect(G_OBJECT(widget), "draw",
@@ -190,7 +188,6 @@ void rtbuf_widget_set_rtbuf (RtbufWidget *widget, s_rtbuf *rtbuf)
   s_rtbuf_proc *proc;
   unsigned int i;
   s_rtbuf_gtk_rtbuf_info *info;
-  printf("rtbuf_widget set rtbuf\n");
   priv->rtbuf = rtbuf;
   proc = rtbuf->proc;
   info = (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
