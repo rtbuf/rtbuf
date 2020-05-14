@@ -35,7 +35,7 @@ unsigned int g_next_id = 0;
 
 GtkBuilder *builder = NULL;
 
-pthread_t g_rtbuf_gtk_thread = 0;
+GMutex g_mutex;
 
 GtkWindow              *modular = NULL;
 GtkToolbar             *modular_toolbar = NULL;
@@ -463,9 +463,21 @@ int rtbuf_gtk_builder ()
   return 0;
 }
 
+void rtbuf_gtk_lock ()
+{
+  if (pthread_equal(pthread_self(), g_rtbuf_cli_run_thread))
+    g_mutex_lock(&g_mutex);
+}
+
+void rtbuf_gtk_unlock ()
+{
+  if (pthread_equal(pthread_self(), g_rtbuf_cli_run_thread))
+    g_mutex_unlock(&g_mutex);
+}
+
 void rtbuf_gtk_new_cb (s_rtbuf *rtbuf)
 {
-  printf("rtbuf-gtk new\n");
+  rtbuf_gtk_lock();
   if (!rtbuf->user_ptr) {
     s_rtbuf_gtk_rtbuf_info *info = rtbuf_gtk_rtbuf_info_new();
     assert(info);
@@ -474,16 +486,18 @@ void rtbuf_gtk_new_cb (s_rtbuf *rtbuf)
     rtbuf->user_ptr = info;
   }
   rtbuf_gtk_modular_layout_new(rtbuf);
+  rtbuf_gtk_unlock();
 }
 
 void rtbuf_gtk_delete_cb (s_rtbuf *rtbuf)
 {
-  printf("rtbuf-gtk delete\n");
+  rtbuf_gtk_lock();
   if (rtbuf->user_ptr) {
-    s_rtbuf_gtk_rtbuf_info *info =
-      (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
+    s_rtbuf_gtk_rtbuf_info *info;
+    info = (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
     gtk_widget_destroy(GTK_WIDGET(info->widget));
   }
+  rtbuf_gtk_unlock();
 }
 
 void rtbuf_gtk_bind_cb (s_rtbuf *src, unsigned int out,
@@ -494,7 +508,7 @@ void rtbuf_gtk_bind_cb (s_rtbuf *src, unsigned int out,
   RtbufOutputWidget *output_widget;
   RtbufInputWidget *input_widget;
   s_rtbuf_gtk_connection *connection;
-  printf("rtbuf-gtk bind\n");
+  rtbuf_gtk_lock();
   assert(src);
   assert(src->proc);
   assert(out < src->proc->out_n);
@@ -521,6 +535,7 @@ void rtbuf_gtk_bind_cb (s_rtbuf *src, unsigned int out,
   connection->input_widget = input_widget;
   rtbuf_gtk_connection_push(&modular_connections, connection);
   gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+  rtbuf_gtk_unlock();
 }
 
 void rtbuf_gtk_unbind_cb (s_rtbuf *src, unsigned int out,
@@ -531,7 +546,7 @@ void rtbuf_gtk_unbind_cb (s_rtbuf *src, unsigned int out,
   RtbufOutputWidget *output_widget;
   RtbufInputWidget *input_widget;
   s_rtbuf_gtk_connection *connection;
-  printf("rtbuf-gtk unbind\n");
+  rtbuf_gtk_lock();
   assert(src);
   assert(src->proc);
   assert(out < src->proc->out_n);
@@ -548,24 +563,27 @@ void rtbuf_gtk_unbind_cb (s_rtbuf *src, unsigned int out,
   assert(input_widget);
   connection = rtbuf_gtk_connection_find(modular_connections,
                                          output_widget, input_widget);
-  printf("connection %p\n", connection);
   if (connection)
     rtbuf_gtk_connection_remove_one(&modular_connections,
                                     connection);
   gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+  rtbuf_gtk_unlock();
 }
 
 void main_loop (void)
 {
   struct timespec timeout;
   timeout.tv_sec = 0;
-  timeout.tv_nsec = 1000000;
+  timeout.tv_nsec = 1000;
+  g_mutex_init(&g_mutex);
   while (1) {
     int sleep = 1;
     if (rtbuf_cli_do_event())
       sleep = 0;
     if (gtk_events_pending()) {
+      g_mutex_lock(&g_mutex);
       gtk_main_iteration();
+      g_mutex_unlock(&g_mutex);
       sleep = 0;
     }
     if (sleep)

@@ -17,6 +17,10 @@
 #ifndef RTBUF_CLI_H
 #define RTBUF_CLI_H
 
+#include <pthread.h>
+
+extern pthread_t g_rtbuf_cli_run_thread;
+
 int rtbuf_cli_exit (int argc, const char *argv[]);
 void repl_init ();
 int load (const char *path);
