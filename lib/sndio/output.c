@@ -66,29 +66,28 @@ int rtbuf_sndio_output_start (s_rtbuf *rtb)
 {
   s_rtbuf_sndio_output_data *data;
   s_rtbuf_sndio_output_reserved *res;
-  int err = 0;
   assert(rtb->proc->out_bytes == sizeof(*data));
   data = (s_rtbuf_sndio_output_data*) rtb->data;
   res = &data->reserved;
   if (!res->sio_hdl) {
     res->sio_hdl = sio_open(SIO_DEVANY, SIO_PLAY, 0);
     if (!res->sio_hdl)
-      err = rtbuf_err("sndio_output_start: sio_open failed");
+      return rtbuf_err("sndio_output_start: sio_open failed");
     else {
       rtbuf_sndio_output_parameters(&res->want);
       if (sio_setpar(res->sio_hdl,
                      &res->want) != 1)
-        err = rtbuf_err("sndio_output_start: sio_setpar failed");
+        return rtbuf_err("sndio_output_start: sio_setpar failed");
       else if (sio_getpar(res->sio_hdl,
                           &res->have) != 1)
-        err = rtbuf_err("sndio_output_start: sio_getpar failed");
+        return rtbuf_err("sndio_output_start: sio_getpar failed");
       else if (!rtbuf_sndio_output_check_parameters(&res->have))
-        err = rtbuf_err("sndio_output_start: check_parameters failed");
+        return rtbuf_err("sndio_output_start: check_parameters failed");
       else if (sio_start(res->sio_hdl) != 1)
-        err = rtbuf_err("sndio_output_start: sio_start failed");
+        return rtbuf_err("sndio_output_start: sio_start failed");
     }
   }
-  return err;
+  return 0;
 }
 
 int rtbuf_sndio_output_stop (s_rtbuf *rtb)
