@@ -14,10 +14,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <err.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/select.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -138,6 +140,25 @@ int cli_read (s_cli *cli)
   if (0 < cli->argc)
     cli->f = cli_find_function(cli, cli->argv[0], cli->argc - 1);
   return cli->argc;
+}
+
+int cli_read_nonblocking (s_cli *cli)
+{
+  fd_set fds;
+  struct timeval timeout;
+  int s;
+  FD_ZERO(&fds);
+  FD_SET(STDIN_FILENO, &fds);
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 0;
+  s = select(1, &fds, NULL, NULL, &timeout);
+  if (s < 0) {
+    warn("cli_read_nonblocking: select");
+    return -1;
+  }
+  if (s == 1)
+    return cli_read(cli);
+  return -2;
 }
 
 f_cli cli_find_function (s_cli *cli, const char *name, int arity)

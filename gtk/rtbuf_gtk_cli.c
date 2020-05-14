@@ -14,18 +14,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef RTBUF_CLI_H
-#define RTBUF_CLI_H
+#include <assert.h>
+#include <pthread.h>
+#include <rtbuf/rtbuf.h>
+#include <rtbuf/cli.h>
+#include "rtbuf_gtk.h"
 
-int rtbuf_cli_exit (int argc, const char *argv[]);
-void repl_init ();
-int load (const char *path);
-int repl ();
-void rtbuf_cli_args (int argc, char *argv[]);
+pthread_t g_rtbuf_gtk_cli_thread = 0;
 
-int rtbuf_cli_start ();
-int rtbuf_cli_stop ();
+void * rtbuf_gtk_cli_thread_proc (void *arg)
+{
+  (void) arg;
+  assert(g_rtbuf);
+  assert(g_argc);
+  assert(g_argv);
+  repl();
+  return 0;
+}
 
-int rtbuf_cli_do_event ();
-
-#endif /* RTBUF_CLI_H */
+void rtbuf_gtk_cli_start ()
+{
+  if (pthread_create(&g_rtbuf_gtk_cli_thread, 0,
+                     &rtbuf_gtk_cli_thread_proc, 0))
+    rtbuf_err("rtbuf_gtk_cli_start: pthread_create failed");
+}

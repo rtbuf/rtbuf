@@ -16,6 +16,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <time.h>
 #include <pthread.h>
 #include <gtk/gtk.h>
 #include <rtbuf/rtbuf.h>
@@ -554,6 +555,24 @@ void rtbuf_gtk_unbind_cb (s_rtbuf *src, unsigned int out,
   gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
 }
 
+void main_loop (void)
+{
+  struct timespec timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_nsec = 1000000;
+  while (1) {
+    int sleep = 1;
+    if (rtbuf_cli_do_event())
+      sleep = 0;
+    if (gtk_events_pending()) {
+      gtk_main_iteration();
+      sleep = 0;
+    }
+    if (sleep)
+      nanosleep(&timeout, NULL);
+  }
+}
+
 int main (int argc, char *argv[])
 {
   symbols_init();
@@ -570,7 +589,9 @@ int main (int argc, char *argv[])
   if (rtbuf_gtk_builder())
     return 1;
   rtbuf_gtk_modular();
-  gtk_main();
+  repl_init();
+  rtbuf_cli_args(argc, argv);
+  main_loop();
   return 0;
 }
 

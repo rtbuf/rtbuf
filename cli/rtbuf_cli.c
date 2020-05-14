@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018,2020 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -363,6 +363,16 @@ int repl ()
   while (cli_read(&g_cli) >= 0) {
     /* debug_read(cli.argc, cli.argv, cli.f); */
     cli_eval(&g_cli);
+  }
+  return 0;
+}
+
+int rtbuf_cli_do_event ()
+{
+  if (cli_read_nonblocking(&g_cli) >= 0) {
+    /* debug_read(cli.argc, cli.argv, cli.f); */
+    cli_eval(&g_cli);
+    return 1;
   }
   return 0;
 }

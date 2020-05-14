@@ -50,6 +50,7 @@ f_cli cli_find_function (s_cli *cli, const char *name, int arity);
 
 int cli_scan (s_cli *cli);
 int cli_read (s_cli *cli);
+int cli_read_nonblocking (s_cli *cli);
 int cli_read_file (s_cli *cli, FILE *fp);
 int cli_eval (s_cli *cli);
 
