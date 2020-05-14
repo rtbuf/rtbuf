@@ -18,6 +18,7 @@
 
 #include <gtk/gtk.h>
 #include "rtbuf_gtk_connection.h"
+#include "rtbuf_gtk_rtbuf_info.h"
 #include "rtbuf_input_widget.h"
 #include "rtbuf_output_widget.h"
 #include "rtbuf_widget.h"

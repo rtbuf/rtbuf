@@ -65,8 +65,8 @@ void rtbuf_gtk_drag_connection_end (RtbufInputWidget *input_widget)
         s_rtbuf *dest = rtbuf_input_widget_get_rtbuf(input_widget);
         unsigned int in = rtbuf_input_widget_get_in(input_widget);
         unsigned int src_i = src - g_rtbuf;
-        rtbuf_bind(src_i, out, dest, in);
         dc->input_widget = input_widget;
+        rtbuf_bind(src_i, out, dest, in);
       }
       else
         rtbuf_gtk_connection_remove_one(&modular_connections, dc);
@@ -82,12 +82,12 @@ void rtbuf_gtk_drag_connection_end (RtbufInputWidget *input_widget)
   }
 }
 
-RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
-                                            const gint x, const gint y)
+RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf)
 {
   RtbufWidget *widget;
   GtkWidget *event_box;
   char label[1024];
+  s_rtbuf_gtk_rtbuf_info *info;
   assert(rtbuf);
   assert(rtbuf >= g_rtbuf && (rtbuf - g_rtbuf) < RTBUF_MAX);
   printf("rtbuf-gtk modular layout new\n");
@@ -98,7 +98,9 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
            g_next_id++);
   rtbuf_var_rtbuf_set(label, rtbuf - g_rtbuf);
   widget = rtbuf_widget_new(rtbuf, label);
-  gtk_layout_put(modular_layout, GTK_WIDGET(widget), x, y);
+  info = (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
+  info->widget = widget;
+  gtk_layout_put(modular_layout, GTK_WIDGET(widget), info->x, info->y);
   event_box = rtbuf_widget_get_event_box(widget);
   g_signal_connect_swapped(G_OBJECT(event_box), "button-press-event",
                            G_CALLBACK(rtbuf_gtk_rtbuf_button_press),
@@ -115,18 +117,18 @@ RtbufWidget * rtbuf_gtk_modular_layout_new (s_rtbuf *rtbuf,
   return widget;
 }
 
-RtbufWidget * rtbuf_gtk_new (gchar *library, const gint x, const gint y)
+void rtbuf_gtk_new (gchar *library, const gint x, const gint y)
 {
   int i;
   s_rtbuf_lib *rl = 0;
-  s_rtbuf *rtb = 0;
+  s_rtbuf_gtk_rtbuf_info *info;
   printf("rtbuf-gtk new %s\n", library);
   i = rtbuf_lib_find(library);
   if (i < 0) {
     printf("load %s\n", library);
     if (!(rl = rtbuf_lib_load(library))) {
       fprintf(stderr, "rtbuf-gtk: load failed: '%s'\n", library);
-      return NULL;
+      return;
     }
     rtbuf_lib_print(rl);
   }
@@ -135,13 +137,19 @@ RtbufWidget * rtbuf_gtk_new (gchar *library, const gint x, const gint y)
     rl = &g_rtbuf_lib[i];
   }
   assert(g_rtbuf);
-  i = rtbuf_new(rl->proc);
+  info = rtbuf_gtk_rtbuf_info_new();
+  if (!info) {
+    fprintf(stderr, "rtbuf-gtk: rtbuf_gtk_rtbuf_info_new failed.\n"
+            "Please increase RTBUF_MAX.\n");
+    return;
+  }
+  info->x = x;
+  info->y = y;
+  i = rtbuf_new_ptr(rl->proc, info);
   if (i < 0) {
     fprintf(stderr, "rtbuf-gtk new rtbuf_new failed: %s\n", library);
-    return NULL;
+    return;
   }
-  rtb = &g_rtbuf[i];
-  return rtbuf_gtk_modular_layout_new(rtb, x, y);
 }
 
 void rtbuf_gtk_library_menu_activate (GtkMenuItem *menuitem,
@@ -485,26 +493,125 @@ int rtbuf_gtk_builder ()
 {
   GError *error = NULL;
   builder = gtk_builder_new ();
-  if (gtk_builder_add_from_resource(builder, "/rtbuf/rtbuf_modular.ui", &error) == 0) {
-    g_printerr("Error loading resource /rtbuf/rtbuf_modular.ui: %s\n", error->message);
+  if (gtk_builder_add_from_resource(builder, "/rtbuf/rtbuf_modular.ui",
+                                    &error) == 0) {
+    g_printerr("Error loading resource /rtbuf/rtbuf_modular.ui: %s\n",
+               error->message);
     g_clear_error(&error);
     return 1;
   }
   return 0;
 }
 
+void rtbuf_gtk_new_cb (s_rtbuf *rtbuf)
+{
+  printf("rtbuf-gtk new\n");
+  if (!rtbuf->user_ptr) {
+    s_rtbuf_gtk_rtbuf_info *info = rtbuf_gtk_rtbuf_info_new();
+    assert(info);
+    info->x = 0;
+    info->y = 0;
+    rtbuf->user_ptr = info;
+  }
+  rtbuf_gtk_modular_layout_new(rtbuf);
+}
+
+void rtbuf_gtk_delete_cb (s_rtbuf *rtbuf)
+{
+  printf("rtbuf-gtk delete\n");
+  if (rtbuf->user_ptr) {
+    s_rtbuf_gtk_rtbuf_info *info =
+      (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
+    gtk_widget_destroy(GTK_WIDGET(info->widget));
+  }
+}
+
+void rtbuf_gtk_bind_cb (s_rtbuf *src, unsigned int out,
+                        s_rtbuf *dest, unsigned int in)
+{
+  s_rtbuf_gtk_rtbuf_info *src_info;
+  s_rtbuf_gtk_rtbuf_info *dest_info;
+  RtbufOutputWidget *output_widget;
+  RtbufInputWidget *input_widget;
+  s_rtbuf_gtk_connection *connection;
+  printf("rtbuf-gtk bind\n");
+  assert(src);
+  assert(src->proc);
+  assert(out < src->proc->out_n);
+  assert(dest);
+  assert(dest->proc);
+  assert(in < dest->proc->in_n);
+  src_info = (s_rtbuf_gtk_rtbuf_info*) src->user_ptr;
+  assert(src_info);
+  output_widget = src_info->out[out];
+  assert(output_widget);
+  dest_info = (s_rtbuf_gtk_rtbuf_info*) dest->user_ptr;
+  assert(dest_info);
+  input_widget = dest_info->in[in];
+  assert(input_widget);
+  if (rtbuf_gtk_connection_find(modular_connections,
+                                output_widget, input_widget))
+    return;
+  connection = rtbuf_gtk_connection_new();
+  if (!connection) {
+    rtbuf_err("failed to allocate rtbuf_gtk_connection");
+    return;
+  }
+  connection->output_widget = output_widget;
+  connection->input_widget = input_widget;
+  rtbuf_gtk_connection_push(&modular_connections, connection);
+  gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+}
+
+void rtbuf_gtk_unbind_cb (s_rtbuf *src, unsigned int out,
+                          s_rtbuf *dest, unsigned int in)
+{
+  s_rtbuf_gtk_rtbuf_info *src_info;
+  s_rtbuf_gtk_rtbuf_info *dest_info;
+  RtbufOutputWidget *output_widget;
+  RtbufInputWidget *input_widget;
+  s_rtbuf_gtk_connection *connection;
+  printf("rtbuf-gtk unbind\n");
+  assert(src);
+  assert(src->proc);
+  assert(out < src->proc->out_n);
+  assert(dest);
+  assert(dest->proc);
+  assert(in < dest->proc->in_n);
+  src_info = (s_rtbuf_gtk_rtbuf_info*) src->user_ptr;
+  assert(src_info);
+  output_widget = src_info->out[out];
+  assert(output_widget);
+  dest_info = (s_rtbuf_gtk_rtbuf_info*) dest->user_ptr;
+  assert(dest_info);
+  input_widget = dest_info->in[in];
+  assert(input_widget);
+  connection = rtbuf_gtk_connection_find(modular_connections,
+                                         output_widget, input_widget);
+  printf("connection %p\n", connection);
+  if (connection)
+    rtbuf_gtk_connection_remove_one(&modular_connections,
+                                    connection);
+  gtk_widget_queue_draw(GTK_WIDGET(modular_layout));
+}
+
 int main (int argc, char *argv[])
 {
   symbols_init();
+  g_rtbuf_new_cb = rtbuf_gtk_new_cb;
+  g_rtbuf_delete_cb = rtbuf_gtk_delete_cb;
+  g_rtbuf_bind_cb = rtbuf_gtk_bind_cb;
+  g_rtbuf_unbind_cb = rtbuf_gtk_unbind_cb;
   librtbuf_init();
   assert(g_rtbuf);
   gtk_init(&argc, &argv);
   rtbuf_gtk_connection_init();
+  rtbuf_gtk_rtbuf_info_init();
   rtbuf_gtk_library_load();
   if (rtbuf_gtk_builder())
     return 1;
   rtbuf_gtk_modular();
-  gtk_main ();
+  gtk_main();
   return 0;
 }
 

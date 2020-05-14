@@ -189,9 +189,11 @@ void rtbuf_widget_set_rtbuf (RtbufWidget *widget, s_rtbuf *rtbuf)
   GtkContainer *outputs;
   s_rtbuf_proc *proc;
   unsigned int i;
+  s_rtbuf_gtk_rtbuf_info *info;
   printf("rtbuf_widget set rtbuf\n");
   priv->rtbuf = rtbuf;
   proc = rtbuf->proc;
+  info = (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
   inputs = GTK_CONTAINER(priv->inputs);
   outputs = GTK_CONTAINER(priv->outputs);
   gtk_container_clear(inputs);
@@ -199,12 +201,14 @@ void rtbuf_widget_set_rtbuf (RtbufWidget *widget, s_rtbuf *rtbuf)
     RtbufInputWidget *input_widget =
       rtbuf_input_widget_new(priv->rtbuf, i);
     gtk_container_add(inputs, GTK_WIDGET(input_widget));
+    info->in[i] = input_widget;
   }
   gtk_container_clear(outputs);
   for (i = 0; i < proc->out_n; i++) {
     RtbufOutputWidget *output_widget =
       rtbuf_output_widget_new(priv->rtbuf, i);
     gtk_container_add(outputs, GTK_WIDGET(output_widget));
+    info->out[i] = output_widget;
   }
 }
 

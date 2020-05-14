@@ -11,6 +11,7 @@ rtbuf_gtk_SOURCES = \
 	rtbuf_gtk_output.c \
 	rtbuf_gtk_resources.c \
 	rtbuf_gtk_rtbuf.c \
+	rtbuf_gtk_rtbuf_info.c \
 	rtbuf_input_widget.c \
 	rtbuf_output_widget.c \
 	rtbuf_widget.c \
@@ -22,6 +23,7 @@ rtbuf_include_HEADERS = \
 	queue.h \
 	rtbuf_gtk.h \
 	rtbuf_gtk_library.h \
+	rtbuf_gtk_rtbuf_info.h \
 	rtbuf_input_widget.h \
 	rtbuf_output_widget.h \
 	rtbuf_widget.h \
