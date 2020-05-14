@@ -27,7 +27,7 @@
 #include <rtbuf/var.h>
 
 s_cli     g_cli;
-pthread_t g_rtbuf_cli_thread = 0;
+pthread_t g_rtbuf_cli_run_thread = 0;
 
 int rtbuf_cli_libs (int argc, const char *argv[])
 {
@@ -205,7 +205,7 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
   return 0;
 }
 
-void * rtbuf_cli_thread_proc (void *arg)
+void * rtbuf_cli_run_thread_proc (void *arg)
 {
   (void) arg;
   printf("rtbuf thread: start\n");
@@ -222,15 +222,15 @@ void * rtbuf_cli_thread_proc (void *arg)
 
 int rtbuf_cli_start ()
 {
-  if (!g_rtbuf_run && g_rtbuf_cli_thread) {
-    if (pthread_join(g_rtbuf_cli_thread, 0))
+  if (!g_rtbuf_run && g_rtbuf_cli_run_thread) {
+    if (pthread_join(g_rtbuf_cli_run_thread, 0))
       return rtbuf_err("pthread_join failed");
-    g_rtbuf_cli_thread = 0;
+    g_rtbuf_cli_run_thread = 0;
   }
-  if (!g_rtbuf_cli_thread) {
-    if (pthread_create(&g_rtbuf_cli_thread, 0, &rtbuf_cli_thread_proc,
+  if (!g_rtbuf_cli_run_thread) {
+    if (pthread_create(&g_rtbuf_cli_run_thread, 0, &rtbuf_cli_run_thread_proc,
                        0))
-      return rtbuf_err("pthread_create failed");
+      return rtbuf_err("rtbuf_cli_start: pthread_create failed");
   }
   return 0;
 }
@@ -247,10 +247,10 @@ int rtbuf_cli_stop ()
 {
   if (g_rtbuf_run)
     g_rtbuf_run = 0;
-  if (g_rtbuf_cli_thread) {
-    if (pthread_join(g_rtbuf_cli_thread, 0))
-      return rtbuf_err("pthread_join failed");
-    g_rtbuf_cli_thread = 0;
+  if (g_rtbuf_cli_run_thread) {
+    if (pthread_join(g_rtbuf_cli_run_thread, 0))
+      return rtbuf_err("rtbuf_cli_stop: pthread_join failed");
+    g_rtbuf_cli_run_thread = 0;
   }
   return 0;
 }
