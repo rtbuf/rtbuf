@@ -279,6 +279,8 @@ int rtbuf_cli_help (int argc, const char *argv[])
          " delete BUFFER               Unlink and delete BUFFER.\n"
          " bind SOURCE OUT DEST IN     Bind SOURCE OUT to DEST IN.\n"
          " unbind BUFFER IN            Unbind BUFFER IN.\n"
+         " start                       Start run thread.\n"
+         " stop                        Stop run thread.\n"
          " help                        Show this help message.\n"
          " exit                        Quit RTBUF.\n");
   return 0;
