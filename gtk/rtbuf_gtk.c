@@ -476,27 +476,22 @@ void rtbuf_gtk_unlock ()
 
 void rtbuf_gtk_new_cb (s_rtbuf *rtbuf)
 {
-  rtbuf_gtk_lock();
-  if (!rtbuf->user_ptr) {
-    s_rtbuf_gtk_rtbuf_info *info = rtbuf_gtk_rtbuf_info_new();
-    assert(info);
-    info->x = 0;
-    info->y = 0;
-    rtbuf->user_ptr = info;
+  if (rtbuf->user_ptr) {
+    rtbuf_gtk_lock();
+    rtbuf_gtk_modular_layout_new(rtbuf);
+    rtbuf_gtk_unlock();
   }
-  rtbuf_gtk_modular_layout_new(rtbuf);
-  rtbuf_gtk_unlock();
 }
 
 void rtbuf_gtk_delete_cb (s_rtbuf *rtbuf)
 {
-  rtbuf_gtk_lock();
   if (rtbuf->user_ptr) {
     s_rtbuf_gtk_rtbuf_info *info;
     info = (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
+    rtbuf_gtk_lock();
     gtk_widget_destroy(GTK_WIDGET(info->widget));
+    rtbuf_gtk_unlock();
   }
-  rtbuf_gtk_unlock();
 }
 
 void rtbuf_gtk_bind_cb (s_rtbuf *src, unsigned int out,
@@ -507,7 +502,6 @@ void rtbuf_gtk_bind_cb (s_rtbuf *src, unsigned int out,
   RtbufOutputWidget *output_widget;
   RtbufInputWidget *input_widget;
   s_rtbuf_gtk_connection *connection;
-  rtbuf_gtk_lock();
   assert(src);
   assert(src->proc);
   assert(out < src->proc->out_n);
@@ -515,13 +509,16 @@ void rtbuf_gtk_bind_cb (s_rtbuf *src, unsigned int out,
   assert(dest->proc);
   assert(in < dest->proc->in_n);
   src_info = (s_rtbuf_gtk_rtbuf_info*) src->user_ptr;
-  assert(src_info);
+  if (!src_info)
+    return;
   output_widget = src_info->out[out];
   assert(output_widget);
   dest_info = (s_rtbuf_gtk_rtbuf_info*) dest->user_ptr;
-  assert(dest_info);
+  if (!dest_info)
+    return;
   input_widget = dest_info->in[in];
   assert(input_widget);
+  rtbuf_gtk_lock();
   if (rtbuf_gtk_connection_find(modular_connections,
                                 output_widget, input_widget))
     return;
@@ -545,7 +542,6 @@ void rtbuf_gtk_unbind_cb (s_rtbuf *src, unsigned int out,
   RtbufOutputWidget *output_widget;
   RtbufInputWidget *input_widget;
   s_rtbuf_gtk_connection *connection;
-  rtbuf_gtk_lock();
   assert(src);
   assert(src->proc);
   assert(out < src->proc->out_n);
@@ -553,13 +549,16 @@ void rtbuf_gtk_unbind_cb (s_rtbuf *src, unsigned int out,
   assert(dest->proc);
   assert(in < dest->proc->in_n);
   src_info = (s_rtbuf_gtk_rtbuf_info*) src->user_ptr;
-  assert(src_info);
+  if (!src_info)
+    return;
   output_widget = src_info->out[out];
   assert(output_widget);
   dest_info = (s_rtbuf_gtk_rtbuf_info*) dest->user_ptr;
-  assert(dest_info);
+  if (!dest_info)
+    return;
   input_widget = dest_info->in[in];
   assert(input_widget);
+  rtbuf_gtk_lock();
   connection = rtbuf_gtk_connection_find(modular_connections,
                                          output_widget, input_widget);
   if (connection)
