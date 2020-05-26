@@ -25,9 +25,11 @@
 #include <rtbuf/rtbuf.h>
 #include <rtbuf/lib.h>
 #include <rtbuf/var.h>
+#include <rtbuf/cli.h>
 
-s_cli     g_cli;
-pthread_t g_rtbuf_cli_run_thread = 0;
+s_cli            g_cli;
+pthread_t        g_rtbuf_cli_run_thread = 0;
+f_rtbuf_position g_rtbuf_position_cb = 0;
 
 int rtbuf_cli_libs (int argc, const char *argv[])
 {
@@ -105,12 +107,19 @@ int rtbuf_cli_new (int argc, const char *argv[])
 {
   int rl;
   int rtb;
-  if (argc != 1)
-    return rtbuf_err("usage: new LIBRARY");
+  short x;
+  short y;
+  if (argc != 1 && argc != 3)
+    return rtbuf_err("usage: new LIBRARY [X Y]");
   if ((rl = rtbuf_lib_find(argv[1])) < 0)
     return rtbuf_err("library not found");
   if ((rtb = rtbuf_new(g_rtbuf_lib[rl].proc)) < 0)
     return rtbuf_err("buffer not created");
+  if (argc == 3 &&
+      g_rtbuf_position_cb &&
+      sscanf(argv[2], "%hd", &x) == 1 &&
+      sscanf(argv[3], "%hd", &y) == 1)
+    g_rtbuf_position_cb(&g_rtbuf[rtb], x, y);
   rtbuf_print(rtb);
   printf("\n");
   return 0;
@@ -120,19 +129,26 @@ int rtbuf_cli_new (int argc, const char *argv[])
 int rtbuf_cli_let (int argc, const char *argv[])
 {
   s_rtbuf_var *v;
+  short x;
+  short y;
   if (argc < 4 || argv[2][0] != '=' || argv[2][1])
     return rtbuf_err("usage: let VAR = TYPE ARG [...]");
   if (strncmp("new", argv[3], 4) == 0) {
     int rl;
     int rtb;
-    if (argc != 4)
-      return rtbuf_err("usage: let VAR = new LIBRARY");
+    if (argc != 4 && argc != 6)
+      return rtbuf_err("usage: let VAR = new LIBRARY [X Y]");
     if ((rl = rtbuf_lib_find(argv[4])) < 0)
       return rtbuf_err("library not found");
     if ((rtb = rtbuf_new(g_rtbuf_lib[rl].proc)) < 0)
       return rtbuf_err("buffer not created");
     v = rtbuf_var_rtbuf_set(argv[1], rtb);
     assert(v);
+    if (argc == 6 &&
+        g_rtbuf_position_cb &&
+        sscanf(argv[5], "%hd", &x) == 1 &&
+        sscanf(argv[6], "%hd", &y) == 1)
+      g_rtbuf_position_cb(&g_rtbuf[rtb], x, y);
     rtbuf_var_print(v);
     printf("\n");
     return 0;

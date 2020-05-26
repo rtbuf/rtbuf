@@ -19,6 +19,9 @@
 
 #include <pthread.h>
 
+typedef void (*f_rtbuf_position) (s_rtbuf *rtb, short x, short y);
+
+extern f_rtbuf_position g_rtbuf_position_cb;
 extern pthread_t g_rtbuf_cli_run_thread;
 
 int rtbuf_cli_exit (int argc, const char *argv[]);

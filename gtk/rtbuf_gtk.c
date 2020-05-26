@@ -474,11 +474,27 @@ void rtbuf_gtk_unlock ()
     g_mutex_unlock(&g_mutex);
 }
 
-void rtbuf_gtk_new_cb (s_rtbuf *rtbuf)
+void rtbuf_gtk_position_cb (s_rtbuf *rtbuf, short x, short y)
 {
-  if (rtbuf->user_ptr) {
+  s_rtbuf_gtk_rtbuf_info *info =
+    (s_rtbuf_gtk_rtbuf_info*) rtbuf->user_ptr;
+  if (!info) {
+    info = rtbuf_gtk_rtbuf_info_new();
+    rtbuf->user_ptr = info;
+    assert(info);
+    info->x = x;
+    info->y = y;
     rtbuf_gtk_lock();
     rtbuf_gtk_modular_layout_new(rtbuf);
+    rtbuf_gtk_unlock();
+  }
+  else {
+    info->x = x;
+    info->y = y;
+    rtbuf_gtk_lock();
+    gtk_layout_move(modular_layout,
+                    GTK_WIDGET(info->widget),
+                    x, y);
     rtbuf_gtk_unlock();
   }
 }
@@ -573,7 +589,6 @@ void main_loop (void)
   struct timespec timeout;
   timeout.tv_sec = 0;
   timeout.tv_nsec = 1000;
-  g_mutex_init(&g_mutex);
   while (1) {
     int sleep = 1;
     if (rtbuf_cli_do_event())
@@ -593,8 +608,9 @@ void main_loop (void)
 
 int main (int argc, char *argv[])
 {
+  g_mutex_init(&g_mutex);
   symbols_init();
-  g_rtbuf_new_cb = rtbuf_gtk_new_cb;
+  g_rtbuf_position_cb = rtbuf_gtk_position_cb;
   g_rtbuf_delete_cb = rtbuf_gtk_delete_cb;
   g_rtbuf_bind_cb = rtbuf_gtk_bind_cb;
   g_rtbuf_unbind_cb = rtbuf_gtk_unbind_cb;
