@@ -1,3 +1,5 @@
+if ENABLE_SIGNAL
+
 CLEANFILES =
 rtbuf_includedir = $(includedir)/rtbuf/signal
 rtbuf_include_HEADERS =
@@ -71,3 +73,5 @@ sinus_la_LIBADD = ${SIGNAL_LIBS} ../librtbuf_signal.la
 rtbuf_lib_LTLIBRARIES += square.la
 square_la_LDFLAGS = -no-undefined -module
 square_la_LIBADD = ${SIGNAL_LIBS} ../librtbuf_signal.la
+
+endif

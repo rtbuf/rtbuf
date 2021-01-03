@@ -40,64 +40,98 @@ AC_SUBST([LIBRTBUF_LIBS])
 
 AC_CHECK_LIB(m, log2, [AC_DEFINE([HAVE_LOG2],[1],[Define to 1 if your system has 'log2'.])])
 
-PKG_CHECK_MODULES([GTK3], [gtk+-3.0],
-                  [enable_gtk3=true],
-                  [enable_gtk3=false])
-AM_CONDITIONAL([ENABLE_GTK3], [test x"$enable_gtk3" = x"true"])
+AC_ARG_ENABLE([gtk3],
+  [AS_HELP_STRING([--disable-gtk3], [do not build GTK+3 GUI])],
+  [],
+  [enable_gtk3=check])
+if test x"$enable_gtk3" != x"no"; then
+  PKG_CHECK_MODULES([GTK3], [gtk+-3.0],
+                    [enable_gtk3=yes],
+                    [enable_gtk3=no])
+fi
+AM_CONDITIONAL([ENABLE_GTK3], [test x"$enable_gtk3" = x"yes"])
 AC_SUBST([GTK3_LIBS])
 AC_SUBST([GTK3_CFLAGS])
 
-enable_rtbuf=true
+AC_ARG_ENABLE([rtbuf],
+  [AS_HELP_STRING([--disable-rtbuf], [do not build rtbuf CLI])],
+  [],
+  [enable_rtbuf=yes])
+if test x"$enable_rtbuf" = x"yes"; then
+
+  AC_SEARCH_LIBS([pthread_create], [pthread],
+                 [RTBUF_LIBS="$RTBUF_LIBS -lpthread"],
+                 [AC_MSG_ERROR([missing libpthread for rtbuf])])
+
+  AC_CHECK_FUNC([dlopen], [echo using system dlopen],
+                AC_SEARCH_LIBS([dlopen], [dl],
+                               [RTBUF_LIBS="$RTBUF_LIBS -ldl"]))
+
+  AC_CHECK_LIB([readline], [readline],
+               [RTBUF_LIBS="$RTBUF_LIBS -lreadline"],
+               AC_MSG_ERROR(missing readline library for rtbuf))
+
+  AC_CHECK_LIB([termcap], [tputs],
+               [RTBUF_LIBS="$RTBUF_LIBS -ltermcap"],
+               AC_MSG_ERROR(missing termcap library for rtbuf))
+
+  AC_SUBST([RTBUF_LIBS])
+fi
 AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
-
-AC_SEARCH_LIBS([pthread_create], [pthread],
-               [RTBUF_LIBS="$RTBUF_LIBS -lpthread"],
-               [if test x"$enable_rtbuf" = x"true"; then
-                  AC_MSG_ERROR([missing libpthread for rtbuf])
-                fi])
-
-AC_CHECK_FUNC([dlopen], [echo using system dlopen],
-              AC_SEARCH_LIBS([dlopen], [dl],
-                             [RTBUF_LIBS="$RTBUF_LIBS -ldl"]))
-
-AC_CHECK_LIB([readline], [readline],
-             [RTBUF_LIBS="$RTBUF_LIBS -lreadline"],
-             AC_MSG_ERROR(missing readline library for rtbuf))
-
-AC_CHECK_LIB([termcap], [tputs],
-             [RTBUF_LIBS="$RTBUF_LIBS -ltermcap"],
-             AC_MSG_ERROR(missing termcap library for rtbuf))
-
-AM_CONDITIONAL([ENABLE_RTBUF], [test x"$enable_rtbuf" = x"true"])
-AC_SUBST([RTBUF_LIBS])
 
 MUSIC_LIBS="-lm"
 AC_SUBST([MUSIC_LIBS])
 
-SIGNAL_LIBS="-lm"
-AC_SUBST([SIGNAL_LIBS])
+AC_ARG_ENABLE([signal],
+  [AS_HELP_STRING([--disable-signal], [do not build rtbuf signal library])],
+  [],
+  [enable_signal=yes])
+if test x"$enable_signal" = x"yes"; then
+  SIGNAL_LIBS="-lm"
+  AC_SUBST([SIGNAL_LIBS])
+fi
+AM_CONDITIONAL([ENABLE_SIGNAL], [test x"$enable_signal" = x"yes"])
 
-SNDIO_LIBS=
-AC_SEARCH_LIBS([sio_open], [sndio],
-               [enable_sndio=true
-                SNDIO_LIBS=-lsndio])
-AC_SUBST([SNDIO_LIBS])
-AM_CONDITIONAL([ENABLE_SNDIO], [test x"$enable_sndio" = x"true"])
+AC_ARG_ENABLE([sndio],
+  [AS_HELP_STRING([--disable-sndio], [do not build rtbuf sndio library])],
+  [],
+  [enable_sndio=check])
+if test x"$enable_sndio" != x"no"; then
+  SNDIO_LIBS=
+  AC_SEARCH_LIBS([sio_open], [sndio],
+                 [enable_sndio=yes
+                  SNDIO_LIBS=-lsndio],
+                 [enable_sndio=no])
+  AC_SUBST([SNDIO_LIBS])
+fi
+AM_CONDITIONAL([ENABLE_SNDIO], [test x"$enable_sndio" = x"yes"])
 
-enable_portaudio=false
-PORTAUDIO_LIBS=
-AC_SEARCH_LIBS([Pa_Initialize], [portaudio],
-               [enable_portaudio=true
-                PORTAUDIO_LIBS=-lportaudio])
-AC_SUBST([PORTAUDIO_LIBS])
-AM_CONDITIONAL([ENABLE_PORTAUDIO], [test x"$enable_portaudio" = x"true"])
+AC_ARG_ENABLE([portaudio],
+  [AS_HELP_STRING([--enable-portaudio], [build rtbuf portaudio library])],
+  [],
+  [enable_portaudio=check])
+if test x"$enable_portaudio" != x"no"; then
+  PORTAUDIO_LIBS=
+  AC_SEARCH_LIBS([Pa_Initialize], [portaudio],
+                 [enable_portaudio=yes
+                  PORTAUDIO_LIBS=-lportaudio],
+                 [enable_portaudio=no])
+  AC_SUBST([PORTAUDIO_LIBS])
+fi
+AM_CONDITIONAL([ENABLE_PORTAUDIO], [test x"$enable_portaudio" = x"yes"])
 
-PKG_CHECK_MODULES([GLFW3], [glfw3],
-                  [enable_glfw3=true],
-                  [enable_glfw3=false])
-AC_SUBST([GLFW3_CFLAGS])
-AC_SUBST([GLFW3_LIBS])
-AM_CONDITIONAL([ENABLE_GLFW3], [test x"$enable_glfw3" = x"true"])
+AC_ARG_ENABLE([glfw3],
+  [AS_HELP_STRING([--enable-glfw3], [build rtbuf OpenGL library])],
+  [],
+  [enable_glfw3=check])
+if test x"$enable_glfw3" != x"no"; then
+  PKG_CHECK_MODULES([GLFW3], [glfw3],
+                    [enable_glfw3=yes],
+                    [enable_glfw3=no])
+  AC_SUBST([GLFW3_CFLAGS])
+  AC_SUBST([GLFW3_LIBS])
+fi
+AM_CONDITIONAL([ENABLE_GLFW3], [test x"$enable_glfw3" = x"yes"])
 
 LIBS=
 
@@ -106,21 +140,23 @@ AC_PREFIX_DEFAULT([~/.rtbuf])
 AC_ARG_ENABLE(debug,
   AS_HELP_STRING([--enable-debug],
                  [enable debugging, default: yes]),
-  [case "${enableval}" in
-     yes) debug=true ;;
-      no) debug=false ;;
-       *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]);;
-   esac],
-  [debug=true])
-if test x"$debug" = x"true"; then
+  [],
+  [enable_debug=yes])
+if test x"$enable_debug" = x"yes"; then
    CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb"
 else
    CFLAGS="$CFLAGS -DNDEBUG -O2"
 fi
-AM_CONDITIONAL([DEBUG], [test x"$debug" = x"true"])
+AM_CONDITIONAL([DEBUG], [test x"$enable_debug" = x"true"])
 
-AC_CHECK_PROG([enable_nsis], [makensis], [true], [false])
-AM_CONDITIONAL([ENABLE_NSIS], [test x"$enable_nsis" = x"true"])
+AC_ARG_ENABLE([nsis],
+  [AS_HELP_STRING([--enable-nsis], [build rtbuf NSIS installer])],
+  [],
+  [enable_nsis=check])
+if test x"$enable_nsis" != x"no"; then
+  AC_CHECK_PROG([enable_nsis], [makensis], [yes], [no])
+fi
+AM_CONDITIONAL([ENABLE_NSIS], [test x"$enable_nsis" = x"yes"])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([cli/Makefile])
