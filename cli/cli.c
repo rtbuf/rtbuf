@@ -22,9 +22,6 @@
 #include <sys/select.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-
-char * readline (const char *prompt);
-
 #include "cli.h"
 
 void cli_init (s_cli *cli)

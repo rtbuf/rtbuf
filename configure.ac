@@ -154,13 +154,16 @@ AC_ARG_ENABLE([nsis],
   [],
   [enable_nsis=check])
 if test x"$enable_nsis" != x"no"; then
-  AC_CHECK_PROG([enable_nsis], [makensis], [yes], [no])
+  AC_CHECK_PROG([enable_nsis],
+                [makensis],
+                [enable_nsis=yes],
+                [enable_nsis=no])
 fi
 AM_CONDITIONAL([ENABLE_NSIS], [test x"$enable_nsis" = x"yes"])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([cli/Makefile])
-AC_CONFIG_FILES([gtk/Makefile])
+AC_CONFIG_FILES([gtk3/Makefile])
 AC_CONFIG_FILES([lib/Makefile])
 AC_CONFIG_FILES([lib/dynamic/Makefile])
 AC_CONFIG_FILES([lib/glfw3/Makefile])
@@ -172,10 +175,10 @@ AC_CONFIG_FILES([librtbuf/Makefile])
 AC_OUTPUT
 
 echo "Building status :"
-echo "  librtbuf  : true $LIBRTBUF_LIBS"
-echo "  rtbuf-gtk : $enable_gtk3 $GTK3_LIBS"
-echo "  rtbuf     : $enable_rtbuf $RTBUF_LIBS"
-echo "  signal    : $enable_signal $SIGNAL_LIBS"
-echo "  sndio     : $enable_sndio $SNDIO_LIBS"
-echo "  portaudio : $enable_portaudio $PORTAUDIO_LIBS"
-echo "  glfw3     : $enable_glfw3 $GLFW3_LIBS"
+echo "  librtbuf      : true $LIBRTBUF_LIBS"
+echo "  rtbuf-gtk3    : $enable_gtk3 $GTK3_LIBS"
+echo "  rtbuf         : $enable_rtbuf $RTBUF_LIBS"
+echo "  lib/signal    : $enable_signal $SIGNAL_LIBS"
+echo "  lib/sndio     : $enable_sndio $SNDIO_LIBS"
+echo "  lib/portaudio : $enable_portaudio $PORTAUDIO_LIBS"
+echo "  lib/glfw3     : $enable_glfw3 $GLFW3_LIBS"
