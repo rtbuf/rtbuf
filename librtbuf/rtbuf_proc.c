@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,9 +18,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
-#include <rtbuf/data.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/symbol.h>
+#include "data.h"
+#include "rtbuf.h"
+#include "symbol.h"
 
 s_data_type g_rtbuf_proc_type = {
   sizeof(s_rtbuf_proc) * 8,

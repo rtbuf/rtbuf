@@ -1,0 +1,42 @@
+#!/bin/sh
+set -e
+
+. ../config.subr
+
+LIB=librtbuf.la
+
+SOURCES="$(ls *.c | tr '\n' ' ')"
+echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
+
+OBJECTS="$(c2lo "$SOURCES")"
+echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
+
+if test -d /usr/local/include; then
+    CPPFLAGS="-I/usr/local/include"
+fi
+CPPFLAGS="$CPPFLAGS -I./include"
+echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
+
+if [ x"$DEBUG" = x"yes" ]; then
+    CFLAGS="-DDEBUG -O0 -ggdb"
+else
+    CFLAGS="-DNDEBUG -O3"
+fi
+CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
+
+LDFLAGS=""
+echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+
+LIBDIR=/usr/local/lib
+echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
+
+for SRC in $SOURCES; do
+    SRC_LO="$(c2lo "$SRC")"
+    c_lo_deps $SRC
+    echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+done
+
+echo >> ${CONFIG_MK}
+echo "$LIB: $OBJECTS" >> ${CONFIG_MK}
+echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} $OBJECTS -o $LIB -rpath ${LIBDIR}" >> ${CONFIG_MK}

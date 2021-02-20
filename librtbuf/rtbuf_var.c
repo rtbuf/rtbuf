@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,9 +16,9 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <rtbuf/data.h>
-#include <rtbuf/var.h>
-#include <rtbuf/rtbuf.h>
+#include "data.h"
+#include "var.h"
+#include "rtbuf.h"
 
 s_data_type  g_rtbuf_var_type = {
   sizeof(s_rtbuf_var) * 8,

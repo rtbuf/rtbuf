@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,7 +17,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <strings.h>
-#include <rtbuf/data.h>
+#include "data.h"
 
 s_data_type g_data_alloc_type = {
   sizeof(s_data_alloc) * 8,
@@ -67,7 +67,7 @@ void * data_new_at (s_data_alloc *da, unsigned int i)
 {
   unsigned int octets = (da->t->bits + 7) / 8;
   unsigned int offset = i * octets;
-  void *m = da->mem + offset;
+  void *m = (char*) da->mem + offset;
   bzero(m, octets);
   if (da->init)
     da->init(m);
@@ -118,7 +118,7 @@ void data_delete (s_data_alloc *da, void *data)
   if (da->clean)
     da->clean(data);
   bzero(data, octets);
-  i = (data - da->mem) / octets;
+  i = ((char*) data - (char*) da->mem) / octets;
   da->free[da->free_n++] = i;
 }
 

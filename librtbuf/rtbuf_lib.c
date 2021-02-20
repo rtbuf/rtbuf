@@ -1,5 +1,5 @@
 /*
- * Copyright 2018,2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,10 +21,9 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
-
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/symbol.h>
+#include "rtbuf.h"
+#include "lib.h"
+#include "symbol.h"
 
 s_data_type  g_rtbuf_lib_type = {
   sizeof(s_rtbuf_lib) * 8,
@@ -281,7 +280,7 @@ void rtbuf_lib_print (const s_rtbuf_lib *lib)
       (i = lib - g_rtbuf_lib) < RTBUF_LIB_MAX)
     printf("#<lib %i %s>\n", i, lib->name);
   else
-    printf("#<lib %p %s>\n", lib, lib->name);
+    printf("#<lib %p %s>\n", (void*) lib, lib->name);
 }
 
 void rtbuf_lib_print_long (unsigned int i)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018,2020 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,11 +19,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include <rtbuf/data.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/var.h>
-#include <rtbuf/symbol.h>
+#include "data.h"
+#include "rtbuf.h"
+#include "lib.h"
+#include "var.h"
+#include "symbol.h"
 
 s_data_type   g_rtbuf_type = {
   sizeof(s_rtbuf) * 8,
@@ -262,7 +262,7 @@ int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
   if (out_i >= 0) {
     s_rtbuf_proc_out *out = &rtb->proc->out[out_i];
     if (out->type->t.bits == size * 8) {
-      void *data = rtb->data + out->offset;
+      void *data = (char*) rtb->data + out->offset;
       memcpy(data, value, size);
       return size;
     }
@@ -536,7 +536,7 @@ int rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value)
   o = &rtb->proc->out[out];
   assert(o->type);
   if (o->type->t.bits >= sizeof(int) * 8) {
-    int *i = (int*)(rtb->data + o->offset);
+    int *i = (int*)((char*) rtb->data + o->offset);
     return *i;
   }
   return default_value;
@@ -637,6 +637,6 @@ double * rtbuf_in_unbound_value (s_rtbuf *rtb, unsigned int in)
   assert(in < rtb->proc->in_n);
   offset = rtb->proc->in[in].offset;
   assert(offset < rtb->proc->bytes);
-  p = rtb->data + offset;
+  p = (char*) rtb->data + offset;
   return (double*) p;
 }

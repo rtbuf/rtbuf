@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
-#include <rtbuf/symbol.h>
+#include "symbol.h"
 
 char         g_str_start[STRING_MAX];
 char        *g_str = g_str_start;

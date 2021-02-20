@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,10 +16,10 @@
 #ifndef RTBUF_H
 #define RTBUF_H
 
-#include <rtbuf/data.h>
-#include <rtbuf/defs.h>
-#include <rtbuf/type.h>
-#include <rtbuf/proc.h>
+#include "data.h"
+#include "defs.h"
+#include "type.h"
+#include "proc.h"
 
 #define RTBUF_SORT     0x0001
 #define RTBUF_DELETE   0x0002

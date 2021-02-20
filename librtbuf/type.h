@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,9 +16,9 @@
 #ifndef RTBUF_TYPE_H
 #define RTBUF_TYPE_H
 
-#include <rtbuf/data.h>
-#include <rtbuf/defs.h>
-#include <rtbuf/symbol.h>
+#include "data.h"
+#include "defs.h"
+#include "symbol.h"
 
 struct rtbuf_type {
   symbol       name;
