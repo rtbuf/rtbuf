@@ -17,8 +17,8 @@
 #define RTBUF_GLFW3_H
 
 #include <GLFW/glfw3.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/music.h>
+#include "../librtbuf/rtbuf.h"
+#include "music.h"
 
 typedef struct rtbuf_glfw3_keyboard_data {
   s_rtbuf_music_notes notes;

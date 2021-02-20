@@ -1,11 +1,12 @@
 CLEANFILES =
-RTBUF_MODULES =
 
-all: rtbuf_modules
+all: types libraries subdirs
 
-clean:
+clean: subdirs-clean
 	rm -rf .libs *.o *.lo *.la ${CLEANFILES}
 
-.PHONY: all clean rtbuf_modules
+install: subdirs-install
+
+.PHONY: all clean libraries subdirs subdirs-clean subdirs-install
 
 .include <config.mk>

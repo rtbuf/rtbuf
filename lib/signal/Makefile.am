@@ -1,21 +1,5 @@
-if ENABLE_SIGNAL
-
-CLEANFILES =
-rtbuf_includedir = $(includedir)/rtbuf/signal
-rtbuf_include_HEADERS =
-rtbuf_libdir = $(libdir)/rtbuf/signal
-rtbuf_lib_LTLIBRARIES =
-
-rtbuf_lib_LTLIBRARIES += bandpass2.la
-bandpass2_la_LDFLAGS = -no-undefined -module -shared
 bandpass2_la_LIBADD = ${SIGNAL_LIBS} ../librtbuf_signal.la
-
-rtbuf_lib_LTLIBRARIES += delay.la
-delay_la_LDFLAGS = -no-undefined -module
 delay_la_LIBADD = ${SIGNAL_LIBS} ../librtbuf_signal.la
-
-rtbuf_lib_LTLIBRARIES += equalizer10.la
-equalizer10_la_LDFLAGS = -no-undefined -module
 equalizer10_la_LIBADD = ${SIGNAL_LIBS} ../librtbuf_signal.la
 
 rtbuf_lib_LTLIBRARIES += flanger.la

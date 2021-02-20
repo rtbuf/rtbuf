@@ -37,7 +37,7 @@ int main ()
   printf("#ifndef RTBUF_SYNTH_TYPE_H\n"
          "#define RTBUF_SYNTH_TYPE_H\n"
          "\n"
-         "#include <rtbuf/signal_type.h>\n");
+         "#include \"signal_type.h\"\n");
   notes_in();
   printf("\n"
          "#endif\n");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
 #ifndef RTBUF_DYNAMIC_H
 #define RTBUF_DYNAMIC_H
 
-#include <rtbuf/signal.h>
+#include "signal.h"
 
 enum {
   RTBUF_DYNAMIC_LIMITER_IN_SIGNAL = 0,

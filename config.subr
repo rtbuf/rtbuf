@@ -1,11 +1,9 @@
 #!/bin/sh
 
+VER=0.4
+
 lo_rule() {
     $CC $CPPFLAGS -M "$1" | sed -e 's/[.]o:/.lo:/'
-}
-
-la_rule() {
-    $CC $CPPFLAGS -M "$1" | sed -e 's/[.]o:/.la:/'
 }
 
 prog_rule() {
@@ -26,6 +24,13 @@ c2lo() {
 
 c2la() {
     echo "$@" | sed -e 's/[.]c$/.la/' -e 's/[.]c /.la /g'
+}
+
+require_pkg_config() {
+    if ! which pkg-config >/dev/null; then
+        echo "please install pkg-config" >&2
+        exit 1
+    fi
 }
 
 CONFIG_MK=config.mk

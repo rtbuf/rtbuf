@@ -7,6 +7,8 @@ TYPE_SOURCES="$(ls *_type.c | tr '\n' ' ')"
 
 SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
 
+DIRS="$(ls -d */)"
+
 if test -d /usr/local/include; then
     CPPFLAGS="-I/usr/local/include"
 fi
@@ -24,11 +26,17 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
+TYPES=
+
 for TYPE_SRC in $TYPE_SOURCES; do
     TYPE_PROG="$(c2prog "$TYPE_SRC")"
     TYPE_H="${TYPE_PROG}.h"
+    TYPES="$TYPES $TYPE_H"
     echo > "$TYPE_H"
 done
+
+echo >> ${CONFIG_MK}
+echo "types:${TYPES}" >> ${CONFIG_MK}
 
 for TYPE_SRC in $TYPE_SOURCES; do
     TYPE_PROG="$(c2prog "$TYPE_SRC")"
@@ -46,7 +54,7 @@ done
 LIBDIR=/usr/local/lib
 echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
 
-RTBUF_MODULES=
+LIBRARIES=
 
 for SRC in $SOURCES; do
     SRC_LO="$(c2lo "$SRC")"
@@ -58,11 +66,31 @@ for SRC in $SOURCES; do
     echo >> ${CONFIG_MK}
     echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
     echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
-    echo >> ${CONFIG_MK}
-    RTBUF_MODULES="$RTBUF_MODULES $SRC_LA"
+    LIBRARIES="$LIBRARIES $SRC_LA"
 done
 
-echo "rtbuf_modules:${RTBUF_MODULES}" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "libraries:${LIBRARIES}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "subdirs:" >> ${CONFIG_MK}
+for DIR in $DIRS; do
+    echo "\t\${MAKE} -C $DIR" >> ${CONFIG_MK}
+done
+
+echo >> ${CONFIG_MK}
+echo "subdirs-clean:" >> ${CONFIG_MK}
+for DIR in $DIRS; do
+    echo "\t\${MAKE} -C $DIR clean" >> ${CONFIG_MK}
+done
+
+echo >> ${CONFIG_MK}
+echo "subdirs-install:" >> ${CONFIG_MK}
+for DIR in $DIRS; do
+    echo "\t\${MAKE} -C $DIR install" >> ${CONFIG_MK}
+    echo $PWD/$DIR
+    (cd $DIR && ./configure)
+done
 
 for TYPE_SRC in $TYPE_SOURCES; do
     TYPE_PROG="$(c2prog "$TYPE_SRC")"
