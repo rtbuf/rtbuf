@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,12 +18,12 @@
 #include <sndio.h>
 #include <stdio.h>
 #include <strings.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/signal.h>
-#include <rtbuf/signal_type.h>
-#include <rtbuf/sndio.h>
-#include <rtbuf/sndio_type.h>
+#include "../../librtbuf/rtbuf.h"
+#include "../../librtbuf/lib.h"
+#include "../signal.h"
+#include "../signal_type.h"
+#include "../sndio.h"
+#include "../sndio_type.h"
 
 s_rtbuf_lib_proc_in rtbuf_sndio_output_in[] =
   {{ "left",  RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },

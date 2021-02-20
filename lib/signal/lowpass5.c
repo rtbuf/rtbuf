@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -56,10 +56,10 @@ f:    w5 + (r5 + 1)(-2)(f w4 - 8 f4 w) + (4 r5 + 12)    (f2 w3 - 2 f3 w2) -  32 
 
 */
 #include <math.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/signal.h>
-#include <rtbuf/signal_type.h>
+#include "../../librtbuf/rtbuf.h"
+#include "../../librtbuf/lib.h"
+#include "../signal.h"
+#include "../signal_type.h"
 
 s_rtbuf_lib_proc_in rtbuf_signal_lowpass5_in[] =
   {{ "signal", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },

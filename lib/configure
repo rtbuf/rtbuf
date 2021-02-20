@@ -46,6 +46,8 @@ done
 LIBDIR=/usr/local/lib
 echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
 
+RTBUF_MODULES=
+
 for SRC in $SOURCES; do
     SRC_LO="$(c2lo "$SRC")"
     echo >> ${CONFIG_MK}
@@ -57,5 +59,13 @@ for SRC in $SOURCES; do
     echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
     echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
     echo >> ${CONFIG_MK}
-    echo "RTBUF_MODULES += $SRC_LA" >> ${CONFIG_MK}
+    RTBUF_MODULES="$RTBUF_MODULES $SRC_LA"
+done
+
+echo "rtbuf_modules:${RTBUF_MODULES}" >> ${CONFIG_MK}
+
+for TYPE_SRC in $TYPE_SOURCES; do
+    TYPE_PROG="$(c2prog "$TYPE_SRC")"
+    TYPE_H="${TYPE_PROG}.h"
+    rm "$TYPE_H"
 done

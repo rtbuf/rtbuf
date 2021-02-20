@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -46,10 +46,10 @@ e:   q2 w4 - sqrt(2)^3 f q w3 +   (2 q2 + 1) 4 f2 w2 - sqrt(2)^7 f3 q w + 16 f4 
 y: (4 f2 w2 (x4 - 2 x2 + x) - (b y1 + c y2 + d y3 + e y4)) / a;
 */
 #include <math.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/signal.h>
-#include <rtbuf/signal_type.h>
+#include "../../librtbuf/rtbuf.h"
+#include "../../librtbuf/lib.h"
+#include "../signal.h"
+#include "../signal_type.h"
 
 s_rtbuf_lib_proc_in rtbuf_signal_bandpass2_in[] =
   {{ "signal",   RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },

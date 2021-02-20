@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,8 +18,8 @@
 #include <stdio.h>
 #include <strings.h>
 #include "hadamard.h"
-#include "rtbuf.h"
-#include "rtbuf_reverb.h"
+#include "../../librtbuf/rtbuf.h"
+#include "../reverb.h"
 
 int rtbuf_reverb_fdn4_start (s_rtbuf *rtb)
 {

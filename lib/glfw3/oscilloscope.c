@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Thomas de Grivel <thoxdg@gmail.com> +33614550127
+ * Copyright 2018-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,13 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/signal.h>
-#include <rtbuf/signal_type.h>
-#include <rtbuf/music.h>
-#include <rtbuf/music_type.h>
-#include <rtbuf/glfw3.h>
+#include "../../librtbuf/rtbuf.h"
+#include "../../librtbuf/lib.h"
+#include "../signal.h"
+#include "../signal_type.h"
+#include "../music.h"
+#include "../music_type.h"
+#include "../glfw3.h"
 
 s_rtbuf_lib_proc_in rtbuf_glfw3_oscilloscope_in[] =
   {{ "black", RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 1.0 },

@@ -33,7 +33,8 @@ echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
 
 for SRC in $SOURCES; do
     SRC_LO="$(c2lo "$SRC")"
-    c_lo_deps $SRC
+    echo >> ${CONFIG_MK}
+    lo_rule "$SRC" >> ${CONFIG_MK}
     echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
 done
 
