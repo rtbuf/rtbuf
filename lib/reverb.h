@@ -17,8 +17,8 @@
 #define RTBUF_REVERB_H
 
 #include <assert.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/signal.h>
+#include "../librtbuf/rtbuf.h"
+#include "signal.h"
 
 /* Feedback delay network with fourth order Hadamard matrix */
 

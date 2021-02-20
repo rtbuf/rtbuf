@@ -17,8 +17,8 @@
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/music.h>
+#include "../librtbuf/rtbuf.h"
+#include "music.h"
 
 int    g_rtbuf_music_init = 0;
 double g_rtbuf_music_tune = 0.0;

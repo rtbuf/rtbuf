@@ -17,10 +17,10 @@
 #include <math.h>
 #include <stdio.h>
 #include <strings.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/signal.h>
-#include <rtbuf/signal_type.h>
+#include "../librtbuf/rtbuf.h"
+#include "../librtbuf/lib.h"
+#include "signal.h"
+#include "signal_type.h"
 
 const double g_rtbuf_signal_sample_zero       = 0.0;
 const double g_rtbuf_signal_sample_half       = 0.5;

@@ -1,0 +1,61 @@
+#!/bin/sh
+set -e
+
+. ../config.subr
+
+TYPE_SOURCES="$(ls *_type.c | tr '\n' ' ')"
+
+SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
+
+if test -d /usr/local/include; then
+    CPPFLAGS="-I/usr/local/include"
+fi
+CPPFLAGS="$CPPFLAGS"
+echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
+
+if [ x"$DEBUG" = x"yes" ]; then
+    CFLAGS="-DDEBUG -O0 -ggdb"
+else
+    CFLAGS="-DNDEBUG -O3"
+fi
+CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
+
+LDFLAGS=""
+echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+
+for TYPE_SRC in $TYPE_SOURCES; do
+    TYPE_PROG="$(c2prog "$TYPE_SRC")"
+    TYPE_H="${TYPE_PROG}.h"
+    echo > "$TYPE_H"
+done
+
+for TYPE_SRC in $TYPE_SOURCES; do
+    TYPE_PROG="$(c2prog "$TYPE_SRC")"
+    TYPE_H="${TYPE_PROG}.h"
+    echo >> ${CONFIG_MK}
+    prog_rule "$TYPE_SRC" >> ${CONFIG_MK}
+    echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} $TYPE_SRC -o $TYPE_PROG" >> ${CONFIG_MK}
+    echo >> ${CONFIG_MK}
+    echo "${TYPE_H}: $TYPE_PROG" >> ${CONFIG_MK}
+    echo "\t./$TYPE_PROG > $TYPE_H" >> ${CONFIG_MK}
+    echo >> ${CONFIG_MK}
+    echo "CLEANFILES += $TYPE_PROG $TYPE_H" >> ${CONFIG_MK}
+done
+
+LIBDIR=/usr/local/lib
+echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
+
+for SRC in $SOURCES; do
+    SRC_LO="$(c2lo "$SRC")"
+    echo >> ${CONFIG_MK}
+    lo_rule "$SRC" >> ${CONFIG_MK}
+    echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+
+    SRC_LA="librtbuf_$(c2la "$SRC")"
+    echo >> ${CONFIG_MK}
+    echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
+    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
+    echo >> ${CONFIG_MK}
+    echo "RTBUF_MODULES += $SRC_LA" >> ${CONFIG_MK}
+done

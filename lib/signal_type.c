@@ -15,8 +15,8 @@
  */
 
 #include <stdio.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/signal.h>
+#include "../librtbuf/rtbuf.h"
+#include "signal.h"
 
 int main ()
 {

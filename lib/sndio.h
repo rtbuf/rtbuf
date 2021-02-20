@@ -17,7 +17,7 @@
 #define RTBUF_SNDIO_H
 
 #include <sndio.h>
-#include <rtbuf/signal.h>
+#include "signal.h"
 
 void print_sio_par (struct sio_par *par);
 

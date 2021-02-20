@@ -17,19 +17,19 @@
 #include <math.h>
 #include <stdio.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_lib.h"
-#include "rtbuf_signal.h"
-#include "rtbuf_signal_type.h"
-#include "rtbuf_reverb.h"
-#include "rtbuf_reverb_type.h"
+#include "../librtbuf/rtbuf.h"
+#include "../librtbuf/lib.h"
+#include "signal.h"
+#include "signal_type.h"
+#include "reverb.h"
+#include "reverb_type.h"
 
 s_rtbuf_lib_proc_in g_rtbuf_reverb_fdn4_in[] = {
-  { "signal",    RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0 },
-  { "time",      RTBUF_SIGNAL_TYPE, 1.0, 0.0, 100.0 },
-  { "dry_level", RTBUF_SIGNAL_TYPE, 0.8, 0.0, 1.0 },
-  { "wet_level", RTBUF_SIGNAL_TYPE, 0.2, 0.0, 1.0 },
-  { 0, 0, 0.0, 0.0, 0.0 } };
+  { "signal",    RTBUF_SIGNAL_TYPE, 0.0, -1.0, 1.0, 2.0 },
+  { "time",      RTBUF_SIGNAL_TYPE, 1.0, 0.0, 100.0, 10.0 },
+  { "dry_level", RTBUF_SIGNAL_TYPE, 0.8, 0.0, 1.0, 2.0 },
+  { "wet_level", RTBUF_SIGNAL_TYPE, 0.2, 0.0, 1.0, 2.0 },
+  { 0, 0, 0.0, 0.0, 0.0, 0.0 } };
 
 s_rtbuf_lib_proc_out g_rtbuf_reverb_fdn4_out[] = {
   { "signal", RTBUF_SIGNAL_TYPE },

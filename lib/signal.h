@@ -17,7 +17,7 @@
 #define RTBUF_SIGNAL_H
 
 #include <assert.h>
-#include <rtbuf/rtbuf.h>
+#include "../librtbuf/rtbuf.h"
 
 typedef double t_rtbuf_signal_sample;
 #define RTBUF_SIGNAL_SAMPLE_SIZE sizeof(t_rtbuf_signal_sample)

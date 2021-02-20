@@ -15,8 +15,8 @@
  */
 
 #include <stdio.h>
-#include "rtbuf.h"
-#include "rtbuf_reverb.h"
+#include "../librtbuf/rtbuf.h"
+#include "reverb.h"
 
 int main ()
 {

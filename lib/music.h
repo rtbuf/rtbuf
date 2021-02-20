@@ -16,7 +16,7 @@
 #ifndef RTBUF_MUSIC_H
 #define RTBUF_MUSIC_H
 
-#include <rtbuf/signal.h>
+#include "signal.h"
 
 #define RTBUF_MUSIC_TUNE_A 440.0
 #define RTBUF_MUSIC_BASE_OCTAVE 4

@@ -15,8 +15,8 @@
  */
 
 #include <stdio.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/music.h>
+#include "../librtbuf/rtbuf.h"
+#include "music.h"
 
 void notes_in ()
 {

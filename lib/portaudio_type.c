@@ -15,8 +15,8 @@
  */
 
 #include <stdio.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/portaudio.h>
+#include "../librtbuf/rtbuf.h"
+#include "portaudio.h"
 
 int main ()
 {

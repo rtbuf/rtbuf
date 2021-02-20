@@ -1,8 +1,15 @@
 #!/bin/sh
 
-c_lo_deps() {
-    echo >> ${CONFIG_MK}
-    $CC -M "$1" | sed -e 's/[.]o:/.lo:/' >> ${CONFIG_MK}
+lo_rule() {
+    $CC $CPPFLAGS -M "$1" | sed -e 's/[.]o:/.lo:/'
+}
+
+la_rule() {
+    $CC $CPPFLAGS -M "$1" | sed -e 's/[.]o:/.la:/'
+}
+
+prog_rule() {
+    $CC $CPPFLAGS -M "$1" | sed -e 's/[.]o:/:/'
 }
 
 c2prog() {

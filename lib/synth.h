@@ -16,11 +16,11 @@
 #ifndef RTBUF_SYNTH_H
 #define RTBUF_SYNTH_H
 
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/music.h>
-#include <rtbuf/music_type.h>
-#include <rtbuf/signal.h>
-#include <rtbuf/synth_type.h>
+#include "../librtbuf/rtbuf.h"
+#include "music.h"
+#include "music_type.h"
+#include "signal.h"
+#include "synth_type.h"
 
 /* adsr */
 

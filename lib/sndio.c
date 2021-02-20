@@ -17,12 +17,12 @@
 #include <sndio.h>
 #include <stdio.h>
 #include <strings.h>
-#include "rtbuf.h"
-#include "rtbuf_lib.h"
-#include "rtbuf_signal.h"
-#include "rtbuf_signal_type.h"
-#include "rtbuf_sndio.h"
-#include "rtbuf_sndio_type.h"
+#include "../librtbuf/rtbuf.h"
+#include "../librtbuf/lib.h"
+#include "signal.h"
+#include "signal_type.h"
+#include "sndio.h"
+#include "sndio_type.h"
 
 void print_sio_par (struct sio_par *par)
 {

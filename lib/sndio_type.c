@@ -15,8 +15,8 @@
  */
 
 #include <stdio.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/sndio.h>
+#include "../librtbuf/rtbuf.h"
+#include "sndio.h"
 
 int main ()
 {

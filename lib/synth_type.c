@@ -1,8 +1,8 @@
 
 #include <stdio.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/music.h>
-#include <rtbuf/music_type.h>
+#include "../librtbuf/rtbuf.h"
+#include "music.h"
+#include "music_type.h"
 
 void notes_in ()
 {

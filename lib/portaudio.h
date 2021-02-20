@@ -17,7 +17,7 @@
 #define RTBUF_PORTAUDIO_H
 
 #include <portaudio.h>
-#include <rtbuf/signal.h>
+#include "signal.h"
 
 enum {
   RTBUF_PORTAUDIO_LEFT = 0,
