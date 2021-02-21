@@ -15,8 +15,8 @@
  */
 
 #include <assert.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/cli.h>
+#include "../librtbuf/rtbuf.h"
+#include "rtbuf_cli.h"
 
 int main (int argc, char *argv[])
 {

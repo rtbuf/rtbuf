@@ -1,7 +1,8 @@
-all: librtbuf.la
+
+all: rtbuf
 
 clean:
-	rm -rf .libs *.o *.lo *.la
+	rm -rf .libs *.o *.lo *.la level120
 
 .PHONY: all clean
 

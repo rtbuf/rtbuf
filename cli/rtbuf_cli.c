@@ -21,11 +21,11 @@
 #include <string.h>
 #include <unistd.h>
 #include "cli.h"
-#include <rtbuf/symbol.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/var.h>
-#include <rtbuf/cli.h>
+#include "../librtbuf/symbol.h"
+#include "../librtbuf/rtbuf.h"
+#include "../librtbuf/lib.h"
+#include "../librtbuf/var.h"
+#include "rtbuf_cli.h"
 
 s_cli            g_cli;
 pthread_t        g_rtbuf_cli_run_thread = 0;
@@ -35,7 +35,8 @@ int rtbuf_cli_libs (int argc, const char *argv[])
 {
   unsigned int i = 0;
   unsigned int n = g_rtbuf_lib_alloc.n - g_rtbuf_lib_alloc.free_n;
-  assert(argc == 0);
+  if (argc != 0)
+    return rtbuf_err("usage: libs");
   (void) argv;
   printf("Listing %i libraries :\n", n);
   while (i < g_rtbuf_lib_alloc.n && n > 0) {
@@ -64,7 +65,8 @@ int rtbuf_cli_lib (int argc, const char *argv[])
 int rtbuf_cli_load (int argc, const char *argv[])
 {
   s_rtbuf_lib *lib;
-  assert(argc == 1);
+  if (argc != 1)
+    return rtbuf_err("usage: load LIBRARY");
   lib = rtbuf_lib_load(argv[1]);
   if (!lib) {
     printf("load failed\n");
@@ -78,7 +80,8 @@ int rtbuf_cli_buffers (int argc, const char *argv[])
 {
   unsigned int i = 0;
   unsigned int n = g_rtbuf_alloc.n;
-  assert(argc == 0);
+  if (argc != 0)
+    return rtbuf_err("usage: buffers");
   (void) argv;
   printf("Listing %i buffers :\n", n);
   while (i < RTBUF_MAX && n > 0) {

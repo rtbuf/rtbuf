@@ -9,4 +9,4 @@ install: subdirs-install
 
 .PHONY: all clean libraries subdirs subdirs-clean subdirs-install
 
-.include <config.mk>
+.include "config.mk"

@@ -2,12 +2,16 @@
 
 VER=0.4
 
+o_rule() {
+    $CC $CPPFLAGS -M "$1"
+}
+
 lo_rule() {
-    $CC $CPPFLAGS -M "$1" | sed -e 's/[.]o:/.lo:/'
+    o_rule "$1" | sed -e 's/[.]o:/.lo:/'
 }
 
 prog_rule() {
-    $CC $CPPFLAGS -M "$1" | sed -e 's/[.]o:/:/'
+    o_rule "$1" | sed -e 's/[.]o:/:/'
 }
 
 c2prog() {

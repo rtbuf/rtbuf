@@ -26,6 +26,12 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
+LIBS=""
+echo "LIBS = $LIBS" >> ${CONFIG_MK}
+
+LIBDIR=/usr/local/lib
+echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
+
 TYPES=
 
 for TYPE_SRC in $TYPE_SOURCES; do
@@ -51,9 +57,6 @@ for TYPE_SRC in $TYPE_SOURCES; do
     echo "CLEANFILES += $TYPE_PROG $TYPE_H" >> ${CONFIG_MK}
 done
 
-LIBDIR=/usr/local/lib
-echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
-
 LIBRARIES=
 
 for SRC in $SOURCES; do
@@ -65,7 +68,7 @@ for SRC in $SOURCES; do
     SRC_LA="librtbuf_$(c2la "$SRC")"
     echo >> ${CONFIG_MK}
     echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
+    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
     LIBRARIES="$LIBRARIES $SRC_LA"
 done
 
@@ -87,9 +90,8 @@ done
 echo >> ${CONFIG_MK}
 echo "subdirs-install:" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "\t\${MAKE} -C $DIR install" >> ${CONFIG_MK}
-    echo $PWD/$DIR
-    (cd $DIR && ./configure)
+    echo "\t\${MAKE} -C \${PWD}/$DIR install" >> ${CONFIG_MK}
+    (cd $DIR && pwd && ./configure)
 done
 
 for TYPE_SRC in $TYPE_SOURCES; do

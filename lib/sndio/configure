@@ -19,8 +19,11 @@ fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS="-lsndio"
+LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+
+LIBS="-lsndio"
+echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 LIBDIR=/usr/local/lib/rtbuf/$VER/dynamic
 echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
@@ -36,7 +39,7 @@ for SRC in $SOURCES; do
     SRC_LA="$(c2la "$SRC")"
     echo >> ${CONFIG_MK}
     echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
+    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
     LIBRARIES="$LIBRARIES $SRC_LA"
 done
 

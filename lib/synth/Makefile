@@ -5,4 +5,4 @@ clean:
 
 .PHONY: all clean libraries
 
-.include <config.mk>
+.include "config.mk"

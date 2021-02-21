@@ -3,18 +3,18 @@ set -e
 
 . ../config.subr
 
-LIB=librtbuf.la
+PROG=rtbuf
 
 SOURCES="$(ls *.c | tr '\n' ' ')"
 echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
 
-OBJECTS="$(c2lo "$SOURCES")"
+OBJECTS="$(c2o "$SOURCES")"
 echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
 
+CPPFLAGS=
 if test -d /usr/local/include; then
-    CPPFLAGS="-I/usr/local/include"
+    CPPFLAGS="$CPPFLAGS -I/usr/local/include"
 fi
-CPPFLAGS="$CPPFLAGS -I./include"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
 if [ x"$DEBUG" = x"yes" ]; then
@@ -23,24 +23,22 @@ else
     CFLAGS="-DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+CFLAGS="$CFLAGS"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS=""
+LDFLAGS="-pthread"
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS=""
+LIBS="../librtbuf/librtbuf.la -lreadline"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
-LIBDIR=/usr/local/lib
-echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
-
 for SRC in $SOURCES; do
-    SRC_LO="$(c2lo "$SRC")"
+    SRC_O=$(c2o $SRC)
     echo >> ${CONFIG_MK}
-    lo_rule "$SRC" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+    o_rule $SRC >> ${CONFIG_MK}
+    echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_O" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
-echo "$LIB: $OBJECTS" >> ${CONFIG_MK}
-echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} $OBJECTS \${LIBS} -o $LIB -rpath ${LIBDIR}" >> ${CONFIG_MK}
+echo "$PROG: $OBJECTS" >> ${CONFIG_MK}
+echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} \${OBJECTS} \${LIBS} -o $PROG" >> ${CONFIG_MK}

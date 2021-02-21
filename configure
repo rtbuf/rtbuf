@@ -3,8 +3,8 @@ set -e
 
 . ./config.subr
 
-(cd librtbuf && ./configure)
-(cd lib && ./configure)
-(cd cli && ./configure)
-(cd gtk3 && ./configure)
-(cd test && ./configure)
+(cd librtbuf && pwd && ./configure)
+(cd lib && pwd && ./configure)
+(cd cli && pwd && ./configure)
+#(cd gtk3 && pwd && ./configure)
+#(cd test && pwd && ./configure)
