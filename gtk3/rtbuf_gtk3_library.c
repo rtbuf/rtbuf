@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,9 +21,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include "rtbuf_gtk_library.h"
+#include "../librtbuf/rtbuf.h"
+#include "../librtbuf/lib.h"
+#include "rtbuf_gtk3_library.h"
 #include "queue.h"
 
 s_rtbuf_gtk_library_tree *g_rtbuf_gtk_library_tree = NULL;

@@ -16,7 +16,7 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
-#include "rtbuf_gtk_rtbuf_info.h"
+#include "rtbuf_gtk3_rtbuf_info.h"
 
 s_data_type  g_rtbuf_gtk_rtbuf_info_type = {
   sizeof(s_rtbuf_gtk_rtbuf_info) * 8,

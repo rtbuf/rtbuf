@@ -17,9 +17,9 @@
 #include <assert.h>
 #include <math.h>
 #include <gtk/gtk.h>
-#include "rtbuf_gtk.h"
-#include "rtbuf_input_widget.h"
-#include <rtbuf/rtbuf.h>
+#include "rtbuf_gtk3.h"
+#include "rtbuf_gtk3_input_widget.h"
+#include "../librtbuf/rtbuf.h"
 
 struct _RtbufInputWidgetPrivate {
   s_rtbuf   *rtbuf;

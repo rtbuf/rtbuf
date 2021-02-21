@@ -16,9 +16,9 @@
 #ifndef RTBUF_GTK_RTBUF_INFO_H
 #define RTBUF_GTK_RTBUF_INFO_H
 
-#include "rtbuf_widget.h"
-#include "rtbuf_input_widget.h"
-#include "rtbuf_output_widget.h"
+#include "rtbuf_gtk3_widget.h"
+#include "rtbuf_gtk3_input_widget.h"
+#include "rtbuf_gtk3_output_widget.h"
 
 typedef struct rtbuf_gtk_rtbuf_info {
   RtbufWidget *widget;

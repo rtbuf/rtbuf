@@ -4,10 +4,10 @@
     <file>player_play.png</file>
     <file>player_stop.png</file>
     <file>rtbuf.png</file>
-    <file preprocess="xml-stripblanks">rtbuf_input_widget.ui</file>
-    <file preprocess="xml-stripblanks">rtbuf_modular.ui</file>
-    <file preprocess="xml-stripblanks">rtbuf_output_widget.ui</file>
-    <file preprocess="xml-stripblanks">rtbuf_widget.ui</file>
+    <file preprocess="xml-stripblanks">rtbuf_gtk3_input_widget.ui</file>
+    <file preprocess="xml-stripblanks">rtbuf_gtk3_modular.ui</file>
+    <file preprocess="xml-stripblanks">rtbuf_gtk3_output_widget.ui</file>
+    <file preprocess="xml-stripblanks">rtbuf_gtk3_widget.ui</file>
   </gresource>
   <gresource prefix="/org/gtk/libgtk/icons/24x24/status/">
     <file>image-missing.png</file>

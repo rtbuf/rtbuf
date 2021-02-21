@@ -6,5 +6,5 @@ set -e
 (cd librtbuf && pwd && ./configure)
 (cd lib && pwd && ./configure)
 (cd cli && pwd && ./configure)
-#(cd gtk3 && pwd && ./configure)
+(cd gtk3 && pwd && ./configure)
 #(cd test && pwd && ./configure)

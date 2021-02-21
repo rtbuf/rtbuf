@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,9 +17,9 @@
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
-#include <rtbuf/rtbuf.h>
-#include "rtbuf_gtk.h"
-#include "rtbuf_output_widget.h"
+#include "../librtbuf/rtbuf.h"
+#include "rtbuf_gtk3.h"
+#include "rtbuf_gtk3_output_widget.h"
 
 void rtbuf_gtk_output_disconnect (RtbufOutputWidget *widget)
 {
@@ -50,7 +50,7 @@ void rtbuf_gtk_output_menu (RtbufOutputWidget *widget, GdkEvent *event)
                                        signal,
                                        0,
                                        NULL,
-                                       G_CALLBACK(rtbuf_gtk_output_disconnect),
+                                       (void*) G_CALLBACK(rtbuf_gtk_output_disconnect),
                                        NULL);
   g_signal_connect_swapped(G_OBJECT(disconnect), "activate",
                            G_CALLBACK(rtbuf_gtk_output_disconnect),

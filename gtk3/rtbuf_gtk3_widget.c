@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,11 +16,11 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
-#include "rtbuf_gtk.h"
-#include "rtbuf_input_widget.h"
-#include "rtbuf_output_widget.h"
-#include "rtbuf_widget.h"
-#include <rtbuf/rtbuf.h>
+#include "rtbuf_gtk3.h"
+#include "rtbuf_gtk3_input_widget.h"
+#include "rtbuf_gtk3_output_widget.h"
+#include "rtbuf_gtk3_widget.h"
+#include "../librtbuf/rtbuf.h"
 
 struct _RtbufWidgetPrivate {
   s_rtbuf *rtbuf;

@@ -17,11 +17,11 @@
 #define RTBUF_GTK_H
 
 #include <gtk/gtk.h>
-#include "rtbuf_gtk_connection.h"
-#include "rtbuf_gtk_rtbuf_info.h"
-#include "rtbuf_input_widget.h"
-#include "rtbuf_output_widget.h"
-#include "rtbuf_widget.h"
+#include "rtbuf_gtk3_connection.h"
+#include "rtbuf_gtk3_rtbuf_info.h"
+#include "rtbuf_gtk3_input_widget.h"
+#include "rtbuf_gtk3_output_widget.h"
+#include "rtbuf_gtk3_widget.h"
 
 typedef struct signal_binding {
   const char *signal;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,14 +19,14 @@
 #include <time.h>
 #include <pthread.h>
 #include <gtk/gtk.h>
-#include <rtbuf/rtbuf.h>
-#include <rtbuf/lib.h>
-#include <rtbuf/var.h>
-#include <rtbuf/cli.h>
-#include "rtbuf_gtk.h"
-#include "rtbuf_gtk_library.h"
-#include "rtbuf_input_widget.h"
-#include "rtbuf_widget.h"
+#include "../librtbuf/rtbuf.h"
+#include "../librtbuf/lib.h"
+#include "../librtbuf/var.h"
+#include "../cli/rtbuf_cli.h"
+#include "rtbuf_gtk3.h"
+#include "rtbuf_gtk3_library.h"
+#include "rtbuf_gtk3_input_widget.h"
+#include "rtbuf_gtk3_widget.h"
 #include "stack.h"
 
 extern int snprintf (char *, size_t, const char *, ...);
@@ -223,7 +223,7 @@ void rtbuf_gtk_modular_close (GtkWidget *widget,
   (void) widget;
   (void) data;
   printf("rtbuf-gtk modular close\n");
-  gtk_main_quit();
+  exit(0);
 }
 
 void rtbuf_gtk_modular_draw_arrow (cairo_t *cr, int x1, int y1,
@@ -452,9 +452,9 @@ int rtbuf_gtk_builder ()
 {
   GError *error = NULL;
   builder = gtk_builder_new ();
-  if (gtk_builder_add_from_resource(builder, "/rtbuf/rtbuf_modular.ui",
+  if (gtk_builder_add_from_resource(builder, "/rtbuf/rtbuf_gtk3_modular.ui",
                                     &error) == 0) {
-    g_printerr("Error loading resource /rtbuf/rtbuf_modular.ui: %s\n",
+    g_printerr("Error loading resource /rtbuf/rtbuf_gtk3_modular.ui: %s\n",
                error->message);
     g_clear_error(&error);
     return 1;

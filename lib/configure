@@ -78,13 +78,13 @@ echo "libraries:${LIBRARIES}" >> ${CONFIG_MK}
 echo >> ${CONFIG_MK}
 echo "subdirs:" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "\t\${MAKE} -C $DIR" >> ${CONFIG_MK}
+    echo "\t\${MAKE} -C \${PWD}/$DIR" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 echo "subdirs-clean:" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "\t\${MAKE} -C $DIR clean" >> ${CONFIG_MK}
+    echo "\t\${MAKE} -C \${PWD}/$DIR clean" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}

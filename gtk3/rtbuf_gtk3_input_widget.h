@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Thomas de Grivel <thoxdg@gmail.com>
+ * Copyright 2020-2021 Thomas de Grivel <thoxdg@gmail.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,7 +17,7 @@
 #ifndef RTBUF_INPUT_WIDGET_H
 #define RTBUF_INPUT_WIDGET_H
 
-#include <rtbuf/rtbuf.h>
+#include "../librtbuf/rtbuf.h"
 
 #define RTBUF_INPUT_WIDGET_TYPE \
   (rtbuf_input_widget_get_type())
