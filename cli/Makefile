@@ -2,7 +2,7 @@
 all: rtbuf
 
 clean:
-	rm -rf .libs *.o *.lo *.la level120
+	rm -rf .libs *.o *.lo *.la rtbuf
 
 .PHONY: all clean
 

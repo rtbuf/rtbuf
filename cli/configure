@@ -3,13 +3,16 @@ set -e
 
 . ../config.subr
 
+LIBRARY=librtbuf_cli.la
 PROG=rtbuf
 
-SOURCES="$(ls *.c | tr '\n' ' ')"
+SOURCES="$(ls *.c | grep -Fv rtbuf_cli_main.c | tr '\n' ' ')"
 echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
 
-OBJECTS="$(c2o "$SOURCES")"
+OBJECTS="$(c2lo "$SOURCES")"
 echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
+
+PROG_OBJECTS=rtbuf_cli_main.o
 
 CPPFLAGS=
 if test -d /usr/local/include; then
@@ -32,13 +35,26 @@ echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 LIBS="../librtbuf/librtbuf.la -lreadline"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
+LIBDIR="/usr/local/lib"
+echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
+
 for SRC in $SOURCES; do
-    SRC_O=$(c2o $SRC)
+    SRC_LO=$(c2lo $SRC)
     echo >> ${CONFIG_MK}
-    o_rule $SRC >> ${CONFIG_MK}
-    echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_O" >> ${CONFIG_MK}
+    lo_rule $SRC >> ${CONFIG_MK}
+    echo "\t\${LIBTOOL} --tag CC --mode compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
-echo "$PROG: $OBJECTS" >> ${CONFIG_MK}
-echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} \${OBJECTS} \${LIBS} -o $PROG" >> ${CONFIG_MK}
+SRC=rtbuf_cli_main.c
+SRC_O=$(c2o $SRC)
+o_rule $SRC >> ${CONFIG_MK}
+echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_O" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$LIBRARY: $OBJECTS" >> ${CONFIG_MK}
+echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} \${OBJECTS} \${LIBS} -o $LIBRARY -rpath \${LIBDIR}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$PROG: $LIBRARY $PROG_OBJECTS" >> ${CONFIG_MK}
+echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} ${LIBRARY} -o $PROG" >> ${CONFIG_MK}
