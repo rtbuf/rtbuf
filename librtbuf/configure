@@ -14,7 +14,7 @@ echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
 if test -d /usr/local/include; then
     CPPFLAGS="-I/usr/local/include"
 fi
-CPPFLAGS="$CPPFLAGS -I./include"
+CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\" -DVER=\\\"${VER}\\\""
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
 if [ x"$DEBUG" = x"yes" ]; then

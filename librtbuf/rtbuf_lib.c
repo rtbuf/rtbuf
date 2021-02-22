@@ -35,8 +35,7 @@ s_rtbuf_lib *g_rtbuf_lib;
 char g_rtbuf_lib_user_dir[1024];
 char *g_rtbuf_lib_path[] = { "./lib/",
                              g_rtbuf_lib_user_dir,
-                             "/usr/local/lib/rtbuf/",
-                             "/usr/lib/rtbuf/",
+                             RTBUF_LIBDIR "/",
                              0 };
 
 void rtbuf_lib_init_ ()
@@ -51,7 +50,7 @@ void rtbuf_lib_init_ ()
     in = ".";
   while (*in)
     *out++ = *in++;
-  in = "/.rtbuf/lib/rtbuf/";
+  in = "/.rtbuf/lib/rtbuf/" VER "/";
   while (*in)
     *out++ = *in++;
   *out = 0;

@@ -5,6 +5,8 @@ set -e
 
 PROG=rtbuf-gtk3
 
+touch rtbuf_gtk3_resources.c
+
 SOURCES="$(ls *.c | tr '\n' ' ')"
 echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
 
@@ -49,3 +51,5 @@ echo >> ${CONFIG_MK}
 echo "install: $PROG" >> ${CONFIG_MK}
 echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
 echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $PROG \${BINDIR}/$PROG" >> ${CONFIG_MK}
+
+rm rtbuf_gtk3_resources.c
