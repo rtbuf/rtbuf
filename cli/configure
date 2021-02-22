@@ -35,9 +35,6 @@ echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 LIBS="../librtbuf/librtbuf.la -lreadline"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
-LIBDIR="/usr/local/lib"
-echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
-
 for SRC in $SOURCES; do
     SRC_LO=$(c2lo $SRC)
     echo >> ${CONFIG_MK}
@@ -58,3 +55,10 @@ echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} \${OBJECTS} \
 echo >> ${CONFIG_MK}
 echo "$PROG: $LIBRARY $PROG_OBJECTS" >> ${CONFIG_MK}
 echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} ${LIBRARY} -o $PROG" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "install: $LIBRARY $PROG" >> ${CONFIG_MK}
+echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
+echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIBRARY \${LIBDIR}" >> ${CONFIG_MK}
+echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
+echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $PROG \${BINDIR}/$PROG" >> ${CONFIG_MK}

@@ -25,23 +25,4 @@ echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 LIBS=""
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
-LIBDIR=/usr/local/lib/rtbuf/$VER/dynamic
-echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
-
-LIBRARIES=
-
-for SRC in $SOURCES; do
-    SRC_LO="$(c2lo "$SRC")"
-    echo >> ${CONFIG_MK}
-    lo_rule "$SRC" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
-
-    SRC_LA="$(c2la "$SRC")"
-    echo >> ${CONFIG_MK}
-    echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
-    LIBRARIES="$LIBRARIES $SRC_LA"
-done
-
-echo >> ${CONFIG_MK}
-echo "libraries:${LIBRARIES}" >> ${CONFIG_MK}
+rtbuf_library synth

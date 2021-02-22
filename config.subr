@@ -79,6 +79,16 @@ if test -z "$PREFIX"; then
 fi
 echo "PREFIX = $PREFIX" >> ${CONFIG_MK}
 
+if test -z "$OWNER"; then
+    OWNER="$(stat $PREFIX | cut -d\  -f 5)"
+fi
+echo "OWNER = $OWNER" >> ${CONFIG_MK}
+
+if test -z "$GROUP"; then
+    GROUP="$(stat $PREFIX | cut -d\  -f 6)"
+fi
+echo "GROUP = $GROUP" >> ${CONFIG_MK}
+
 if test -z "$BINDIR"; then
     BINDIR=${PREFIX}/bin
 fi
@@ -88,3 +98,38 @@ if test -z "$LIBDIR"; then
     LIBDIR=${PREFIX}/lib
 fi
 echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
+
+if test -z "$RTBUF_LIBDIR"; then
+    RTBUF_LIBDIR=${LIBDIR}/rtbuf/${VER}
+fi
+echo "RTBUF_LIBDIR = $RTBUF_LIBDIR" >> ${CONFIG_MK}
+
+rtbuf_library() {
+    RTBUF_MODULE_LIBDIR="${RTBUF_LIBDIR}/$1"
+    echo "RTBUF_MODULE_LIBDIR = $RTBUF_MODULE_LIBDIR" >> ${CONFIG_MK}
+
+    LIBRARIES=
+
+    for SRC in $SOURCES; do
+        SRC_LO="$(c2lo "$SRC")"
+        echo >> ${CONFIG_MK}
+        lo_rule "$SRC" >> ${CONFIG_MK}
+        echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+
+        SRC_LA="$(c2la "$SRC")"
+        echo >> ${CONFIG_MK}
+        echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
+        echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath ${RTBUF_MODULE_LIBDIR}" >> ${CONFIG_MK}
+        LIBRARIES="$LIBRARIES $SRC_LA"
+    done
+
+    echo >> ${CONFIG_MK}
+    echo "libraries:${LIBRARIES}" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    echo "install:${LIBRARIES}" >> ${CONFIG_MK}
+    for LIB in $LIBRARIES; do
+        echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${RTBUF_MODULE_LIBDIR}" >> ${CONFIG_MK}
+        echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${RTBUF_MODULE_LIBDIR}/$LIB" >> ${CONFIG_MK}
+    done
+}

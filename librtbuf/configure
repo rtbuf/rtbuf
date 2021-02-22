@@ -31,9 +31,6 @@ echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 LIBS=""
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
-LIBDIR=/usr/local/lib
-echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
-
 for SRC in $SOURCES; do
     SRC_LO="$(c2lo "$SRC")"
     echo >> ${CONFIG_MK}
@@ -47,4 +44,5 @@ echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} $OBJECTS \${LIBS} -o 
 
 echo >> ${CONFIG_MK}
 echo "install: $LIB" >> ${CONFIG_MK}
-echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o root -g wheel -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}
+echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
+echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}

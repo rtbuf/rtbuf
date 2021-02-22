@@ -114,7 +114,7 @@ void data_delete (s_data_alloc *da, void *data)
   assert(da->t);
   octets = ((da->t->bits + 7) / 8);
   assert(da->mem <= data);
-  assert(data < da->mem + da->max * octets);
+  assert((char*) data < (char*) da->mem + da->max * octets);
   if (da->clean)
     da->clean(data);
   bzero(data, octets);
