@@ -44,3 +44,7 @@ done
 echo >> ${CONFIG_MK}
 echo "$LIB: $OBJECTS" >> ${CONFIG_MK}
 echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} $OBJECTS \${LIBS} -o $LIB -rpath ${LIBDIR}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "install: $LIB" >> ${CONFIG_MK}
+echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o root -g wheel -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}
