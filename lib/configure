@@ -65,7 +65,7 @@ for SRC in $SOURCES; do
     SRC_LA="librtbuf_$(c2la "$SRC")"
     echo >> ${CONFIG_MK}
     echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath $LIBDIR" >> ${CONFIG_MK}
+    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath \${LIBDIR}" >> ${CONFIG_MK}
     LIBRARIES="$LIBRARIES $SRC_LA"
 done
 

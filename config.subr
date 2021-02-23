@@ -106,8 +106,8 @@ fi
 echo "RTBUF_LIBDIR = $RTBUF_LIBDIR" >> ${CONFIG_MK}
 
 rtbuf_library() {
-    RTBUF_MODULE_LIBDIR="${RTBUF_LIBDIR}/$1"
-    echo "RTBUF_MODULE_LIBDIR = $RTBUF_MODULE_LIBDIR" >> ${CONFIG_MK}
+    RTBUF_LIBRARY_LIBDIR="${RTBUF_LIBDIR}/$1"
+    echo "RTBUF_LIBRARY_LIBDIR = $RTBUF_LIBRARY_LIBDIR" >> ${CONFIG_MK}
 
     LIBRARIES=
 
@@ -120,7 +120,7 @@ rtbuf_library() {
         SRC_LA="$(c2la "$SRC")"
         echo >> ${CONFIG_MK}
         echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
-        echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath ${RTBUF_MODULE_LIBDIR}" >> ${CONFIG_MK}
+        echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath ${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
         LIBRARIES="$LIBRARIES $SRC_LA"
     done
 
@@ -130,7 +130,7 @@ rtbuf_library() {
     echo >> ${CONFIG_MK}
     echo "install:${LIBRARIES}" >> ${CONFIG_MK}
     for LIB in $LIBRARIES; do
-        echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${RTBUF_MODULE_LIBDIR}" >> ${CONFIG_MK}
-        echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${RTBUF_MODULE_LIBDIR}/$LIB" >> ${CONFIG_MK}
+        echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
+        echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${RTBUF_LIBRARY_LIBDIR}/$LIB" >> ${CONFIG_MK}
     done
 }

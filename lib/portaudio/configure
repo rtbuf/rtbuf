@@ -25,7 +25,8 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS="$(pkg-config --libs portaudio-2.0)"
+LIBS="../librtbuf_signal.la"
+LIBS="$LIBS $(pkg-config --libs portaudio-2.0)"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 rtbuf_library portaudio
