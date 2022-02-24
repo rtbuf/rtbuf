@@ -1,7 +1,10 @@
 #!/bin/sh
+set -e
+
+SRCDIR="$(dirname $0)"
 
 o_rule() {
-    $CC $CPPFLAGS -M "$1"
+    $CC $CPPFLAGS -M "$1" || { echo "$1" | sed -e 's/^\(.*\)\.c$/\1.o: \1.c/'; }
 }
 
 lo_rule() {
@@ -9,7 +12,7 @@ lo_rule() {
 }
 
 prog_rule() {
-    o_rule "$1" | sed -e 's/[.]o:/:/'
+    { o_rule "$1" || exit 1; } | sed -e 's/[.]o:/:/'
 }
 
 c2prog() {
@@ -52,8 +55,10 @@ fi
 echo "CC = $CC" >> ${CONFIG_MK}
 
 if test -z "$LIBTOOL"; then
-    if test -x /usr/local/bin/libtool; then
-        LIBTOOL=/usr/local/bin/libtool
+    if test -x "$(which glibtool)"; then
+        LIBTOOL="$(which glibtool)"
+    elif test -x "$(which libtool)"; then
+        LIBTOOL="$(which libtool)"
     else
         LIBTOOL=libtool
     fi
@@ -111,12 +116,12 @@ rtbuf_library() {
 
     LIBRARIES=
 
+    echo sources: "'$SOURCES'"
     for SRC in $SOURCES; do
         SRC_LO="$(c2lo "$SRC")"
         echo >> ${CONFIG_MK}
         lo_rule "$SRC" >> ${CONFIG_MK}
         echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
-
         SRC_LA="$(c2la "$SRC")"
         echo >> ${CONFIG_MK}
         echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
@@ -133,4 +138,13 @@ rtbuf_library() {
         echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
         echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${RTBUF_LIBRARY_LIBDIR}/$LIB" >> ${CONFIG_MK}
     done
+}
+
+check_sndio() {
+    if "$CC" $CPPFLAGS $CFLAGS -c "${SRCDIR}/lib/sndio/config.c" -o /dev/null; then
+        HAVE_SNDIO=Yes
+    else
+        HAVE_SNDIO=No
+    fi
+    echo "HAVE_SNDIO = $HAVE_SNDIO" >> ${CONFIG_MK}
 }

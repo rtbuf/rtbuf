@@ -29,8 +29,6 @@
 #include "rtbuf_gtk3_widget.h"
 #include "stack.h"
 
-extern int snprintf (char *, size_t, const char *, ...);
-
 unsigned int g_next_id = 0;
 
 GtkBuilder *builder = NULL;

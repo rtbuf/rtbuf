@@ -7,9 +7,6 @@ SOURCES="$(ls *.c | tr '\n' ' ')"
 
 require_pkg_config
 
-if test -d /usr/local/include; then
-    CPPFLAGS="-I/usr/local/include"
-fi
 CPPFLAGS="$CPPFLAGS $(pkg-config --cflags-only-I glfw3)"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
@@ -22,10 +19,13 @@ CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 CFLAGS="$CFLAGS $(pkg-config --cflags-only-other glfw3)"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS="$(pkg-config --libs glfw3)"
+if test "$(uname -s)" = "Darwin"; then
+    LIBS="$LIBS -framework OpenGL"
+fi
+LIBS="$LIBS ../../librtbuf/librtbuf.la ../librtbuf_music.la ../librtbuf_signal.la"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 rtbuf_library glfw3

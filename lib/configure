@@ -9,9 +9,6 @@ SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
 
 DIRS="$(ls -d */)"
 
-if test -d /usr/local/include; then
-    CPPFLAGS="-I/usr/local/include"
-fi
 CPPFLAGS="$CPPFLAGS"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
@@ -21,13 +18,18 @@ else
     CFLAGS="-DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+CFLAGS="$CFLAGS $(pkg-config --cflags portaudio-2.0)"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS=""
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
+
+check_sndio
+if ! test "x$HAVE_SNDIO" = "xYes"; then
+    DIRS="$(echo "$DIRS" | grep -v sndio)"
+fi
 
 TYPES=
 

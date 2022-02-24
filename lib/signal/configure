@@ -22,7 +22,7 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS="../librtbuf_signal.la -lm"
+LIBS="../../librtbuf/librtbuf.la ../librtbuf_signal.la -lm"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 rtbuf_library signal

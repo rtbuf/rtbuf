@@ -5,9 +5,6 @@ set -e
 
 SOURCES="$(ls *.c | tr '\n' ' ')"
 
-if test -d /usr/local/include; then
-    CPPFLAGS="-I/usr/local/include"
-fi
 CPPFLAGS="$CPPFLAGS"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
@@ -19,10 +16,15 @@ fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS="-lsndio ../librtbuf_signal.la"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
-rtbuf_library sndio
+check_sndio()
+
+if test "x$HAVE_SNDIO" = "xYes"; then
+    rtbuf_library sndio
+else
+    echo "libraries:" >> ${CONFIG_MK}
+fi

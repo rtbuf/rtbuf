@@ -11,9 +11,6 @@ echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
 OBJECTS="$(c2lo "$SOURCES")"
 echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
 
-if test -d /usr/local/include; then
-    CPPFLAGS="-I/usr/local/include"
-fi
 CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\" -DVER=\\\"${VER}\\\""
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
@@ -25,7 +22,9 @@ fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS=""
+if [[ -d /opt/homebrew/lib ]]; then
+    LDFLAGS="$LDFLAGS -L/opt/homebrew/lib -lSystem"
+fi
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS=""

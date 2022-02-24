@@ -7,9 +7,6 @@ SOURCES="$(ls *.c | tr '\n' ' ')"
 
 require_pkg_config
 
-if test -d /usr/local/include; then
-    CPPFLAGS="-I/usr/local/include"
-fi
 CPPFLAGS="$CPPFLAGS $(pkg-config --cflags-only-I portaudio-2.0)"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
@@ -19,13 +16,12 @@ else
     CFLAGS="-DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
-CFLAGS="$CFLAGS $(pkg-config --cflags-only-other portaudio-2.0)"
+CFLAGS="$CFLAGS $(pkg-config --cflags portaudio-2.0)"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS="../librtbuf_signal.la"
+LIBS="../../librtbuf/librtbuf.la ../librtbuf_signal.la"
 LIBS="$LIBS $(pkg-config --libs portaudio-2.0)"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
