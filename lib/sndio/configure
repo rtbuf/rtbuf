@@ -21,7 +21,7 @@ echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 LIBS="-lsndio ../librtbuf_signal.la"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
-check_sndio()
+check_sndio
 
 if test "x$HAVE_SNDIO" = "xYes"; then
     rtbuf_library sndio

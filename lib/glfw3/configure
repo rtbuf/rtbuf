@@ -8,6 +8,7 @@ SOURCES="$(ls *.c | tr '\n' ' ')"
 require_pkg_config
 
 CPPFLAGS="$CPPFLAGS $(pkg-config --cflags-only-I glfw3)"
+CPPFLAGS="$CPPFLAGS -DGL_SILENCE_DEPRECATION=1"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
 if [ x"$DEBUG" = x"yes" ]; then

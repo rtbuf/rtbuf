@@ -1,10 +1,8 @@
 #!/bin/sh
 set -e
 
-SRCDIR="$(dirname $0)"
-
 o_rule() {
-    $CC $CPPFLAGS -M "$1" || { echo "$1" | sed -e 's/^\(.*\)\.c$/\1.o: \1.c/'; }
+    "$CC" $CPPFLAGS $CFLAGS -M "$1" || { echo "$1" | sed -e 's/^\(.*\)\.c$/\1.o: \1.c/'; }
 }
 
 lo_rule() {
@@ -140,11 +138,67 @@ rtbuf_library() {
     done
 }
 
+check_glfw3() {
+    LOG=.lib.glfw3.config.log
+    OLD_CFLAGS=$CFLAGS
+    OLD_LIBS=$LIBS
+    CFLAGS="$CFLAGS $(pkg-config --cflags glfw3)"
+    LIBS="$LIBS $(pkg-config --libs glfw3)"
+    echo "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/glfw3/config.c" -o /dev/null ${LDFLAGS} ${LIBS} > $LOG
+    if   "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/glfw3/config.c" -o /dev/null ${LDFLAGS} ${LIBS} >> $LOG 2>&1; then
+        HAVE_GLFW3=Yes
+    else
+        HAVE_GLFW3=No
+        CFLAGS=$OLD_CFLAGS
+        LIBS=$OLD_LIBS
+    fi
+    echo "Checking library glfw3: $HAVE_GLFW3" >&2
+    echo "HAVE_GLFW3 = $HAVE_GLFW3" >> ${CONFIG_MK}
+}
+
+check_portaudio() {
+    LOG=.lib.portaudio.config.log
+    OLD_CFLAGS=$CFLAGS
+    OLD_LIBS=$LIBS
+    CFLAGS="$CFLAGS $(pkg-config --cflags portaudio-2.0)"
+    LIBS="$LIBS $(pkg-config --libs portaudio-2.0)"
+    echo "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/portaudio/config.c" -o /dev/null ${LDFLAGS} ${LIBS} > $LOG
+    if   "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/portaudio/config.c" -o /dev/null ${LDFLAGS} ${LIBS} >> $LOG 2>&1; then
+        HAVE_PORTAUDIO=Yes
+    else
+        HAVE_PORTAUDIO=No
+        CFLAGS=$OLD_CFLAGS
+        LIBS=$OLD_LIBS
+    fi
+    echo "Checking library portaudio: $HAVE_PORTAUDIO" >&2
+    echo "HAVE_PORTAUDIO = $HAVE_PORTAUDIO" >> ${CONFIG_MK}
+}
+
 check_sndio() {
-    if "$CC" $CPPFLAGS $CFLAGS -c "${SRCDIR}/lib/sndio/config.c" -o /dev/null; then
+    LOG=.lib.sndio.config.log
+    if "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/sndio/config.c" -o /dev/null ${LDFLAGS} -lsndio > $LOG 2>&1; then
         HAVE_SNDIO=Yes
     else
         HAVE_SNDIO=No
     fi
+    echo "Checking library sndio: $HAVE_SNDIO" >&2
     echo "HAVE_SNDIO = $HAVE_SNDIO" >> ${CONFIG_MK}
+}
+
+type_prog() {
+    TYPE_SRC="$1_type.c"
+    TYPE_PROG="$(c2prog "$TYPE_SRC")"
+    TYPE_H="${TYPE_PROG}.h"
+    echo >> ${CONFIG_MK}
+    prog_rule "$TYPE_SRC" >> ${CONFIG_MK}
+    echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} $TYPE_SRC -o $TYPE_PROG" >> ${CONFIG_MK}
+    echo >> ${CONFIG_MK}
+    echo "${TYPE_H}: $TYPE_PROG" >> ${CONFIG_MK}
+    echo "\t./$TYPE_PROG > $TYPE_H" >> ${CONFIG_MK}
+    echo >> ${CONFIG_MK}
+    echo "CLEANFILES += $TYPE_PROG $TYPE_H" >> ${CONFIG_MK}
+    if ! test -f "${TYPE_H}"; then
+        touch "${TYPE_H}"
+    fi
+    TYPES="$TYPES $TYPE_H"
 }

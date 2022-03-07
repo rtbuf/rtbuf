@@ -3,7 +3,7 @@ set -e
 
 . ../config.subr
 
-TYPE_SOURCES="$(ls *_type.c | tr '\n' ' ')"
+LIB_SRCDIR="$(dirname $0)"
 
 SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
 
@@ -18,43 +18,33 @@ else
     CFLAGS="-DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
-CFLAGS="$CFLAGS $(pkg-config --cflags portaudio-2.0)"
-echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
-
-echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS=""
-echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 check_sndio
 if ! test "x$HAVE_SNDIO" = "xYes"; then
     DIRS="$(echo "$DIRS" | grep -v sndio)"
 fi
 
+check_portaudio
+if ! test "x$HAVE_PORTAUDIO" = "xYes"; then
+    DIRS="$(echo "$DIRS" | grep -v portaudio)"
+fi
+
+echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
+echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+echo "LIBS = $LIBS" >> ${CONFIG_MK}
+
 TYPES=
+type_prog music
+if test "x$HAVE_PORTAUDIO" = "xYes"; then
+    type_prog portaudio
+fi
+type_prog reverb
+type_prog signal
+type_prog synth
 
-for TYPE_SRC in $TYPE_SOURCES; do
-    TYPE_PROG="$(c2prog "$TYPE_SRC")"
-    TYPE_H="${TYPE_PROG}.h"
-    TYPES="$TYPES $TYPE_H"
-    echo > "$TYPE_H"
-done
-
-echo >> ${CONFIG_MK}
 echo "types:${TYPES}" >> ${CONFIG_MK}
-
-for TYPE_SRC in $TYPE_SOURCES; do
-    TYPE_PROG="$(c2prog "$TYPE_SRC")"
-    TYPE_H="${TYPE_PROG}.h"
-    echo >> ${CONFIG_MK}
-    prog_rule "$TYPE_SRC" >> ${CONFIG_MK}
-    echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} $TYPE_SRC -o $TYPE_PROG" >> ${CONFIG_MK}
-    echo >> ${CONFIG_MK}
-    echo "${TYPE_H}: $TYPE_PROG" >> ${CONFIG_MK}
-    echo "\t./$TYPE_PROG > $TYPE_H" >> ${CONFIG_MK}
-    echo >> ${CONFIG_MK}
-    echo "CLEANFILES += $TYPE_PROG $TYPE_H" >> ${CONFIG_MK}
-done
 
 LIBRARIES=
 
@@ -100,10 +90,4 @@ done
 
 for DIR in $DIRS; do
     (cd $DIR && ./configure)
-done
-
-for TYPE_SRC in $TYPE_SOURCES; do
-    TYPE_PROG="$(c2prog "$TYPE_SRC")"
-    TYPE_H="${TYPE_PROG}.h"
-    rm "$TYPE_H"
 done

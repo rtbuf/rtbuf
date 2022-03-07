@@ -1,0 +1,52 @@
+./sndio/config.c:1:10: error: 'sndio.h' file not found with <angled> include; use "quotes" instead
+#include <sndio.h>
+         ^~~~~~~~~
+         "sndio.h"
+In file included from ./sndio/config.c:1:
+./sndio/sndio.h:19:10: error: 'sndio.h' file not found with <angled> include; use "quotes" instead
+#include <sndio.h>
+         ^~~~~~~~~
+         "sndio.h"
+./sndio/sndio.h:22:28: error: declaration of 'struct sio_par' will not be visible outside of this function [-Werror,-Wvisibility]
+void print_sio_par (struct sio_par *par);
+                           ^
+./sndio/sndio.h:35:52: error: use of undeclared identifier 'RTBUF_SIGNAL_SAMPLES'
+typedef t_rtbuf_sndio_sample t_rtbuf_sndio_samples[RTBUF_SNDIO_SAMPLES];
+                                                   ^
+./sndio/sndio.h:32:27: note: expanded from macro 'RTBUF_SNDIO_SAMPLES'
+  (RTBUF_SNDIO_CHANNELS * RTBUF_SIGNAL_SAMPLES)
+                          ^
+./sndio/sndio.h:39:3: error: unknown type name 't_rtbuf_signal'
+  t_rtbuf_signal signal[RTBUF_SNDIO_CHANNELS];
+  ^
+./sndio/sndio.h:44:24: error: unknown type name 's_rtbuf'
+int rtbuf_sndio_input (s_rtbuf *rtb);
+                       ^
+./sndio/sndio.h:45:30: error: unknown type name 's_rtbuf'
+int rtbuf_sndio_input_start (s_rtbuf *rtb);
+                             ^
+./sndio/sndio.h:46:29: error: unknown type name 's_rtbuf'
+int rtbuf_sndio_input_stop (s_rtbuf *rtb);
+                            ^
+./sndio/sndio.h:50:18: error: field has incomplete type 'struct sio_par'
+  struct sio_par want;
+                 ^
+./sndio/sndio.h:50:10: note: forward declaration of 'struct sio_par'
+  struct sio_par want;
+         ^
+./sndio/sndio.h:51:18: error: field has incomplete type 'struct sio_par'
+  struct sio_par have;
+                 ^
+./sndio/sndio.h:50:10: note: forward declaration of 'struct sio_par'
+  struct sio_par want;
+         ^
+./sndio/sndio.h:64:25: error: unknown type name 's_rtbuf'
+int rtbuf_sndio_output (s_rtbuf *rtb);
+                        ^
+./sndio/sndio.h:65:31: error: unknown type name 's_rtbuf'
+int rtbuf_sndio_output_start (s_rtbuf *rtb);
+                              ^
+./sndio/sndio.h:66:30: error: unknown type name 's_rtbuf'
+int rtbuf_sndio_output_stop (s_rtbuf *rtb);
+                             ^
+13 errors generated.

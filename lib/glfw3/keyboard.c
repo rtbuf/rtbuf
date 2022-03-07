@@ -231,7 +231,9 @@ void rtbuf_glfw3_keyboard_close (GLFWwindow *window)
 
 GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
 {
-  GLFWwindow *window = glfwCreateWindow(RTBUF_GLFW3_KEYBOARD_WIDTH,
+  GLFWwindow *window;
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  window = glfwCreateWindow(RTBUF_GLFW3_KEYBOARD_WIDTH,
                                         RTBUF_GLFW3_KEYBOARD_HEIGHT,
                                         "rtbuf_glfw3_keyboard",
                                         NULL, NULL);
