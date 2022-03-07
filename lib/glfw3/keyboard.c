@@ -41,7 +41,16 @@ int rtbuf_lib_init (s_rtbuf_lib *lib)
 {
   (void) lib;
   rtbuf_music_init();
-  glfwInit();
+  glfwInitHint(GLFW_COCOA_MENUBAR, GLFW_TRUE);
+  if (!glfwInit()) {
+    const char* description;
+    int code = glfwGetError(&description);
+    if (description)
+      fprintf(stderr, "glfwInit: error %i: %s\n", code, description);
+    else
+      fprintf(stderr, "glfwInit: error %i\n", code);
+    return 1;
+  }
   return 0;
 }
 
@@ -232,14 +241,20 @@ void rtbuf_glfw3_keyboard_close (GLFWwindow *window)
 GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
 {
   GLFWwindow *window;
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   window = glfwCreateWindow(RTBUF_GLFW3_KEYBOARD_WIDTH,
-                                        RTBUF_GLFW3_KEYBOARD_HEIGHT,
-                                        "rtbuf_glfw3_keyboard",
-                                        NULL, NULL);
+                            RTBUF_GLFW3_KEYBOARD_HEIGHT,
+                            "rtbuf_glfw3_keyboard",
+                            NULL, NULL);
   if (!window) {
-    rtbuf_err("glfw3_keyboard: glfwCreateWindow failed");
-    return 0;
+    const char* description;
+    int code = glfwGetError(&description);
+    if (description)
+      fprintf(stderr, "glfwCreateWindow: error %i: %s\n", code, description);
+    else
+      fprintf(stderr, "glfwCreateWindow: error %i\n", code);
+    return NULL;
   }
   glfwMakeContextCurrent(window);
   glfwSetWindowUserPointer(window, rtb);
