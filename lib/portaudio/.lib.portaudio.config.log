@@ -1,1 +1,0 @@
-cc -DGL_SILENCE_DEPRECATION=1 -DNDEBUG -O3 -W -Wall -Werror -std=c89 -pedantic -I/opt/homebrew/Cellar/portaudio/19.7.0/include ./../portaudio/config.c -o /dev/null -L/opt/homebrew/Cellar/portaudio/19.7.0/lib -lportaudio -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework CoreFoundation -framework CoreServices

@@ -162,7 +162,10 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   }
   ver = dlsym(lib->lib, "rtbuf_lib_ver");
   /* printf("lib_load ver %lu\n", *ver); */
-  assert(*ver == RTBUF_LIB_VER);
+  if (*ver != RTBUF_LIB_VER) {
+    rtbuf_lib_delete(lib);
+    return 0;
+  }
   lib->name = symbol_intern(name);
   /* printf("lib_load name %s\n", lib->name); */
   if ((init_ptr.ptr = dlsym(lib->lib, "rtbuf_lib_init")))

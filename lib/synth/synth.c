@@ -256,8 +256,9 @@ int rtbuf_synth_synth (s_rtbuf *rtb)
 int rtbuf_synth_synth_start (s_rtbuf *rtb)
 {
   s_rtbuf_synth_synth_data *data;
-  assert(rtb->proc->out_bytes == sizeof(*data));
-  data = (s_rtbuf_synth_synth_data*) rtb->data;
+  if (rtb->proc->out_bytes < sizeof(*data))
+    return 1;
+  /* data = (s_rtbuf_synth_synth_data*) rtb->data; */
   return 0;
 }
 

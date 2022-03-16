@@ -41,7 +41,6 @@ int rtbuf_lib_init (s_rtbuf_lib *lib)
 {
   (void) lib;
   rtbuf_music_init();
-  glfwInitHint(GLFW_COCOA_MENUBAR, GLFW_TRUE);
   if (!glfwInit()) {
     const char* description;
     int code = glfwGetError(&description);
@@ -241,8 +240,10 @@ void rtbuf_glfw3_keyboard_close (GLFWwindow *window)
 GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
 {
   GLFWwindow *window;
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   window = glfwCreateWindow(RTBUF_GLFW3_KEYBOARD_WIDTH,
                             RTBUF_GLFW3_KEYBOARD_HEIGHT,
                             "rtbuf_glfw3_keyboard",
