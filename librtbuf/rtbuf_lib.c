@@ -101,7 +101,7 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
-const char * rtbuf_lib_find_in_path (const char *name)
+int rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
 {
   char **path = g_rtbuf_lib_path;
   while (*path) {
@@ -111,32 +111,31 @@ const char * rtbuf_lib_find_in_path (const char *name)
     g_str_append(name, strlen(name));
     ext = g_str_append(".so", 4);
     printf("lib find in path \"%s\"\n", lib_path);
-    if (access(lib_path, R_OK) == 0)
-      return lib_path;
+    if (access(lib_path, R_OK) == 0 &&
+        (lib->lib = dlopen(lib_path, RTLD_NOW))) {
+      lib->path = lib_path;
+      return 1;
+    }
     g_str_reset(ext);
     g_str_append(".so.0.0", 8);
     printf("lib find in path \"%s\"\n", lib_path);
-    if (access(lib_path, R_OK) == 0)
-      return lib_path;
+    if (access(lib_path, R_OK) == 0 &&
+        (lib->lib = dlopen(lib_path, RTLD_NOW))) {
+      lib->path = lib_path;
+      return 1;
+    }
     g_str_reset(ext);
     g_str_append("-0.dll", 7);
     printf("lib find in path \"%s\"\n", lib_path);
-    if (access(lib_path, R_OK) == 0)
-      return lib_path;
+    if (access(lib_path, R_OK) == 0 &&
+        (lib->lib = dlopen(lib_path, RTLD_NOW))) {
+      lib->path = lib_path;
+      return 1;
+    }
     g_str_reset(lib_path);
     path++;
   }
   return 0;
-}
-
-void rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
-{
-  const char *path = rtbuf_lib_find_in_path(name);
-  if (path) {
-    printf("lib load path \"%s\"\n", path);
-    lib->path = path;
-    lib->lib = dlopen(lib->path, RTLD_LAZY);
-  }
 }
 
 int rtbuf_lib_proc_p (s_rtbuf_lib_proc *proc)
