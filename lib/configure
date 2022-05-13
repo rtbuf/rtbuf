@@ -91,3 +91,12 @@ done
 for DIR in $DIRS; do
     (cd $DIR && ./configure)
 done
+
+for TYPE_SRC in $TYPE_SOURCES; do
+    TYPE_PROG="$(c2prog "$TYPE_SRC")"
+    TYPE_H="${TYPE_PROG}.h"
+    rm "$TYPE_H"
+done
+
+echo >> ${CONFIG_MK}
+echo ".PHONY: types libraries install subdirs subdirs-clean subdirs-install" >> ${CONFIG_MK}
