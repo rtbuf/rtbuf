@@ -71,7 +71,9 @@ fi
 echo "INSTALL = $INSTALL" >> ${CONFIG_MK}
 
 if test -z "$PREFIX"; then
-    if test -d /usr/local; then
+    if test -d "$HOME/.rtbuf"; then
+        PREFIX="$HOME/.rtbuf"
+    elif test -d /usr/local; then
         PREFIX=/usr/local
     elif test -d /usr; then
         PREFIX=/usr
