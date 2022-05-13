@@ -22,11 +22,12 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS="$(pkg-config --libs glfw3)"
-if test "$(uname -s)" = "Darwin"; then
-    LIBS="$LIBS -framework OpenGL"
-fi
-LIBS="$LIBS ../../librtbuf/librtbuf.la ../librtbuf_music.la ../librtbuf_signal.la"
+LIBS=""
+LIBS="$LIBS $(pkg-config --libs glfw3)"
+LIBS="$LIBS $(pkg-config --libs gl)"
+LIBS="$LIBS ../librtbuf_music.la"
+LIBS="$LIBS ../librtbuf_signal.la"
+LIBS="$LIBS ../../librtbuf/librtbuf.la"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 rtbuf_library glfw3

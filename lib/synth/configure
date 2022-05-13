@@ -22,7 +22,10 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS="../../librtbuf/librtbuf.la ../librtbuf_music.la ../librtbuf_signal.la"
+LIBS=""
+LIBS="$LIBS ../librtbuf_music.la"
+LIBS="$LIBS ../librtbuf_signal.la"
+LIBS="$LIBS ../../librtbuf/librtbuf.la"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 rtbuf_library synth

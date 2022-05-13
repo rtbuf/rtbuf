@@ -258,7 +258,8 @@ int rtbuf_synth_synth_start (s_rtbuf *rtb)
   s_rtbuf_synth_synth_data *data;
   if (rtb->proc->out_bytes < sizeof(*data))
     return 1;
-  /* data = (s_rtbuf_synth_synth_data*) rtb->data; */
+  data = (s_rtbuf_synth_synth_data*) rtb->data;
+  (void) data;
   return 0;
 }
 

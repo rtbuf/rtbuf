@@ -42,8 +42,10 @@ int rtbuf_sndio_input (s_rtbuf *rtb)
 int rtbuf_sndio_input_start (s_rtbuf *rtb)
 {
   s_rtbuf_sndio_input_data *data;
-  assert(rtb->proc->out_bytes == sizeof(*data));
+  if (rtb->proc->out_bytes != sizeof(*data))
+    return 1;
   data = (s_rtbuf_sndio_input_data*) rtb->data;
+  (void) data;
   return 0;
 }
 

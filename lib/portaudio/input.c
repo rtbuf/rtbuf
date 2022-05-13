@@ -44,7 +44,8 @@ int rtbuf_portaudio_input_start (s_rtbuf *rtb)
   s_rtbuf_portaudio_input_data *data;
   if (rtb->proc->out_bytes < sizeof(*data))
     return 1;
-  /* data = (s_rtbuf_portaudio_input_data*) rtb->data; */
+  data = (s_rtbuf_portaudio_input_data*) rtb->data;
+  (void) data;
   return 0;
 }
 
