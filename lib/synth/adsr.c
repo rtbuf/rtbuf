@@ -27,7 +27,7 @@
 #include "../synth.h"
 
 s_rtbuf_lib_proc_in rtbuf_synth_adsr_in[] =
-  {RTBUF_MUSIC_NOTE_IN(),
+  {RTBUF_MUSIC_NOTE_IN(""),
    { "attack",  RTBUF_SIGNAL_TYPE, 0.02, 0.0,  2.0, 1.0 },
    { "decay",   RTBUF_SIGNAL_TYPE, 0.01, 0.0,  2.0, 1.0 },
    { "sustain", RTBUF_SIGNAL_TYPE, 0.4,  0.0,  1.0, 1.0 },

@@ -54,7 +54,7 @@ echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} \${OBJECTS} \
 
 echo >> ${CONFIG_MK}
 echo "$PROG: $LIBRARY $PROG_OBJECTS" >> ${CONFIG_MK}
-echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} ${LIBRARY} -o $PROG" >> ${CONFIG_MK}
+echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} ${LIBRARY} ${LIBS} -o $PROG" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "install: $LIBRARY $PROG" >> ${CONFIG_MK}

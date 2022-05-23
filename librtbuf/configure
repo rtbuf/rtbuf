@@ -11,7 +11,9 @@ echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
 OBJECTS="$(c2lo "$SOURCES")"
 echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
 
-CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\" -DVER=\\\"${VER}\\\""
+CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
+CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
+CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
 if [ x"$DEBUG" = x"yes" ]; then
@@ -20,14 +22,16 @@ else
     CFLAGS="-DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+CFLAGS="$CFLAGS $(pkg-config --cflags libbsd-overlay)"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-if [[ -d /opt/homebrew/lib ]]; then
+if test -d /opt/homebrew/lib; then
     LDFLAGS="$LDFLAGS -L/opt/homebrew/lib -lSystem"
 fi
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS=""
+LIBS="$LIBS $(pkg-config --libs libbsd-overlay)"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 for SRC in $SOURCES; do

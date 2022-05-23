@@ -32,8 +32,11 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 LDFLAGS="-pthread"
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS="../librtbuf/librtbuf.la ../cli/librtbuf_cli.la"
+LIBS=""
+LIBS="$LIBS ../librtbuf/librtbuf.la"
+LIBS="$LIBS ../cli/librtbuf_cli.la"
 LIBS="$LIBS $(pkg-config --libs gtk+-3.0)"
+LIBS="$LIBS -lm"
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 for SRC in $SOURCES; do

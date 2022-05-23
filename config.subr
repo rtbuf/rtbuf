@@ -86,12 +86,12 @@ fi
 echo "PREFIX = $PREFIX" >> ${CONFIG_MK}
 
 if test -z "$OWNER"; then
-    OWNER="$(stat $PREFIX | cut -d\  -f 5)"
+    OWNER="$(stat -t $PREFIX | cut -d\  -f 5)"
 fi
 echo "OWNER = $OWNER" >> ${CONFIG_MK}
 
 if test -z "$GROUP"; then
-    GROUP="$(stat $PREFIX | cut -d\  -f 6)"
+    GROUP="$(stat -t $PREFIX | cut -d\  -f 6)"
 fi
 echo "GROUP = $GROUP" >> ${CONFIG_MK}
 

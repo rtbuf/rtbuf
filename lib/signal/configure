@@ -17,6 +17,7 @@ else
     CFLAGS="-DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+CFLAGS="$CFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
 LDFLAGS=""
