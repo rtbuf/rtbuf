@@ -18,9 +18,11 @@ else
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 
-check_portaudio 
+LIBS=""
+LIBS="$LIBS ../../librtbuf/librtbuf.la"
+LIBS="$LIBS ../librtbuf_signal.la"
 
-LIBS="../../librtbuf/librtbuf.la ../librtbuf_signal.la"
+check_portaudio
 
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}

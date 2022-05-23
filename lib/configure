@@ -3,6 +3,10 @@ set -e
 
 . ../config.subr
 
+check_libbsd
+check_portaudio
+check_sndio
+
 LIB_SRCDIR="$(dirname $0)"
 
 SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
@@ -10,7 +14,9 @@ SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
 DIRS="$(ls -d */)"
 
 CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
+if test "x$HAVE_LIBBSD" = "xYes"; then
+    CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
+fi
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
 if [ x"$DEBUG" = x"yes" ]; then
@@ -22,12 +28,10 @@ CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 
 LIBS=""
 
-check_sndio
 if ! test "x$HAVE_SNDIO" = "xYes"; then
     DIRS="$(echo "$DIRS" | grep -v sndio)"
 fi
 
-check_portaudio
 if ! test "x$HAVE_PORTAUDIO" = "xYes"; then
     DIRS="$(echo "$DIRS" | grep -v portaudio)"
 fi

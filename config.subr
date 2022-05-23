@@ -160,19 +160,21 @@ check_glfw3() {
     echo "HAVE_GLFW3 = $HAVE_GLFW3" >> ${CONFIG_MK}
 }
 
+check_libbsd() {
+    if pkg-config libbsd-overlay; then
+	HAVE_LIBBSD=Yes
+    else
+	HAVE_LIBBSD=No
+    fi
+}
+
 check_portaudio() {
-    LOG=.lib.portaudio.config.log
-    OLD_CFLAGS=$CFLAGS
-    OLD_LIBS=$LIBS
-    CFLAGS="$CFLAGS $(pkg-config --cflags portaudio-2.0)"
-    LIBS="$LIBS $(pkg-config --libs portaudio-2.0)"
-    echo "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/portaudio/config.c" -o /dev/null ${LDFLAGS} ${LIBS} > $LOG
-    if   "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/portaudio/config.c" -o /dev/null ${LDFLAGS} ${LIBS} >> $LOG 2>&1; then
+    if pkg-config portaudio-2.0; then
+	CFLAGS="$CFLAGS $(pkg-config --cflags portaudio-2.0)"
+	LIBS="$LIBS $(pkg-config --libs portaudio-2.0)"
         HAVE_PORTAUDIO=Yes
     else
         HAVE_PORTAUDIO=No
-        CFLAGS=$OLD_CFLAGS
-        LIBS=$OLD_LIBS
     fi
     echo "Checking library portaudio: $HAVE_PORTAUDIO" >&2
     echo "HAVE_PORTAUDIO = $HAVE_PORTAUDIO" >> ${CONFIG_MK}

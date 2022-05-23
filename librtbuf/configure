@@ -11,9 +11,13 @@ echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
 OBJECTS="$(c2lo "$SOURCES")"
 echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
 
+check_libbsd
+
 CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
 CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
-CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
+if pkg-config libbsd-overlay; then
+    CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
+fi
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 
 if [ x"$DEBUG" = x"yes" ]; then
