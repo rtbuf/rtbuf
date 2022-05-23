@@ -22,7 +22,9 @@ else
     CFLAGS="-DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
-CFLAGS="$CFLAGS $(pkg-config --cflags libbsd-overlay)"
+if pkg-config libbsd-overlay; then
+    CFLAGS="$CFLAGS $(pkg-config --cflags libbsd-overlay)"
+fi
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
 if test -d /opt/homebrew/lib; then
@@ -31,7 +33,9 @@ fi
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS=""
-LIBS="$LIBS $(pkg-config --libs libbsd-overlay)"
+if pkg-config libbsd-overlay; then
+    LIBS="$LIBS $(pkg-config --libs libbsd-overlay)"
+fi
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
 for SRC in $SOURCES; do

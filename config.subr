@@ -53,9 +53,11 @@ fi
 echo "CC = $CC" >> ${CONFIG_MK}
 
 if test -z "$LIBTOOL"; then
-    if test -x "$(which glibtool)"; then
+    if test -x "$(which glibtool 2>/dev/null)"; then
         LIBTOOL="$(which glibtool)"
-    elif test -x "$(which libtool)"; then
+    elif test -x "/usr/local/bin/libtool"; then
+        LIBTOOL="/usr/local/bin/libtool"
+    elif test -x "$(which libtool 2>/dev/null)"; then
         LIBTOOL="$(which libtool)"
     else
         LIBTOOL=libtool
@@ -86,12 +88,12 @@ fi
 echo "PREFIX = $PREFIX" >> ${CONFIG_MK}
 
 if test -z "$OWNER"; then
-    OWNER="$(stat -t $PREFIX | cut -d\  -f 5)"
+    OWNER="$(ls -ld /home/dx/.rtbuf/ | tr -s ' ' | cut -d ' ' -f 3)"
 fi
 echo "OWNER = $OWNER" >> ${CONFIG_MK}
 
 if test -z "$GROUP"; then
-    GROUP="$(stat -t $PREFIX | cut -d\  -f 6)"
+    GROUP="$(ls -ld /home/dx/.rtbuf/ | tr -s ' ' | cut -d ' ' -f 4)"
 fi
 echo "GROUP = $GROUP" >> ${CONFIG_MK}
 
