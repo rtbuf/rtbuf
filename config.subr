@@ -181,8 +181,9 @@ check_portaudio() {
 }
 
 check_sndio() {
-    LOG=.lib.sndio.config.log
-    if "$CC" $CPPFLAGS $CFLAGS "${LIB_SRCDIR}/sndio/config.c" -o /dev/null ${LDFLAGS} -lsndio > $LOG 2>&1; then
+    if pkg-config sndio; then
+	CFLAGS="$CFLAGS $(pkg-config --cflags sndio)"
+	LIBS="$LIBS $(pkg-config --libs sndio)"
         HAVE_SNDIO=Yes
     else
         HAVE_SNDIO=No

@@ -3,10 +3,6 @@ set -e
 
 . ../config.subr
 
-check_libbsd
-check_portaudio
-check_sndio
-
 LIB_SRCDIR="$(dirname $0)"
 
 SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
@@ -28,6 +24,10 @@ CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 
 LIBS=""
 
+check_libbsd
+check_portaudio
+check_sndio
+
 if ! test "x$HAVE_SNDIO" = "xYes"; then
     DIRS="$(echo "$DIRS" | grep -v sndio)"
 fi
@@ -47,6 +47,9 @@ if test "x$HAVE_PORTAUDIO" = "xYes"; then
 fi
 type_prog reverb
 type_prog signal
+if test "x$HAVE_SNDIO" = "xYes"; then
+    type_prog sndio
+fi
 type_prog synth
 
 echo "types:${TYPES}" >> ${CONFIG_MK}
