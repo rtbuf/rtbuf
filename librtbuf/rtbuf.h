@@ -13,6 +13,16 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+/**
+ * @file
+ * @brief rtbuf main header.
+ *
+ * Main include file for librtbuf. Include this file in your project
+ * to use librtbuf.
+ *
+ * Use librtbuf_init to initialize librtbuf.
+ * You can then load libraries using rtbuf_lib_*
+ */
 #ifndef RTBUF_H
 #define RTBUF_H
 
@@ -26,34 +36,80 @@
 #define RTBUF_NEW      0x0004
 #define RTBUF_READY    0x0008
 
+/**
+ * @brief Binding to an rtbuf output.
+ *
+ * s_rtbuf_binding is used to bind to an arbitrary output of an
+ * arbitrary rtbuf.
+ */
 struct rtbuf_binding
 {
-  int rtb;
-  unsigned int out;
+  int rtb;          /**< The source rtbuf index in g_rtbuf. */
+  unsigned int out; /**< The source rtbuf output index. */
 };
 
+/**
+ * @brief Real-time buffer.
+ *
+ * s_rtbuf is a real-time buffer with a procedure (start, run, stop).
+ * Use rtbuf_new or rtbuf_new_ptr to allocate and initialize.
+ */
 struct rtbuf
 {
-  void           *data;
-  unsigned int    flags;
-  s_rtbuf_proc   *proc;
-  unsigned int    refc;
-  s_rtbuf_binding in[RTBUF_PROC_IN_MAX];
-  unsigned int    in_n;
-  void           *user_ptr;
+  void           *data;                  /**< Pointer to buffer memory. */
+  unsigned int    flags;                 /**< Flags for buffer state. */
+  s_rtbuf_proc   *proc;                  /**< The procedure for the buffer (start, run, stop). */
+  unsigned int    refc;                  /**< Reference count. */
+  s_rtbuf_binding in[RTBUF_PROC_IN_MAX]; /**< Inputs are bindings to other buffers outputs. */
+  unsigned int    in_n;                  /**< Number of inputs. */
+  void           *user_ptr;              /**< User pointer. */
 };
 
+/**
+ * Maximum number of s_rtbuf allocated at the same time globally.
+ */
 #define RTBUF_MAX         10000
+
+/**
+ * Maximum number of s_rtbuf allocated at the same time for each
+ * procedure.
+ */
 #define RTBUF_INSTANCE_MAX  100
 
+/**
+ * @brief Real time allocator for g_rtbuf.
+ */
 extern s_data_alloc g_rtbuf_alloc;
+
+/**
+ * @brief Global index of s_rtbuf.
+ */
 extern s_rtbuf     *g_rtbuf;
+
+/**
+ * @brief Run loop should exit when g_rtbuf_run is zero.
+ */
 extern int          g_rtbuf_run;
 
+/**
+ * @brief Callback function for rtbuf_new.
+ */
 typedef void (*f_rtbuf_new_cb) (s_rtbuf *rtb);
+
+/**
+ * @brief Callback function for rtbuf_delete.
+ */
 typedef void (*f_rtbuf_delete_cb) (s_rtbuf *rtb);
+
+/**
+ * @brief Callback function for rtbuf_bind.
+ */
 typedef void (*f_rtbuf_bind_cb) (s_rtbuf *src, unsigned int out,
                                  s_rtbuf *dest, unsigned int in);
+
+/**
+ * @brief Callback function for rtbuf_unbind.
+ */
 typedef void (*f_rtbuf_unbind_cb) (s_rtbuf *src, unsigned int out,
                                    s_rtbuf *dest, unsigned int in);
 
@@ -62,10 +118,39 @@ extern f_rtbuf_delete_cb g_rtbuf_delete_cb;
 extern f_rtbuf_bind_cb   g_rtbuf_bind_cb;
 extern f_rtbuf_unbind_cb g_rtbuf_unbind_cb;
 
-int   librtbuf_init ();
+/**
+ * Initialize librtbuf.
+ *
+ * Should be called before any other rtbuf function.
+ *
+ * @sa librtbuf_shutdown
+ */
+int librtbuf_init ();
 
-int   rtbuf_err (const char *msg);
-int   rtbuf_new (s_rtbuf_proc *rp);
+/**
+ * Shutdown librtbuf.
+ *
+ * Should be called only after any other rtbuf function, when the
+ * program shuts down.
+ *
+ * @sa librtbuf_init
+ */
+void librtbuf_shutdown ();
+
+int rtbuf_err (const char *msg);
+
+/**
+ * Create a new real time buffer.
+ *
+ * The buffer is allocated in real time and ready to be bound.
+ * This is equivalent to calling rtbuf_new_ptr with user_ptr
+ * set to NULL.
+ *
+ * @param rp The procedure for the new rtbuf.
+ * @return The index of the new rtbuf in g_rtbuf.
+ */
+int rtbuf_new (s_rtbuf_proc *rp);
+
 int   rtbuf_new_ptr (s_rtbuf_proc *rp, void *user_ptr);
 void  rtbuf_in_unbind (s_rtbuf *rtb, unsigned int in);
 void  rtbuf_out_unbind (s_rtbuf *rtb, unsigned int out);

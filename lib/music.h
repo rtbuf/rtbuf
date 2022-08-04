@@ -23,7 +23,7 @@
 
 #define RTBUF_MUSIC_RELEASE_MAX 1.0
 
-#define RTBUF_MUSIC_NOTE_SIZE RTBUF_SIGNAL_SAMPLE_SIZE
+#define RTBUF_MUSIC_NOTE_SIZE (RTBUF_SIGNAL_SAMPLE_SIZE * 4)
 #define RTBUF_MUSIC_NOTE_TYPE "music_note"
 
 typedef struct rtbuf_music_note {

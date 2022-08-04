@@ -72,7 +72,6 @@ int rtbuf_cli_load (int argc, const char *argv[])
     printf("load failed\n");
     return -1;
   }
-  rtbuf_lib_print(lib);
   return 0;
 }
 
@@ -123,8 +122,6 @@ int rtbuf_cli_new (int argc, const char *argv[])
       sscanf(argv[2], "%hd", &x) == 1 &&
       sscanf(argv[3], "%hd", &y) == 1)
     g_rtbuf_position_cb(&g_rtbuf[rtb], x, y);
-  rtbuf_print(rtb);
-  printf("\n");
   return 0;
 }
 
@@ -146,14 +143,13 @@ int rtbuf_cli_let (int argc, const char *argv[])
     if ((rtb = rtbuf_new(g_rtbuf_lib[rl].proc)) < 0)
       return rtbuf_err("buffer not created");
     v = rtbuf_var_rtbuf_set(argv[1], rtb);
-    assert(v);
+    if (!v)
+      return rtbuf_err("rtbuf_var_rtbuf_set failed");
     if (argc == 6 &&
         g_rtbuf_position_cb &&
         sscanf(argv[5], "%hd", &x) == 1 &&
         sscanf(argv[6], "%hd", &y) == 1)
       g_rtbuf_position_cb(&g_rtbuf[rtb], x, y);
-    rtbuf_var_print(v);
-    printf("\n");
     return 0;
   }
   else if (strncmp("buffer", argv[3], 7) == 0) {
@@ -163,8 +159,8 @@ int rtbuf_cli_let (int argc, const char *argv[])
     if ((rtb = rtbuf_find(argv[4])) < 0)
       return rtbuf_err("buffer not found");
     v = rtbuf_var_rtbuf_set(argv[1], rtb);
-    assert(v);
-    rtbuf_var_print(v);
+    if (!v)
+      return rtbuf_err("rtbuf_var_rtbuf_set failed");
     return 0;
   }
   return rtbuf_err("unknown type for let");
@@ -179,8 +175,6 @@ int rtbuf_cli_delete (int argc, const char *argv[])
   if (i < 0)
     return rtbuf_err("buffer not found\n");
   rtbuf_delete(&g_rtbuf[i]);
-  rtbuf_print(i);
-  printf("\n");
   return 0;
 }
 
@@ -201,7 +195,6 @@ int rtbuf_cli_bind (int argc, const char *argv[])
   if ((in = rtbuf_in_find(&g_rtbuf[dest], argv[4])) < 0)
     return rtbuf_err("input not found");
   rtbuf_bind(src, out, &g_rtbuf[dest], in);
-  rtbuf_print_long(dest);
   return 0;
 }
 
@@ -220,7 +213,6 @@ int rtbuf_cli_unbind (int argc, const char *argv[])
   }
   else
     rtbuf_unbind_all(&g_rtbuf[rtb]);
-  rtbuf_print_long(rtb);
   return 0;
 }
 

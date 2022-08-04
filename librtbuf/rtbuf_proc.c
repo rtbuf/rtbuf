@@ -37,6 +37,15 @@ void rtbuf_proc_init ()
   assert(g_rtbuf_proc);
 }
 
+void rtbuf_proc_shutdown ()
+{
+  if (g_rtbuf_proc) {
+    rtbuf_proc_delete_all();
+    data_alloc_clean(&g_rtbuf_proc_alloc);
+    g_rtbuf_proc = 0;
+  }
+}
+
 int rtbuf_proc_p (s_rtbuf_proc *proc)
 {
   return proc && proc->name;
@@ -52,6 +61,19 @@ void rtbuf_proc_delete (s_rtbuf_proc *proc)
 {
   assert(proc);
   data_delete(&g_rtbuf_proc_alloc, proc);
+}
+
+void rtbuf_proc_delete_all ()
+{
+  unsigned i = 0;
+  int n = g_rtbuf_proc_alloc.n;
+  while (i < g_rtbuf_proc_alloc.max && n > 0) {
+    if (g_rtbuf_proc[i].name) {
+      rtbuf_proc_delete(g_rtbuf_proc + i);
+      n--;
+    }
+    i++;
+  }
 }
 
 s_rtbuf_proc * rtbuf_proc_find (const char *x)

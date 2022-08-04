@@ -47,6 +47,15 @@ void rtbuf_type_init ()
   rtbuf_type_define("double"        , sizeof(double));
 }
 
+void rtbuf_type_shutdown ()
+{
+  if (g_rtbuf_data_type) {
+    rtbuf_type_delete_all();
+    g_rtbuf_data_type = 0;
+    data_alloc_clean(&g_rtbuf_data_type_alloc);
+  }
+}
+
 s_rtbuf_type * rtbuf_type_new (const char *name, unsigned int size)
 {
   s_rtbuf_type *rt = data_new(&g_rtbuf_data_type_alloc);
@@ -62,6 +71,19 @@ void rtbuf_type_delete (s_rtbuf_type *rt)
 {
   assert(rt);
   data_delete(&g_rtbuf_data_type_alloc, rt);
+}
+
+void rtbuf_type_delete_all ()
+{
+  unsigned i = 0;
+  int n = g_rtbuf_data_type_alloc.n;
+  while (i < g_rtbuf_data_type_alloc.max && n > 0) {
+    if (g_rtbuf_data_type[i].name) {
+      rtbuf_type_delete(g_rtbuf_data_type + i);
+      n--;
+    }
+    i++;
+  }
 }
 
 s_rtbuf_type * rtbuf_type_find (symbol name)

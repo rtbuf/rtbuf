@@ -28,9 +28,11 @@ struct rtbuf_type {
 #define RTBUF_TYPE_MAX 1024
 
 void           rtbuf_type_init ();
+void           rtbuf_type_shutdown ();
 s_rtbuf_type * rtbuf_type_new (const char *name,
                                unsigned int size);
 void           rtbuf_type_delete (s_rtbuf_type *rt);
+void           rtbuf_type_delete_all ();
 s_rtbuf_type * rtbuf_type_find (symbol name);
 s_rtbuf_type * rtbuf_type_define (const char *name,
                                   unsigned int size);

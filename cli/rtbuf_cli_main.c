@@ -20,10 +20,13 @@
 
 int main (int argc, char *argv[])
 {
+  int res = 0;
   symbols_init();
   librtbuf_init();
   assert(g_rtbuf);
   repl_init();
   rtbuf_cli_args(argc, argv);
-  return repl();
+  res = repl();
+  librtbuf_shutdown();
+  return res;
 }

@@ -2,6 +2,7 @@
 .libs/
 config.mk
 /cli/rtbuf
+/doc/
 /gtk3/rtbuf-gtk3
 /gtk3/rtbuf_gtk3_resources.c
 /lib/*_type

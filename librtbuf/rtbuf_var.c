@@ -34,12 +34,39 @@ void rtbuf_var_init (void)
   assert(g_rtbuf_var);
 }
 
+void rtbuf_var_shutdown (void)
+{
+  if (g_rtbuf_var) {
+    rtbuf_var_delete_all();
+    g_rtbuf_var = 0;
+    data_alloc_clean(&g_rtbuf_var_alloc);
+  }
+}
+
 s_rtbuf_var * rtbuf_var_new (const char *name)
 {
-  s_rtbuf_var *v = data_new(&g_rtbuf_var_alloc);
-  if (v)
-    v->name = symbol_intern(name);
-  return v;
+  s_rtbuf_var *var = data_new(&g_rtbuf_var_alloc);
+  if (var)
+    var->name = symbol_intern(name);
+  return var;
+}
+
+void rtbuf_var_delete (s_rtbuf_var *var)
+{
+  data_delete(&g_rtbuf_var_alloc, var);
+}
+
+void rtbuf_var_delete_all ()
+{
+  unsigned i = 0;
+  int n = g_rtbuf_var_alloc.n;
+  while (i < g_rtbuf_var_alloc.max) {
+    if (g_rtbuf_var[i].name) {
+      rtbuf_var_delete(g_rtbuf_var + i);
+      n--;
+    }
+    i++;
+  }
 }
 
 s_rtbuf_var * rtbuf_var_find (const char *name)

@@ -23,19 +23,36 @@ s_data_type g_data_alloc_type = {
   sizeof(s_data_alloc) * 8,
   DATA_TYPE_BITS
 };
-s_data_alloc g_data_alloc;
+s_data_alloc g_data_alloc_alloc;
+s_data_alloc *g_data_alloc = NULL;
 
 s_data_type g_data_type_type = {
   sizeof(u_data_type) * 8,
   DATA_TYPE_BITS
 };
-s_data_alloc *g_data_type_alloc = 0;
+s_data_alloc *g_data_type_alloc = NULL;
+u_data_type *g_data_type = NULL;
 
 int libdata_init ()
 {
-  data_alloc_init(&g_data_alloc, &g_data_alloc_type,
+  data_alloc_init(&g_data_alloc_alloc, &g_data_alloc_type,
                   DATA_ALLOC_MAX, 0, (f_data_clean*) data_alloc_clean);
+  assert(g_data_alloc_alloc);
+  g_data_alloc = g_data_alloc_alloc.mem;
+  g_data_type_alloc = data_alloc_new(&g_data_type_type, DATA_TYPE_MAX,
+                                     0, 0);
+  assert(g_data_type_alloc);
+  g_data_type = g_data_type_alloc->mem;
   return 0;
+}
+
+void libdata_shutdown ()
+{
+  if (g_data_alloc) {
+    data_alloc_delete_all();
+    g_data_alloc = 0;
+    data_alloc_clean(&g_data_alloc_alloc);
+  }
 }
 
 void data_alloc_init (s_data_alloc *da, s_data_type *t,
@@ -125,7 +142,7 @@ void data_delete (s_data_alloc *da, void *data)
 s_data_alloc * data_alloc_new (s_data_type *t, unsigned int max,
                                f_data_init *init, f_data_clean *clean)
 {
-  s_data_alloc *da = data_new(&g_data_alloc);
+  s_data_alloc *da = data_new(&g_data_alloc_alloc);
   assert(da);
   data_alloc_init(da, t, max, init, clean);
   return da;
@@ -134,15 +151,25 @@ s_data_alloc * data_alloc_new (s_data_type *t, unsigned int max,
 void data_alloc_delete (s_data_alloc *da)
 {
   assert(da);
-  data_delete(&g_data_alloc, da);
+  data_delete(&g_data_alloc_alloc, da);
+}
+
+void data_alloc_delete_all ()
+{
+  unsigned i = 0;
+  int n = g_data_alloc_alloc.n;
+  while (i < g_data_alloc_alloc.max && n > 0) {
+    if (g_data_alloc[i].t) {
+      data_alloc_delete(g_data_alloc + i);
+      n--;
+    }
+    i++;
+  }
 }
 
 u_data_type * data_type_new (unsigned int bits, unsigned int type)
 {
   u_data_type *t;
-  if (!g_data_type_alloc)
-    g_data_type_alloc = data_alloc_new(&g_data_type_type, DATA_TYPE_MAX,
-                                       0, 0);
   assert(g_data_type_alloc);
   t = data_new(g_data_type_alloc);
   assert(t);

@@ -56,6 +56,15 @@ void rtbuf_lib_init_ ()
   *out = 0;
 }
 
+void rtbuf_lib_shutdown ()
+{
+  if (g_rtbuf_lib) {
+    rtbuf_lib_delete_all();
+    g_rtbuf_lib = 0;
+    data_alloc_clean(&g_rtbuf_lib_alloc);
+  }
+}
+
 int rtbuf_lib_p (s_rtbuf_lib *lib)
 {
   return lib->lib ? 1 : 0;
@@ -101,6 +110,19 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
+void rtbuf_lib_delete_all ()
+{
+  unsigned i = 0;
+  int n = g_rtbuf_lib_alloc.n;
+  while (i < g_rtbuf_lib_alloc.max && n > 0) {
+    if (g_rtbuf_lib[i].name) {
+      rtbuf_lib_delete(g_rtbuf_lib + i);
+      n--;
+    }
+    i++;
+  }
+}
+
 int rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
 {
   char **path = g_rtbuf_lib_path;
@@ -110,7 +132,7 @@ int rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
     lib_path = g_str_append(*path, strlen(*path));
     g_str_append(name, strlen(name));
     ext = g_str_append(".so", 4);
-    printf("lib find in path \"%s\"\n", lib_path);
+    /*printf("lib find in path \"%s\"\n", lib_path);*/
     if (access(lib_path, R_OK) == 0 &&
         (lib->lib = dlopen(lib_path, RTLD_NOW))) {
       lib->path = lib_path;
@@ -118,7 +140,7 @@ int rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
     }
     g_str_reset(ext);
     g_str_append(".so.0.0", 8);
-    printf("lib find in path \"%s\"\n", lib_path);
+    /*printf("lib find in path \"%s\"\n", lib_path);*/
     if (access(lib_path, R_OK) == 0 &&
         (lib->lib = dlopen(lib_path, RTLD_NOW))) {
       lib->path = lib_path;
@@ -126,7 +148,7 @@ int rtbuf_lib_load_path (s_rtbuf_lib *lib, const char *name)
     }
     g_str_reset(ext);
     g_str_append("-0.dll", 7);
-    printf("lib find in path \"%s\"\n", lib_path);
+    /*printf("lib find in path \"%s\"\n", lib_path);*/
     if (access(lib_path, R_OK) == 0 &&
         (lib->lib = dlopen(lib_path, RTLD_NOW))) {
       lib->path = lib_path;
@@ -175,7 +197,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   proc = dlsym(lib->lib, "rtbuf_lib_proc");
   lib->proc = rtbuf_proc_new();
   assert(lib->proc);
-  rtbuf_lib_proc_init_proc(lib->proc, proc);
+  rtbuf_lib_proc_init(lib->proc, proc);
   lib->proc->lib = lib;
   return lib;
 }
@@ -194,8 +216,8 @@ unsigned int add_padding (unsigned int offset, unsigned int size)
   return (offset + align - 1) / align * align;
 }
 
-void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
-                                  s_rtbuf_lib_proc_in *in)
+void rtbuf_lib_proc_init_in (s_rtbuf_proc *proc,
+                             s_rtbuf_lib_proc_in *in)
 {
   unsigned int i = 0;
   unsigned int offset = proc->out_bytes;
@@ -233,8 +255,8 @@ void rtbuf_lib_proc_in_init_proc (s_rtbuf_proc *proc,
                   NULL, NULL);
 }
 
-void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
-                                   s_rtbuf_lib_proc_out *out)
+void rtbuf_lib_proc_init_out (s_rtbuf_proc *proc,
+                              s_rtbuf_lib_proc_out *out)
 {
   unsigned int i = 0;
   bzero(proc->out, sizeof(proc->out));
@@ -264,14 +286,14 @@ void rtbuf_lib_proc_out_init_proc (s_rtbuf_proc *proc,
   proc->out_n = i;
 }
 
-void rtbuf_lib_proc_init_proc (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x)
+void rtbuf_lib_proc_init (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x)
 {
   proc->name = symbol_intern(x->name);
   proc->f = x->f;
   proc->start = x->start;
   proc->stop = x->stop;
-  rtbuf_lib_proc_out_init_proc(proc, x->out);
-  rtbuf_lib_proc_in_init_proc(proc, x->in);
+  rtbuf_lib_proc_init_out(proc, x->out);
+  rtbuf_lib_proc_init_in(proc, x->in);
 }
 
 void rtbuf_lib_print (const s_rtbuf_lib *lib)

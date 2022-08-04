@@ -13,7 +13,10 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
+/**
+ * @file
+ * @brief real time buffer implementation
+ */
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,6 +56,16 @@ int librtbuf_init ()
   rtbuf_lib_init_();
   rtbuf_var_init();
   return 0;
+}
+
+void librtbuf_shutdown ()
+{
+  rtbuf_var_shutdown();
+  rtbuf_lib_shutdown();
+  rtbuf_proc_shutdown();
+  rtbuf_type_shutdown();
+  g_rtbuf = 0;
+  libdata_shutdown();
 }
 
 int rtbuf_new (s_rtbuf_proc *rp)
