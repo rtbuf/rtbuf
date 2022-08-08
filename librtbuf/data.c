@@ -37,7 +37,6 @@ int libdata_init ()
 {
   data_alloc_init(&g_data_alloc_alloc, &g_data_alloc_type,
                   DATA_ALLOC_MAX, 0, (f_data_clean*) data_alloc_clean);
-  assert(g_data_alloc_alloc);
   g_data_alloc = g_data_alloc_alloc.mem;
   g_data_type_alloc = data_alloc_new(&g_data_type_type, DATA_TYPE_MAX,
                                      0, 0);

@@ -403,7 +403,8 @@ void rtbuf_sort ()
   g_rtbuf_sorted_n = 0;
   while ((ptr = rtbuf_in_stack_top(&rvs))) {
     if (ptr->in == g_rtbuf[ptr->rtb].proc->in_n) {
-      g_rtbuf_sorted[g_rtbuf_sorted_n++] = ptr->rtb;
+      g_rtbuf_sorted[g_rtbuf_sorted_n] = ptr->rtb;
+      g_rtbuf_sorted_n++;
       rtbuf_in_stack_pop(&rvs);
     } else
       rtbuf_sort_push_child(&rvs, ptr);
