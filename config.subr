@@ -123,11 +123,11 @@ rtbuf_library() {
         SRC_LO="$(c2lo "$SRC")"
         echo >> ${CONFIG_MK}
         lo_rule "$SRC" >> ${CONFIG_MK}
-        echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+        echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
         SRC_LA="$(c2la "$SRC")"
         echo >> ${CONFIG_MK}
         echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
-        echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath ${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
+        echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath ${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
         LIBRARIES="$LIBRARIES $SRC_LA"
     done
 
@@ -137,8 +137,8 @@ rtbuf_library() {
     echo >> ${CONFIG_MK}
     echo "install:${LIBRARIES}" >> ${CONFIG_MK}
     for LIB in $LIBRARIES; do
-        echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
-        echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${RTBUF_LIBRARY_LIBDIR}/$LIB" >> ${CONFIG_MK}
+        echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
+        echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${RTBUF_LIBRARY_LIBDIR}/$LIB" >> ${CONFIG_MK}
     done
 }
 
@@ -198,10 +198,10 @@ type_prog() {
     TYPE_H="${TYPE_PROG}.h"
     echo >> ${CONFIG_MK}
     prog_rule "$TYPE_SRC" >> ${CONFIG_MK}
-    echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} $TYPE_SRC -o $TYPE_PROG" >> ${CONFIG_MK}
+    echo "	\${CC} \${CPPFLAGS} \${CFLAGS} $TYPE_SRC -o $TYPE_PROG" >> ${CONFIG_MK}
     echo >> ${CONFIG_MK}
     echo "${TYPE_H}: $TYPE_PROG" >> ${CONFIG_MK}
-    echo "\t./$TYPE_PROG > $TYPE_H" >> ${CONFIG_MK}
+    echo "	./$TYPE_PROG > $TYPE_H" >> ${CONFIG_MK}
     echo >> ${CONFIG_MK}
     echo "CLEANFILES += $TYPE_PROG $TYPE_H" >> ${CONFIG_MK}
     if ! test -f "${TYPE_H}"; then
