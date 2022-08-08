@@ -59,12 +59,12 @@ for SRC in $SOURCES; do
     SRC_LO="$(c2lo "$SRC")"
     echo >> ${CONFIG_MK}
     lo_rule "$SRC" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
 
     SRC_LA="librtbuf_$(c2la "$SRC")"
     echo >> ${CONFIG_MK}
     echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath \${LIBDIR}" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath \${LIBDIR}" >> ${CONFIG_MK}
     LIBRARIES="$LIBRARIES $SRC_LA"
 done
 
@@ -74,25 +74,25 @@ echo "libraries:${LIBRARIES} ${TYPES}" >> ${CONFIG_MK}
 echo >> ${CONFIG_MK}
 echo "libraries-install: ${LIBRARIES}" >> ${CONFIG_MK}
 for LIB in $LIBRARIES; do
-    echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}
+    echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 echo "subdirs: ${TYPES}" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "\t\${MAKE} -C \${PWD}/$DIR" >> ${CONFIG_MK}
+    echo "	\${MAKE} -C \${PWD}/$DIR" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 echo "subdirs-clean:" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "\t\${MAKE} -C \${PWD}/$DIR clean" >> ${CONFIG_MK}
+    echo "	\${MAKE} -C \${PWD}/$DIR clean" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 echo "subdirs-install: libraries" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "\t\${MAKE} -C \${PWD}/$DIR install" >> ${CONFIG_MK}
+    echo "	\${MAKE} -C \${PWD}/$DIR install" >> ${CONFIG_MK}
 done
 
 for DIR in $DIRS; do
