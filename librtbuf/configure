@@ -46,14 +46,14 @@ for SRC in $SOURCES; do
     SRC_LO="$(c2lo "$SRC")"
     echo >> ${CONFIG_MK}
     lo_rule "$SRC" >> ${CONFIG_MK}
-    echo "\t${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 echo "$LIB: $OBJECTS" >> ${CONFIG_MK}
-echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} $OBJECTS \${LIBS} -o $LIB -rpath ${LIBDIR}" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} $OBJECTS \${LIBS} -o $LIB -rpath ${LIBDIR}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "install: $LIB" >> ${CONFIG_MK}
-echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
-echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}
