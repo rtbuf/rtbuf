@@ -9,12 +9,6 @@ SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
 
 DIRS="$(ls -d */)"
 
-CPPFLAGS="$CPPFLAGS"
-if test "x$HAVE_LIBBSD" = "xYes"; then
-    CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
-fi
-echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
-
 if [ x"$DEBUG" = x"yes" ]; then
     CFLAGS="-DDEBUG -O0 -ggdb"
 else
@@ -28,6 +22,10 @@ check_libbsd
 check_portaudio
 check_sndio
 
+if test "x$HAVE_LIBBSD" = "xYes"; then
+    CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
+fi
+
 if ! test "x$HAVE_SNDIO" = "xYes"; then
     DIRS="$(echo "$DIRS" | grep -v sndio)"
 fi
@@ -37,6 +35,7 @@ if ! test "x$HAVE_PORTAUDIO" = "xYes"; then
 fi
 
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
+echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 
