@@ -53,6 +53,12 @@ int rtbuf_lib_init (s_rtbuf_lib *lib)
   return 0;
 }
 
+void rtbuf_lib_unload (s_rtbuf_lib *lib)
+{
+  (void) lib;
+  glfwTerminate();
+}
+
 double scancode_frequency (int scancode, unsigned int octave)
 {
   int note = -1;

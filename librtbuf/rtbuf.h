@@ -107,6 +107,11 @@ extern s_rtbuf     *g_rtbuf;
 extern int          g_rtbuf_run;
 
 /**
+ * @brief Is the main loop still active ?
+ */
+extern int          g_rtbuf_running;
+
+/**
  * @brief Callback function for rtbuf_new.
  */
 typedef void (*f_rtbuf_new_cb) (s_rtbuf *rtb);
@@ -128,13 +133,28 @@ typedef void (*f_rtbuf_bind_cb) (s_rtbuf *src, unsigned int out,
 typedef void (*f_rtbuf_unbind_cb) (s_rtbuf *src, unsigned int out,
                                    s_rtbuf *dest, unsigned int in);
 
+/**
+ * @brief Callback function for rtbuf_new.
+ */
 extern f_rtbuf_new_cb    g_rtbuf_new_cb;
+
+/**
+ * @brief Callback function for rtbuf_delete.
+ */
 extern f_rtbuf_delete_cb g_rtbuf_delete_cb;
+
+/**
+ * @brief Callback function for rtbuf_bind.
+ */
 extern f_rtbuf_bind_cb   g_rtbuf_bind_cb;
+
+/**
+ * @brief Callback function for rtbuf_unbind.
+ */
 extern f_rtbuf_unbind_cb g_rtbuf_unbind_cb;
 
 /**
- * Initialize librtbuf.
+ * @brief Initialize librtbuf.
  *
  * Should be called before any other rtbuf function.
  *
@@ -143,7 +163,7 @@ extern f_rtbuf_unbind_cb g_rtbuf_unbind_cb;
 int librtbuf_init ();
 
 /**
- * Shutdown librtbuf.
+ * @brief Shutdown librtbuf.
  *
  * Should be called only after any other rtbuf function, when the
  * program shuts down.
@@ -155,9 +175,9 @@ void librtbuf_shutdown ();
 int rtbuf_err (const char *msg);
 
 /**
- * Create a new real time buffer.
+ * @brief Create a new real time buffer.
  *
- * The buffer is allocated in real time and ready to be bound.
+ * The buffer is allocated in real time and is ready to be bound.
  * This is equivalent to calling rtbuf_new_ptr with user_ptr
  * set to NULL.
  *
@@ -166,7 +186,18 @@ int rtbuf_err (const char *msg);
  */
 int rtbuf_new (s_rtbuf_proc *rp);
 
+/**
+ * @brief Create a new real time buffer.
+ *
+ * The buffer is allocated in real time and is ready to be bound.
+ * Its user pointer is set to user_ptr.
+ *
+ * @param rp The procedure for the new rtbuf.
+ * @param ptr The user pointer for the new rtbuf.
+ * @return The index of the new rtbuf in g_rtbuf.
+ */
 int   rtbuf_new_ptr (s_rtbuf_proc *rp, void *user_ptr);
+
 void  rtbuf_in_unbind (s_rtbuf *rtb, unsigned int in);
 void  rtbuf_out_unbind (s_rtbuf *rtb, unsigned int out);
 void  rtbuf_unbind_all (s_rtbuf *rtb);

@@ -220,14 +220,17 @@ void * rtbuf_cli_run_thread_proc (void *arg)
 {
   (void) arg;
   printf("rtbuf thread: start\n");
-  if (!rtbuf_start())
+  if (!rtbuf_start()) {
     g_rtbuf_run = 1;
+    g_rtbuf_running = 1;
+  }
   while (g_rtbuf_run) {
     if (rtbuf_run())
       g_rtbuf_run = 0;
   }
   printf("rtbuf thread: stop\n");
   rtbuf_stop();
+  g_rtbuf_running = 0;
   return 0;
 }
 
@@ -302,6 +305,7 @@ int rtbuf_cli_exit (int argc, const char *argv[])
   (void) argc;
   (void) argv;
   rtbuf_cli_stop();
+  librtbuf_shutdown();
   close(0);
   exit(0);
   return 0;

@@ -27,6 +27,7 @@ int main (int argc, char *argv[])
   repl_init();
   rtbuf_cli_args(argc, argv);
   res = repl();
+  rtbuf_cli_stop();
   librtbuf_shutdown();
   return res;
 }

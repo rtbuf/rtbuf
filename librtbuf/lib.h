@@ -81,6 +81,7 @@ struct rtbuf_lib {
   s_rtbuf_proc *proc;
   void *lib;
   const char *path;
+  f_rtbuf_lib_unload *unload;
 };
 
 extern char *g_rtbuf_lib_path[];

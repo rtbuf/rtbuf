@@ -32,9 +32,10 @@ s_data_type   g_rtbuf_type = {
   sizeof(s_rtbuf) * 8,
   DATA_TYPE_BITS
 };
-s_data_alloc  g_rtbuf_alloc;
+s_data_alloc  g_rtbuf_alloc = {0};
 s_rtbuf      *g_rtbuf = 0;
 int           g_rtbuf_run = 0;
+int           g_rtbuf_running = 0;
 unsigned int  g_rtbuf_sort = 0;
 unsigned int  g_rtbuf_sorted[RTBUF_MAX];
 unsigned int  g_rtbuf_sorted_n = 0;
