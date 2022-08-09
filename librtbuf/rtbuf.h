@@ -31,9 +31,24 @@
 #include "type.h"
 #include "proc.h"
 
+/**
+ * @brief Rtbuf sort flag. Set if buffer order was changed.
+ */
 #define RTBUF_SORT     0x0001
+
+/**
+ * @brief Rtbuf delete flag. Set if buffer should be deleted.
+ */
 #define RTBUF_DELETE   0x0002
+
+/**
+ * @brief Rtbuf new flag. Set when buffer is new and should be started.
+ */
 #define RTBUF_NEW      0x0004
+
+/**
+ * @brief Rtbuf ready flag. Set when buffer is ready to use.
+ */
 #define RTBUF_READY    0x0008
 
 /**
