@@ -39,26 +39,26 @@ for SRC in $SOURCES; do
     SRC_LO=$(c2lo $SRC)
     echo >> ${CONFIG_MK}
     lo_rule $SRC >> ${CONFIG_MK}
-    echo "\t\${LIBTOOL} --tag CC --mode compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+    echo "	\${LIBTOOL} --tag CC --mode compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 SRC=rtbuf_cli_main.c
 SRC_O=$(c2o $SRC)
 o_rule $SRC >> ${CONFIG_MK}
-echo "\t\${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_O" >> ${CONFIG_MK}
+echo "	\${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_O" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "$LIBRARY: $OBJECTS" >> ${CONFIG_MK}
-echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} \${OBJECTS} \${LIBS} -o $LIBRARY -rpath \${LIBDIR}" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} \${OBJECTS} \${LIBS} -o $LIBRARY -rpath \${LIBDIR}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "$PROG: $LIBRARY $PROG_OBJECTS" >> ${CONFIG_MK}
-echo "\t${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} ${LIBRARY} ${LIBS} -o $PROG" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} ${LIBRARY} ${LIBS} -o $PROG" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "install: $LIBRARY $PROG" >> ${CONFIG_MK}
-echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
-echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIBRARY \${LIBDIR}" >> ${CONFIG_MK}
-echo "\t\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
-echo "\t\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $PROG \${BINDIR}/$PROG" >> ${CONFIG_MK}
+echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIBRARY \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $PROG \${BINDIR}/$PROG" >> ${CONFIG_MK}
