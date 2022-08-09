@@ -36,5 +36,16 @@ typedef enum rtbuf_var_type {
 
 typedef int f_rtbuf_proc (s_rtbuf *rtbuf);
 typedef int f_rtbuf_lib_init (s_rtbuf_lib *lib);
+typedef void f_rtbuf_lib_unload (s_rtbuf_lib *lib);
+
+typedef union rtbuf_lib_init {
+  void *ptr;
+  f_rtbuf_lib_init *fun;
+} u_rtbuf_lib_init;
+
+typedef union rtbuf_lib_unload {
+  void *ptr;
+  f_rtbuf_lib_unload *fun;
+} u_rtbuf_lib_unload;
 
 #endif

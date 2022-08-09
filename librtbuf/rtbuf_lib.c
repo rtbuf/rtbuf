@@ -106,6 +106,8 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
   if (rl->proc) {
     rtbuf_proc_delete(rl->proc);
     rl->proc = 0;
+    if (rl->unload)
+      rl->unload(rl);
   }
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
@@ -170,10 +172,8 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   s_rtbuf_lib *lib = rtbuf_lib_new();
   s_rtbuf_lib_proc *proc;
   unsigned long *ver;
-  union {
-    void *ptr;
-    f_rtbuf_lib_init *init;
-  } init_ptr;
+  u_rtbuf_lib_init init;
+  u_rtbuf_lib_unload unload;
   if (!lib)
     return 0;
   rtbuf_lib_load_path(lib, name);
@@ -189,11 +189,13 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
   }
   lib->name = symbol_intern(name);
   /* printf("lib_load name %s\n", lib->name); */
-  if ((init_ptr.ptr = dlsym(lib->lib, "rtbuf_lib_init")))
-    if (init_ptr.init(lib) < 0) {
+  if ((init.ptr = dlsym(lib->lib, "rtbuf_lib_init")))
+    if (init.fun(lib) < 0) {
       rtbuf_lib_delete(lib);
       return 0;
     }
+  unload.ptr = dlsym(lib->lib, "rtbuf_lib_init");
+  lib->unload = unload.fun;
   proc = dlsym(lib->lib, "rtbuf_lib_proc");
   lib->proc = rtbuf_proc_new();
   assert(lib->proc);
