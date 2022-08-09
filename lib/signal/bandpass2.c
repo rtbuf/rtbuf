@@ -92,7 +92,7 @@ int rtbuf_signal_bandpass2 (s_rtbuf *rtb)
   s_rtbuf_signal_fun qfactor;
   s_rtbuf_signal_bandpass2_data *data;
   unsigned int i = 0;
-  const double sqrt2_3 = sqrt2_2 * M_SQRT2;
+  const double sqrt2_3 = M_SQRT2 * sqrt2_2;
   const double sqrt2_5 = sqrt2_3 * sqrt2_2;
   const double sqrt2_7 = sqrt2_5 * sqrt2_2;
   const double sqrt2_9 = sqrt2_7 * sqrt2_2;
