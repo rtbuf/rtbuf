@@ -107,6 +107,11 @@ extern s_rtbuf     *g_rtbuf;
 extern int          g_rtbuf_run;
 
 /**
+ * @brief Is the main loop still active ?
+ */
+extern int          g_rtbuf_running;
+
+/**
  * @brief Callback function for rtbuf_new.
  */
 typedef void (*f_rtbuf_new_cb) (s_rtbuf *rtb);
