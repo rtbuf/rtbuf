@@ -305,6 +305,7 @@ int rtbuf_cli_exit (int argc, const char *argv[])
   (void) argc;
   (void) argv;
   rtbuf_cli_stop();
+  librtbuf_shutdown();
   close(0);
   exit(0);
   return 0;
