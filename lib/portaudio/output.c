@@ -76,6 +76,7 @@ int rtbuf_portaudio_output_stop (s_rtbuf *rtb)
     Pa_StopStream(data->reserved.stream);
     Pa_CloseStream(data->reserved.stream);
     data->reserved.stream = 0;
+    Pa_Terminate();
   }
   return 0;
 }

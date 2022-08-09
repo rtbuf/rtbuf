@@ -444,7 +444,11 @@ int rtbuf_run ()
   if (g_rtbuf_sort)
     rtbuf_sort();
   while (i < g_rtbuf_sorted_n) {
-    s_rtbuf *rtb = &g_rtbuf[g_rtbuf_sorted[i]];
+    unsigned int rtb_i;
+    s_rtbuf *rtb;
+    rtb_i = g_rtbuf_sorted[i];
+    assert(rtb_i < g_rtbuf_alloc.max);
+    rtb = &g_rtbuf[rtb_i];
     /* printf(" rtbuf_run %i ", i);
        rtbuf_print(g_rtbuf_sorted[i]);
        printf("\n"); */
