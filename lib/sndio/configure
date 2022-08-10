@@ -18,13 +18,12 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
-LIBS="-lsndio ../librtbuf_signal.la"
-echo "LIBS = $LIBS" >> ${CONFIG_MK}
-
 check_sndio
 
 if test "x$HAVE_SNDIO" = "xYes"; then
     rtbuf_library sndio
+    LIBS="-lsndio ../librtbuf_signal.la"
+    echo "LIBS = $LIBS" >> ${CONFIG_MK}
 else
     echo "libraries:" >> ${CONFIG_MK}
 fi

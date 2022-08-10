@@ -186,7 +186,14 @@ check_sndio() {
 	LIBS="$LIBS $(pkg-config --libs sndio)"
         HAVE_SNDIO=Yes
     else
-        HAVE_SNDIO=No
+	OLD_LIBS="$LIBS"
+	LIBS="$LIBS -lsndio"
+	if "${CC}" ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} "${SRCDIR}/lib/sndio/check_sndio.c" ${LIBS} -o /dev/null; then
+	    HAVE_SNDIO=Yes
+	else
+	    LIBS="${OLD_LIBS}"
+            HAVE_SNDIO=No
+	fi
     fi
     echo "Checking library sndio: $HAVE_SNDIO" >&2
     echo "HAVE_SNDIO = $HAVE_SNDIO" >> ${CONFIG_MK}
