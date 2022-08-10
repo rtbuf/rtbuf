@@ -239,8 +239,8 @@ void rtbuf_glfw3_keyboard_close (GLFWwindow *window)
   s_rtbuf *rtb = (s_rtbuf*) glfwGetWindowUserPointer(window);
   s_rtbuf_glfw3_keyboard_data* data = (s_rtbuf_glfw3_keyboard_data*)
     rtb->data;
-  glfwDestroyWindow(window);
   data->window = 0;
+  glfwDestroyWindow(window);
 }
 
 GLFWwindow * rtbuf_glfw3_keyboard_window (s_rtbuf *rtb)
@@ -295,6 +295,7 @@ int rtbuf_glfw3_keyboard_stop (s_rtbuf *rtb)
   s_rtbuf_glfw3_keyboard_data *data;
   data = (s_rtbuf_glfw3_keyboard_data*) rtb->data;
   rtbuf_music_notes_delete_all(&data->notes);
+  rtbuf_glfw3_keyboard_close(data->window);
   return 0;
 }
 
