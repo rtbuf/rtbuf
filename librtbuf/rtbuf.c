@@ -65,6 +65,7 @@ void librtbuf_shutdown ()
   rtbuf_lib_shutdown();
   rtbuf_proc_shutdown();
   rtbuf_type_shutdown();
+  data_alloc_clean(&g_rtbuf_alloc);
   g_rtbuf = 0;
   libdata_shutdown();
 }

@@ -99,10 +99,12 @@ s_rtbuf_lib * rtbuf_lib_new ();
 void          rtbuf_lib_print (const s_rtbuf_lib *lib);
 void          rtbuf_lib_print_long (unsigned int i);
 
+void rtbuf_lib_proc_clean (s_rtbuf_proc *proc);
 void rtbuf_lib_proc_init_in (s_rtbuf_proc *proc,
                              s_rtbuf_lib_proc_in *in);
 void rtbuf_lib_proc_init_out (s_rtbuf_proc *proc,
                               s_rtbuf_lib_proc_out *out);
 void rtbuf_lib_proc_init (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x);
+
 
 #endif

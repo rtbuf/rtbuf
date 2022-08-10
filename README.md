@@ -19,6 +19,11 @@ sudo apt install bmake gcc libbsd-dev libglfw3-dev libgtk-3-dev libreadline-dev 
 make
 make install
 ```
+## Usage
+```
+. ./home-rtbuf
+rtbuf
+```
 
 ## Issues
 

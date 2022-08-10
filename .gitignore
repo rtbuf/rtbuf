@@ -11,3 +11,4 @@ config.mk
 /lib/*/.*.log
 *.la
 *.lo
+*.o

@@ -105,6 +105,7 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
   assert(rl);
   if (rl->proc) {
     rtbuf_proc_delete(rl->proc);
+    rtbuf_lib_proc_clean(rl->proc);
     rl->proc = 0;
     if (rl->unload)
       rl->unload(rl);
@@ -253,8 +254,6 @@ void rtbuf_lib_proc_init_in (s_rtbuf_proc *proc,
   proc->bytes = offset;
   proc->type.bits = offset * 8;
   proc->type.type = DATA_TYPE_BITS;
-  data_alloc_init(&proc->alloc, &proc->type, RTBUF_INSTANCE_MAX,
-                  NULL, NULL);
 }
 
 void rtbuf_lib_proc_init_out (s_rtbuf_proc *proc,
@@ -296,6 +295,13 @@ void rtbuf_lib_proc_init (s_rtbuf_proc *proc, s_rtbuf_lib_proc *x)
   proc->stop = x->stop;
   rtbuf_lib_proc_init_out(proc, x->out);
   rtbuf_lib_proc_init_in(proc, x->in);
+  data_alloc_init(&proc->alloc, &proc->type, RTBUF_INSTANCE_MAX,
+                  NULL, NULL);
+}
+
+void rtbuf_lib_proc_clean (s_rtbuf_proc *proc)
+{
+  data_alloc_clean(&proc->alloc);
 }
 
 void rtbuf_lib_print (const s_rtbuf_lib *lib)
