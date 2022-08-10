@@ -195,7 +195,7 @@ s_rtbuf_lib * rtbuf_lib_load (const char *name)
       rtbuf_lib_delete(lib);
       return 0;
     }
-  unload.ptr = dlsym(lib->lib, "rtbuf_lib_init");
+  unload.ptr = dlsym(lib->lib, "rtbuf_lib_unload");
   lib->unload = unload.fun;
   proc = dlsym(lib->lib, "rtbuf_lib_proc");
   lib->proc = rtbuf_proc_new();
