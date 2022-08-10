@@ -104,11 +104,11 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
 {
   assert(rl);
   if (rl->proc) {
-    rtbuf_proc_delete(rl->proc);
-    rtbuf_lib_proc_clean(rl->proc);
-    rl->proc = 0;
     if (rl->unload)
       rl->unload(rl);
+    rtbuf_lib_proc_clean(rl->proc);
+    rtbuf_proc_delete(rl->proc);
+    rl->proc = 0;
   }
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
