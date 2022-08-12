@@ -9,6 +9,9 @@ config.mk
 /lib/*_type.h
 /lib/.*.log
 /lib/*/.*.log
+.gdb_history
 *.la
 *.lo
 *.o
+*.gcno
+*.gcda

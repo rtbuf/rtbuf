@@ -3,7 +3,7 @@ CLEANFILES =
 all: types libraries subdirs
 
 clean: subdirs-clean
-	rm -rf .libs *.o *.lo *.la ${CLEANFILES}
+	rm -rf .libs *.o *.lo *.la ${CLEANFILES} *.gcno *.gcna *.gcda
 
 install: libraries-install subdirs-install
 

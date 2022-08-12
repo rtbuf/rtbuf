@@ -3,7 +3,7 @@ CLEANFILES=
 all: rtbuf-gtk3
 
 clean:
-	rm -rf .libs *.o *.lo *.la rtbuf-gtk3 ${CLEANFILES}
+	rm -rf .libs *.o *.lo *.la rtbuf-gtk3 ${CLEANFILES} *.gcno *.gcna *.gcda
 
 rtbuf_gtk3_UI = \
 	rtbuf_gtk3_input_widget.ui \
