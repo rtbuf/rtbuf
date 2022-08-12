@@ -12,9 +12,9 @@ require_pkg_config
 CPPFLAGS="$CPPFLAGS"
 
 if [ x"$DEBUG" = x"yes" ]; then
-    CFLAGS="-DDEBUG -O0 -ggdb"
+    CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb"
 else
-    CFLAGS="-DNDEBUG -O3"
+    CFLAGS="$CFLAGS -DNDEBUG -O3"
 fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 
