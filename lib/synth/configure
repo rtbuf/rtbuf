@@ -6,7 +6,7 @@ set -e
 SOURCES="$(ls *.c | tr '\n' ' ')"
 
 if test -d /usr/local/include; then
-    CPPFLAGS="-I/usr/local/include"
+    CPPFLAGS="$CPPFLAGS -I/usr/local/include"
 fi
 CPPFLAGS="$CPPFLAGS"
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
@@ -19,7 +19,6 @@ fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS=""
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS=""

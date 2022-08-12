@@ -13,7 +13,6 @@ echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
 OBJECTS="$(c2o "$SOURCES")"
 echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
 
-CPPFLAGS=
 if test -d /usr/local/include; then
     CPPFLAGS="$CPPFLAGS -I/usr/local/include"
     CPPFLAGS="$CPPFLAGS $(pkg-config --cflags-only-I gtk+-3.0)"
@@ -29,7 +28,7 @@ CFLAGS="$CFLAGS -W -Wall -Werror"
 CFLAGS="$CFLAGS $(pkg-config --cflags-only-other gtk+-3.0)"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS="-pthread"
+LDFLAGS="$LDFLAGS -pthread"
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS=""

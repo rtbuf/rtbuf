@@ -14,7 +14,6 @@ echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
 
 PROG_OBJECTS=rtbuf_cli_main.o
 
-CPPFLAGS=
 if test -d /usr/local/include; then
     CPPFLAGS="$CPPFLAGS -I/usr/local/include"
 fi
@@ -29,7 +28,7 @@ fi
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 
-LDFLAGS="-pthread"
+LDFLAGS="$LDFLAGS -pthread"
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 
 LIBS="../librtbuf/librtbuf.la -lreadline"
