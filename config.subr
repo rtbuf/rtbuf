@@ -3,6 +3,7 @@ set -e
 
 o_rule() {
     "$CC" $CPPFLAGS $CFLAGS -M "$1" || { echo "$1" | sed -e 's/^\(.*\)\.c$/\1.o: \1.c/'; }
+    echo "$1" | sed -e 's/^\(.*\)\.c$/\1.o: Makefile config.mk/'
 }
 
 lo_rule() {
