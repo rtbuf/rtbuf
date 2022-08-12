@@ -21,8 +21,8 @@
 #include "rtbuf.h"
 
 s_data_type  g_rtbuf_var_type = {
-  sizeof(s_rtbuf_var) * 8,
-  DATA_TYPE_BITS
+  sizeof(s_rtbuf_var),
+  DATA_TYPE_BYTES
 };
 s_data_alloc g_rtbuf_var_alloc;
 s_rtbuf_var *g_rtbuf_var;

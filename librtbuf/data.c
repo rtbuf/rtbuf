@@ -20,15 +20,15 @@
 #include "data.h"
 
 s_data_type g_data_alloc_type = {
-  sizeof(s_data_alloc) * 8,
-  DATA_TYPE_BITS
+  sizeof(s_data_alloc),
+  DATA_TYPE_BYTES
 };
 s_data_alloc g_data_alloc_alloc;
 s_data_alloc *g_data_alloc = NULL;
 
 s_data_type g_data_type_type = {
-  sizeof(u_data_type) * 8,
-  DATA_TYPE_BITS
+  sizeof(u_data_type),
+  DATA_TYPE_BYTES
 };
 s_data_alloc *g_data_type_alloc = NULL;
 u_data_type *g_data_type = NULL;
@@ -62,7 +62,7 @@ void data_alloc_init (s_data_alloc *da, s_data_type *t,
   assert(t);
   da->t = t;
   da->max = max;
-  da->mem = calloc(max, (t->bits + 7) / 8);
+  da->mem = calloc(max, t->bytes);
   da->n = 0;
   da->free = calloc(max, sizeof(unsigned int));
   da->free_n = 0;
@@ -73,7 +73,7 @@ void data_alloc_init (s_data_alloc *da, s_data_type *t,
 void data_alloc_clean (s_data_alloc *da)
 {
   assert(da);
-  bzero(da->mem, da->max * ((da->t->bits + 7) / 8));
+  bzero(da->mem, da->max * da->t->bytes);
   bzero(da->free, da->max * sizeof(unsigned int));
   free(da->mem);
   free(da->free);
@@ -81,7 +81,7 @@ void data_alloc_clean (s_data_alloc *da)
 
 void * data_new_at (s_data_alloc *da, unsigned int i)
 {
-  unsigned int octets = (da->t->bits + 7) / 8;
+  unsigned int octets = da->t->bytes;
   unsigned int offset = i * octets;
   void *m = (char*) da->mem + offset;
   bzero(m, octets);
@@ -128,7 +128,7 @@ void data_delete (s_data_alloc *da, void *data)
   unsigned int i;
   assert(da);
   assert(da->t);
-  octets = ((da->t->bits + 7) / 8);
+  octets = da->t->bytes;
   assert(da->mem <= data);
   assert((char*) data < (char*) da->mem + da->max * octets);
   if (da->clean)
@@ -166,13 +166,13 @@ void data_alloc_delete_all ()
   }
 }
 
-u_data_type * data_type_new (unsigned int bits, unsigned int type)
+u_data_type * data_type_new (unsigned int bytes, unsigned int type)
 {
   u_data_type *t;
   assert(g_data_type_alloc);
   t = data_new(g_data_type_alloc);
   assert(t);
-  t->t.bits = bits;
+  t->t.bytes = bytes;
   t->t.type = type;
   return t;
 }

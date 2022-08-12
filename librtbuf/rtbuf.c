@@ -29,8 +29,8 @@
 #include "symbol.h"
 
 s_data_type   g_rtbuf_type = {
-  sizeof(s_rtbuf) * 8,
-  DATA_TYPE_BITS
+  sizeof(s_rtbuf),
+  DATA_TYPE_BYTES
 };
 s_data_alloc  g_rtbuf_alloc = {0};
 s_rtbuf      *g_rtbuf = 0;
@@ -276,7 +276,7 @@ int rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
   int out_i = rtbuf_proc_out_find(rtb->proc, name);
   if (out_i >= 0) {
     s_rtbuf_proc_out *out = &rtb->proc->out[out_i];
-    if (out->type->t.bits == size * 8) {
+    if (out->type->t.bytes == size) {
       void *data = (char*) rtb->data + out->offset;
       memcpy(data, value, size);
       return size;
@@ -555,7 +555,7 @@ int rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value)
   assert(out < rtb->proc->out_n);
   o = &rtb->proc->out[out];
   assert(o->type);
-  if (o->type->t.bits >= sizeof(int) * 8) {
+  if (o->type->t.bytes >= sizeof(int)) {
     int *i = (int*)((char*) rtb->data + o->offset);
     return *i;
   }

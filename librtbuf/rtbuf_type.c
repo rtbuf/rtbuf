@@ -23,8 +23,8 @@
 #include "symbol.h"
 
 s_data_type   g_rtbuf_data_type_type = {
-  sizeof(s_rtbuf_type) * 8,
-  DATA_TYPE_BITS
+  sizeof(s_rtbuf_type),
+  DATA_TYPE_BYTES
 };
 s_data_alloc  g_rtbuf_data_type_alloc;
 s_rtbuf_type *g_rtbuf_data_type;
@@ -62,8 +62,8 @@ s_rtbuf_type * rtbuf_type_new (const char *name, unsigned int size)
   if (!rt)
     return 0;
   rt->name = symbol_intern(name);
-  rt->t.bits = size * 8;
-  rt->t.type = DATA_TYPE_BITS;
+  rt->t.bytes = size;
+  rt->t.type = DATA_TYPE_BYTES;
   return rt;
 }
 
@@ -105,7 +105,7 @@ s_rtbuf_type * rtbuf_type_find (symbol name)
 s_rtbuf_type * rtbuf_type_define (const char *name, unsigned int size)
 {
   s_rtbuf_type *found = rtbuf_type_find(name);
-  if (found && found->t.bits == size * 8)
+  if (found && found->t.bytes == size)
     return found;
   return rtbuf_type_new(name, size);
 }
@@ -126,7 +126,7 @@ s_rtbuf_type * rtbuf_type_parse_array (const char *name)
       return 0;
     buf[rb] = 0;
     size = atoi(&buf[lb + 1]);
-    return rtbuf_type_new(name, (element_type->t.bits + 7) / 8 * size);
+    return rtbuf_type_new(name, element_type->t.bytes * size);
   }
   return 0;
 }

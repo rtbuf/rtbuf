@@ -26,8 +26,8 @@
 #include "symbol.h"
 
 s_data_type  g_rtbuf_lib_type = {
-  sizeof(s_rtbuf_lib) * 8,
-  DATA_TYPE_BITS
+  sizeof(s_rtbuf_lib),
+  DATA_TYPE_BYTES
 };
 s_data_alloc g_rtbuf_lib_alloc;
 s_rtbuf_lib *g_rtbuf_lib;
@@ -252,8 +252,8 @@ void rtbuf_lib_proc_init_in (s_rtbuf_proc *proc,
   }
   proc->in_n = i;
   proc->bytes = offset;
-  proc->type.bits = offset * 8;
-  proc->type.type = DATA_TYPE_BITS;
+  proc->type.bytes = offset;
+  proc->type.type = DATA_TYPE_BYTES;
 }
 
 void rtbuf_lib_proc_init_out (s_rtbuf_proc *proc,
@@ -273,7 +273,7 @@ void rtbuf_lib_proc_init_out (s_rtbuf_proc *proc,
       g_str_append(": ", 2);
       g_str_append(o->type->name, strlen(o->type->name) + 1);
       assert(o->type);
-      size = (o->type->t.bits + 7) / 8;
+      size = o->type->t.bytes;
       offset = add_padding(offset, size);
       o->offset = offset;
       offset += size;

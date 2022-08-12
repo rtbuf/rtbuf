@@ -53,7 +53,7 @@ rtbuf_signal_sample (s_rtbuf *rtb,
     assert(v->out < src->proc->out_n);
     out = &src->proc->out[v->out];
     assert(out->type);
-    if (out->type->t.bits >= sizeof(t_rtbuf_signal_sample) * 8) {
+    if (out->type->t.bytes >= sizeof(t_rtbuf_signal_sample)) {
       t_rtbuf_signal_sample *sample = (t_rtbuf_signal_sample*)
         ((char*) src->data + out->offset);
       return *sample;
@@ -102,9 +102,9 @@ void rtbuf_signal_fun (s_rtbuf *rtb,
     assert(v->out < dest->proc->out_n);
     out = &dest->proc->out[v->out];
     assert(out->type);
-    if (out->type->t.bits >= sizeof(t_rtbuf_signal_sample) * 8)
+    if (out->type->t.bytes >= sizeof(t_rtbuf_signal_sample))
       rsf->signal = (double*)((char*) dest->data + out->offset);
-    if (out->type->t.bits >= sizeof(t_rtbuf_signal) * 8)
+    if (out->type->t.bytes >= sizeof(t_rtbuf_signal))
       rsf->sample_fun = rtbuf_signal_sample_from_signal;
   }
 }

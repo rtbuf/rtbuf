@@ -23,8 +23,8 @@
 #include "symbol.h"
 
 s_data_type g_rtbuf_proc_type = {
-  sizeof(s_rtbuf_proc) * 8,
-  DATA_TYPE_BITS
+  sizeof(s_rtbuf_proc),
+  DATA_TYPE_BYTES
 };
 s_data_alloc g_rtbuf_proc_alloc;
 s_rtbuf_proc *g_rtbuf_proc;

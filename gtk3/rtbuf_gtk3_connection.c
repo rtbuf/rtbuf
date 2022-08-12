@@ -19,8 +19,8 @@
 #include "rtbuf_gtk3.h"
 
 s_data_type g_rtbuf_gtk_connection_type = {
-  sizeof(s_rtbuf_gtk_connection) * 8,
-  DATA_TYPE_BITS
+  sizeof(s_rtbuf_gtk_connection),
+  DATA_TYPE_BYTES
 };
 s_data_alloc g_rtbuf_gtk_connection_alloc;
 

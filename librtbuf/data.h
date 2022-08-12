@@ -17,7 +17,7 @@
 #define DATA_H
 
 typedef enum {
-  DATA_TYPE_BITS,
+  DATA_TYPE_BYTES,
   DATA_TYPE_VECTOR,
   DATA_TYPE_INTEGER,
   DATA_TYPE_FLOAT,
@@ -28,7 +28,7 @@ typedef enum {
 #define DATA_TYPE_BIG_ENDIAN 2
 
 typedef struct data_type {
-  unsigned int bits;
+  unsigned int bytes;
   unsigned int type;
 } s_data_type;
 
@@ -63,7 +63,7 @@ typedef union data_type_ {
 
 #define DATA_TYPE_MAX 1024
 
-u_data_type * data_type_new (unsigned int bits, unsigned int type);
+u_data_type * data_type_new (unsigned int bytes, unsigned int type);
 void          data_type_delete (s_data_type *t);
 
 typedef void f_data_init (void *data);
