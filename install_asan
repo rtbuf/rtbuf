@@ -1,0 +1,7 @@
+#!/bin/sh
+export CFLAGS="-fsanitize=address -O1 -fno-omit-frame-pointer -g"
+export CXXFLAGS="-fsanitize=address -O1 -fno-omit-frame-pointer -g"
+export LDFLAGS="-fsanitize=address -O1 -fno-omit-frame-pointer -g"
+./configure
+make clean
+make install

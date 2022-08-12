@@ -1,0 +1,7 @@
+#!/bin/sh
+export CFLAGS="-ftest-coverage -fprofile-arcs"
+export CXXFLAGS="-ftest-coverage -fprofile-arcs"
+export LDFLAGS="-ftest-coverage -fprofile-arcs"
+./configure
+make clean
+make install
