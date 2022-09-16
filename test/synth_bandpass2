@@ -16,6 +16,6 @@ bind Synth00 signal Fx00 signal
 
 load portaudio/output
 let Output = new portaudio/output
-bind Synth00 signal Output left
+bind Fx00 signal Output left
 bind Fx00 signal Output right
 start
