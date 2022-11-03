@@ -6,4 +6,4 @@ clean:
 
 .PHONY: all clean
 
-.include "config.mk"
+include config.mk

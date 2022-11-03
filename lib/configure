@@ -80,19 +80,19 @@ done
 echo >> ${CONFIG_MK}
 echo "subdirs: ${TYPES}" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "	\${MAKE} -C \${PWD}/$DIR" >> ${CONFIG_MK}
+    echo "	\${MAKE} -C $DIR" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 echo "subdirs-clean:" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "	\${MAKE} -C \${PWD}/$DIR clean" >> ${CONFIG_MK}
+    echo "	\${MAKE} -C $DIR clean" >> ${CONFIG_MK}
 done
 
 echo >> ${CONFIG_MK}
 echo "subdirs-install: libraries" >> ${CONFIG_MK}
 for DIR in $DIRS; do
-    echo "	\${MAKE} -C \${PWD}/$DIR install" >> ${CONFIG_MK}
+    echo "	\${MAKE} -C $DIR install" >> ${CONFIG_MK}
 done
 
 for DIR in $DIRS; do

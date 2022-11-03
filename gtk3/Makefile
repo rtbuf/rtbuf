@@ -18,4 +18,4 @@ CLEANFILES = rtbuf_gtk3_resources.c
 
 .PHONY: all clean
 
-.include "config.mk"
+include config.mk
