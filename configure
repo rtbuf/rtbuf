@@ -5,6 +5,17 @@ export SRCDIR="$PWD"
 
 . ./config.subr
 
+RTBUF_DIRS="librtbuf lib cli gtk3"
+RTBUF_CONFIGURES="$(find . -name "configure" | tr '\n' ' ')"
+RTBUF_MAKEFILES="$(find . -name "Makefile" | tr '\n' ' ')"
+RTBUF_C_SOURCES="$(find $RTBUF_DIRS -name "[a-z]*.c" -or -name "[a-z]*.h" -or -name "[a-z]*.c.in" -or -name "[a-z]*.h.in" | tr '\n' ' ')"
+
+echo "RTBUF_CONFIGURES = $RTBUF_CONFIGURES" >> ${CONFIG_MK}
+echo "RTBUF_MAKEFILES = $RTBUF_MAKEFILES" >> ${CONFIG_MK}
+echo "RTBUF_C_SOURCES = $RTBUF_C_SOURCES" >> ${CONFIG_MK}
+
+update_config_mk
+
 (cd librtbuf && ./configure)
 (cd lib && ./configure)
 (cd cli && ./configure)

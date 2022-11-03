@@ -1,3 +1,16 @@
+## rtbuf
+## Copyright 2018-2022 kmx.io <contact@kmx.io>
+##
+## Permission is hereby granted to use this software granted
+## the above copyright notice and this permission paragraph
+## are included in all copies and substantial portions of this
+## software.
+##
+## THIS SOFTWARE IS PROVIDED "AS-IS" WITHOUT ANY GUARANTEE OF
+## PURPOSE AND PERFORMANCE. IN NO EVENT WHATSOEVER SHALL THE
+## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
+## THIS SOFTWARE.
+
 all: build
 
 build:
@@ -21,4 +34,11 @@ install:
 	${MAKE} -C ${PWD}/cli      install
 	${MAKE} -C ${PWD}/gtk3     install
 
+licence:
+	elixir bin/header.exs config.subr ${RTBUF_CONFIGURES}
+	elixir bin/header.exs Makefile ${RTBUF_MAKEFILES}
+	elixir bin/header.exs librtbuf/rtbuf.h ${RTBUF_C_SOURCES}
+
 .PHONY: all build clean doc install
+
+include config.mk
