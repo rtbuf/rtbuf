@@ -95,28 +95,16 @@ if test -z "$INSTALL"; then
 fi
 echo "INSTALL = $INSTALL" >> ${CONFIG_MK}
 
-if test -z "$PREFIX"; then
-    if test -d "$HOME/.rtbuf"; then
-        PREFIX="$HOME/.rtbuf"
-    elif test -d /usr/local; then
-        PREFIX=/usr/local
-    elif test -d /usr; then
-        PREFIX=/usr
-    elif test -d /opt/local; then
-        PREFIX=/opt/local
-    elif test -d /opt; then
-        PREFIX=/opt
-    fi
-fi
+PREFIX="${PREFIX:-/usr/local}"
 echo "PREFIX = $PREFIX" >> ${CONFIG_MK}
 
 if test -z "$OWNER"; then
-    OWNER="$(ls -ld "$HOME/.rtbuf/" | tr -s ' ' | cut -d ' ' -f 3)"
+    OWNER="$(ls -ld "$PREFIX/" | tr -s ' ' | cut -d ' ' -f 3)"
 fi
 echo "OWNER = $OWNER" >> ${CONFIG_MK}
 
 if test -z "$GROUP"; then
-    GROUP="$(ls -ld "$HOME/.rtbuf/" | tr -s ' ' | cut -d ' ' -f 4)"
+    GROUP="$(ls -ld "$PREFIX/" | tr -s ' ' | cut -d ' ' -f 4)"
 fi
 echo "GROUP = $GROUP" >> ${CONFIG_MK}
 
