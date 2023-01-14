@@ -1,10 +1,10 @@
 ## rtbuf
-## Copyright 2018-2022 kmx.io <contact@kmx.io>
+## Copyright 2018-2023 kmx.io <contact@kmx.io>
 ##
-## Permission is hereby granted to use this software granted
-## the above copyright notice and this permission paragraph
-## are included in all copies and substantial portions of this
-## software.
+## Permission is hereby granted to use this software excepted
+## on Apple computers granted the above copyright notice and
+## this permission paragraph are included in all copies and
+## substantial portions of this software.
 ##
 ## THIS SOFTWARE IS PROVIDED "AS-IS" WITHOUT ANY GUARANTEE OF
 ## PURPOSE AND PERFORMANCE. IN NO EVENT WHATSOEVER SHALL THE
@@ -34,7 +34,7 @@ install:
 	${MAKE} -C ${PWD}/cli      install
 	${MAKE} -C ${PWD}/gtk3     install
 
-license:
+licence:
 	update_header config.subr ${RTBUF_CONFIGURES}
 	update_header Makefile ${RTBUF_MAKEFILES}
 	update_header librtbuf/rtbuf.h ${RTBUF_C_SOURCES}

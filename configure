@@ -26,8 +26,8 @@ export PREFIX
 . ./config.subr
 
 RTBUF_DIRS="librtbuf lib cli gtk3"
-RTBUF_CONFIGURES="$(find . -name "configure" | tr '\n' ' ')"
-RTBUF_MAKEFILES="$(find . -name "Makefile" | tr '\n' ' ')"
+RTBUF_CONFIGURES="$(find . -name configure -or -name update_sources | tr '\n' ' ')"
+RTBUF_MAKEFILES="$(find . -name Makefile | tr '\n' ' ')"
 RTBUF_C_SOURCES="$(find $RTBUF_DIRS -name "[a-z]*.c" -or -name "[a-z]*.h" -or -name "[a-z]*.c.in" -or -name "[a-z]*.h.in" | tr '\n' ' ')"
 
 echo "RTBUF_CONFIGURES = $RTBUF_CONFIGURES" >> ${CONFIG_MK}
