@@ -13,9 +13,12 @@
 ## THIS SOFTWARE.
 set -e
 
+export SRC_TOP="$(pwd)/.."
+
 . ../config.subr
 
-LIBRARY=librtbuf_cli.la
+LIB=librtbuf_cli.la
+
 PROG=rtbuf
 
 SOURCES="$(ls *.c | grep -Fv rtbuf_cli_main.c | tr '\n' ' ')"
