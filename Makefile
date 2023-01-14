@@ -34,10 +34,10 @@ install:
 	${MAKE} -C ${PWD}/cli      install
 	${MAKE} -C ${PWD}/gtk3     install
 
-licence:
-	elixir bin/header.exs config.subr ${RTBUF_CONFIGURES}
-	elixir bin/header.exs Makefile ${RTBUF_MAKEFILES}
-	elixir bin/header.exs librtbuf/rtbuf.h ${RTBUF_C_SOURCES}
+license:
+	update_header config.subr ${RTBUF_CONFIGURES}
+	update_header Makefile ${RTBUF_MAKEFILES}
+	update_header librtbuf/rtbuf.h ${RTBUF_C_SOURCES}
 
 .PHONY: all build clean doc install
 

@@ -1,78 +1,207 @@
 #!/bin/sh
 ## rtbuf
-## Copyright 2018-2022 kmx.io <contact@kmx.io>
+## Copyright 2018-2023 kmx.io <contact@kmx.io>
 ##
-## Permission is hereby granted to use this software granted
-## the above copyright notice and this permission paragraph
-## are included in all copies and substantial portions of this
-## software.
+## Permission is hereby granted to use this software excepted
+## on Apple computers granted the above copyright notice and
+## this permission paragraph are included in all copies and
+## substantial portions of this software.
 ##
 ## THIS SOFTWARE IS PROVIDED "AS-IS" WITHOUT ANY GUARANTEE OF
 ## PURPOSE AND PERFORMANCE. IN NO EVENT WHATSOEVER SHALL THE
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
+
 set -e
 
 export SRC_TOP="$(pwd)/.."
 
 . ../config.subr
 
+# Targets
 LIB=librtbuf_cli.la
+LIB_ASAN=librtbuf_cli.asan.la
+LIB_COV=librtbuf_cli.cov.la
+LIB_DEBUG=librtbuf_cli.debug.la
 
 PROG=rtbuf
+PROG_ASAN=rtbuf_asan
+PROG_COV=rtbuf_cov
+PROG_DEBUG=rtbuf_debug
 
-SOURCES="$(ls *.c | grep -Fv rtbuf_cli_main.c | tr '\n' ' ')"
-echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
+# Sources
+. ./sources.sh
 
-OBJECTS="$(c2lo "$SOURCES")"
-echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
+LIB_OBJECTS="$(c2ext .main.lo "$LIB_SOURCES")"
+LIB_OBJECTS_ASAN="$(c2ext .asan.lo "$LIB_SOURCES")"
+LIB_OBJECTS_COV="$(c2ext .cov.lo "$LIB_SOURCES")"
+LIB_OBJECTS_DEBUG="$(c2ext .debug.lo "$LIB_SOURCES")"
 
-PROG_OBJECTS=rtbuf_cli_main.o
+echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
+echo "LIB_OBJECTS_ASAN = $LIB_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "LIB_OBJECTS_COV = $LIB_OBJECTS_COV" >> ${CONFIG_MK}
+echo "LIB_OBJECTS_DEBUG = $LIB_OBJECTS_DEBUG" >> ${CONFIG_MK}
 
-if test -d /usr/local/include; then
-    CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+PROG_OBJECTS="$(c2ext .main.lo "$PROG_SOURCES")"
+PROG_OBJECTS_ASAN="$(c2ext .asan.lo "$PROG_SOURCES")"
+PROG_OBJECTS_COV="$(c2ext .cov.lo "$PROG_SOURCES")"
+PROG_OBJECTS_DEBUG="$(c2ext .debug.lo "$PROG_SOURCES")"
+
+echo "PROG_OBJECTS = $PROG_OBJECTS" >> ${CONFIG_MK}
+echo "PROG_OBJECTS_ASAN = $PROG_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "PROG_OBJECTS_COV = $PROG_OBJECTS_COV" >> ${CONFIG_MK}
+echo "PROG_OBJECTS_DEBUG = $PROG_OBJECTS_DEBUG" >> ${CONFIG_MK}
+
+# Default config
+CPPFLAGS="${CPPFLAGS:=}"
+ENV_CFLAGS="${CFLAGS:=}"
+DEFAULT_CFLAGS="-O2 -pipe -fPIC"
+LDFLAGS="${LDFLAGS:=}"
+LIBS="${LIBS:=-lm}"
+
+# Common config for all targets
+CFLAGS="$CFLAGS -W -Wall -Werror -std=c99 -pedantic"
+CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
+CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
+config_asan
+config_gnu
+pkg_config libbsd-overlay
+
+# Address Sanitizer config
+CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
+LDFLAGS_ASAN="$LDFLAGS"
+LIBS_ASAN="$LIBS"
+
+# Coverage config
+CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
+LDFLAGS_COV="$LDFLAGS"
+LIBS_COV="$LIBS"
+
+# Debug config
+CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
+LDFLAGS_DEBUG="$LDFLAGS"
+LIBS_DEBUG="$LIBS"
+
+# Main config
+if [ "x$ENV_CFLAGS" = "x" ]; then
+    CFLAGS="$CFLAGS $DEFAULT_CFLAGS"
 fi
-CPPFLAGS="$CPPFLAGS -DVER=$VER"
+CFLAGS="$CFLAGS -DNDEBUG"
+LIBS="$LIBS"
+
+echo "HAVE_ASAN = $HAVE_ASAN" >> ${CONFIG_MK}
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
-
-if [ x"$DEBUG" = x"yes" ]; then
-    CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb -g3"
-else
-    CFLAGS="$CFLAGS -DNDEBUG -O3"
-fi
-CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
-
-LDFLAGS="$LDFLAGS -pthread"
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
-
-LIBS="../librtbuf/librtbuf.la -lreadline"
+echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_ASAN = $CFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LDFLAGS_ASAN = $LDFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LIBS_ASAN = $LIBS_ASAN" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_COV = $CFLAGS_COV" >> ${CONFIG_MK}
+echo "LDFLAGS_COV = $LDFLAGS_COV" >> ${CONFIG_MK}
+echo "LIBS_COV = $LIBS_COV" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_DEBUG = $CFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
 
-for SRC in $SOURCES; do
-    SRC_LO=$(c2lo $SRC)
+# Library
+echo >> ${CONFIG_MK}
+echo "$LIB: $LIB_OBJECTS" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${LIB_OBJECTS} \${LIBS} -o ${LIB} -rpath ${LIBDIR}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$LIB_ASAN: $LIB_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${LIB_OBJECTS_ASAN} \${LIBS_ASAN} -o ${LIB_ASAN}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$LIB_COV: $LIB_OBJECTS_COV" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${LIB_OBJECTS_COV} \${LIBS_COV} -o ${LIB_COV}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$LIB_DEBUG: $LIB_OBJECTS_DEBUG" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${LIB_OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${LIB_DEBUG}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "install: ${LIB}" >> ${CONFIG_MK}
+echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${LIB} \${LIBDIR}" >> ${CONFIG_MK}
+
+for SRC in $LIB_SOURCES; do
     echo >> ${CONFIG_MK}
-    lo_rule $SRC >> ${CONFIG_MK}
-    echo "	\${LIBTOOL} --tag CC --mode compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+    SRC_LO="$(c2ext .main.lo "$SRC")"
+    ext_rule .main.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_ASAN_LO="$(c2ext .asan.lo "$SRC")"
+    ext_rule .asan.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_ASAN} -c $SRC -o $SRC_ASAN_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_COV_LO="$(c2ext .cov.lo "$SRC")"
+    ext_rule .cov.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_COV} -c $SRC -o $SRC_COV_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_DEBUG_LO="$(c2ext .debug.lo "$SRC")"
+    ext_rule .debug.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_DEBUG} -c $SRC -o $SRC_DEBUG_LO" >> ${CONFIG_MK}
 done
 
+# Program
 echo >> ${CONFIG_MK}
-SRC=rtbuf_cli_main.c
-SRC_O=$(c2o $SRC)
-o_rule $SRC >> ${CONFIG_MK}
-echo "	\${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_O" >> ${CONFIG_MK}
+echo "$PROG: $PROG_OBJECTS" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} \${LIBS} -o ${PROG} -rpath ${LIBDIR}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$LIBRARY: $OBJECTS" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} \${OBJECTS} \${LIBS} -o $LIBRARY -rpath \${LIBDIR}" >> ${CONFIG_MK}
+echo "$PROG_ASAN: $PROG_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${PROG_OBJECTS_ASAN} \${LIBS_ASAN} -o ${PROG_ASAN}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$PROG: $LIBRARY $PROG_OBJECTS" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} ${LIBRARY} ${LIBS} -o $PROG" >> ${CONFIG_MK}
+echo "$PROG_COV: $PROG_OBJECTS_COV" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${PROG_OBJECTS_COV} \${LIBS_COV} -o ${PROG_COV}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "install: $LIBRARY $PROG" >> ${CONFIG_MK}
+echo "$PROG_DEBUG: $PROG_OBJECTS_DEBUG" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${PROG_OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${PROG_DEBUG}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "install: ${PROG}" >> ${CONFIG_MK}
+echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${PROG} \${BINDIR}" >> ${CONFIG_MK}
+
+for SRC in $PROG_SOURCES; do
+    echo >> ${CONFIG_MK}
+    SRC_LO="$(c2ext .main.lo "$SRC")"
+    ext_rule .main.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_ASAN_LO="$(c2ext .asan.lo "$SRC")"
+    ext_rule .asan.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_ASAN} -c $SRC -o $SRC_ASAN_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_COV_LO="$(c2ext .cov.lo "$SRC")"
+    ext_rule .cov.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_COV} -c $SRC -o $SRC_COV_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_DEBUG_LO="$(c2ext .debug.lo "$SRC")"
+    ext_rule .debug.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_DEBUG} -c $SRC -o $SRC_DEBUG_LO" >> ${CONFIG_MK}
+done
+
+# Install
+echo >> ${CONFIG_MK}
+echo "install: $LIB $PROG" >> ${CONFIG_MK}
 echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
-echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIBRARY \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0644 $LIB \${LIBDIR}" >> ${CONFIG_MK}
 echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
 echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $PROG \${BINDIR}/$PROG" >> ${CONFIG_MK}
+
+update_config_mk

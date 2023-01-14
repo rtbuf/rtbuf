@@ -1,34 +1,41 @@
 #!/bin/sh
 ## rtbuf
-## Copyright 2018-2022 kmx.io <contact@kmx.io>
+## Copyright 2018-2023 kmx.io <contact@kmx.io>
 ##
-## Permission is hereby granted to use this software granted
-## the above copyright notice and this permission paragraph
-## are included in all copies and substantial portions of this
-## software.
+## Permission is hereby granted to use this software excepted
+## on Apple computers granted the above copyright notice and
+## this permission paragraph are included in all copies and
+## substantial portions of this software.
 ##
 ## THIS SOFTWARE IS PROVIDED "AS-IS" WITHOUT ANY GUARANTEE OF
 ## PURPOSE AND PERFORMANCE. IN NO EVENT WHATSOEVER SHALL THE
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
+
 set -e
 
 export RTBUF_SRC_TOP="$(pwd)/.."
 
 . ../config.subr
 
+# Targets
 LIB=librtbuf.la
 LIB_ASAN=librtbuf.asan.la
 LIB_COV=librtbuf.cov.la
 LIB_DEBUG=librtbuf.debug.la
 
+# Sources
 . ./sources.sh
 
-OBJECTS="$(c2ext .main.lo "$LO_SOURCES")"
-echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
-OBJECTS_ASAN="$(c2ext .asan.lo "$LO_SOURCES")"
-OBJECTS_COV="$(c2ext .cov.lo "$LO_SOURCES")"
-OBJECTS_DEBUG="$(c2ext .debug.lo "$LO_SOURCES")"
+LIB_OBJECTS="$(c2ext .main.lo "$LIB_SOURCES")"
+LIB_OBJECTS_ASAN="$(c2ext .asan.lo "$LIB_SOURCES")"
+LIB_OBJECTS_COV="$(c2ext .cov.lo "$LIB_SOURCES")"
+LIB_OBJECTS_DEBUG="$(c2ext .debug.lo "$LIB_SOURCES")"
+
+echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
+echo "LIB_OBJECTS_ASAN = $LIB_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "LIB_OBJECTS_COV = $LIB_OBJECTS_COV" >> ${CONFIG_MK}
+echo "LIB_OBJECTS_DEBUG = $LIB_OBJECTS_DEBUG" >> ${CONFIG_MK}
 
 # Default config
 CPPFLAGS="${CPPFLAGS:=}"
@@ -73,6 +80,7 @@ echo "HAVE_ASAN = $HAVE_ASAN" >> ${CONFIG_MK}
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
 echo >> ${CONFIG_MK}
 echo "CFLAGS_ASAN = $CFLAGS_ASAN" >> ${CONFIG_MK}
@@ -88,27 +96,27 @@ echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
 echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$LIB: $OBJECTS" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${OBJECTS} \${LIBS} -o ${LIB} -rpath ${LIBDIR}" >> ${CONFIG_MK}
+echo "$LIB: $LIB_OBJECTS" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${LIB_OBJECTS} \${LIBS} -o ${LIB} -rpath ${LIBDIR}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$LIB_ASAN: $OBJECTS_ASAN" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${OBJECTS_ASAN} \${LIBS_ASAN} -o ${LIB_ASAN}" >> ${CONFIG_MK}
+echo "$LIB_ASAN: $LIB_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${LIB_OBJECTS_ASAN} \${LIBS_ASAN} -o ${LIB_ASAN}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$LIB_COV: $OBJECTS_COV" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${OBJECTS_COV} \${LIBS_COV} -o ${LIB_COV}" >> ${CONFIG_MK}
+echo "$LIB_COV: $LIB_OBJECTS_COV" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${LIB_OBJECTS_COV} \${LIBS_COV} -o ${LIB_COV}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$LIB_DEBUG: $OBJECTS_DEBUG" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${LIB_DEBUG}" >> ${CONFIG_MK}
+echo "$LIB_DEBUG: $LIB_OBJECTS_DEBUG" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${LIB_OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${LIB_DEBUG}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "install: ${LIB}" >> ${CONFIG_MK}
 echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
 echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${LIB} \${LIBDIR}" >> ${CONFIG_MK}
 
-for SRC in $SOURCES; do
+for SRC in $LIB_SOURCES; do
     echo >> ${CONFIG_MK}
     SRC_LO="$(c2ext .main.lo "$SRC")"
     ext_rule .main.lo "$SRC" >> ${CONFIG_MK}
