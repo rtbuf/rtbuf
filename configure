@@ -13,7 +13,7 @@
 ## THIS SOFTWARE.
 set -e
 
-export SRCDIR="$PWD"
+export RTBUF_SRC_TOP="$(pwd)/.."
 
 PREFIX="${PREFIX:-/usr/local}"
 if [ "x$1" = "x--prefix" ]; then

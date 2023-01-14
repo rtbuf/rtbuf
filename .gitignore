@@ -1,3 +1,4 @@
+*.a
 /cli/rtbuf
 config.mk
 /doc/

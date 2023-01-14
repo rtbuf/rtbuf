@@ -10,11 +10,50 @@
 ## PURPOSE AND PERFORMANCE. IN NO EVENT WHATSOEVER SHALL THE
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
-all: librtbuf.la
+CLEANFILES = *.a *.gcno *.la librtbuf.la .libs *.lo *.o
+
+CLEANFILES_COV = *.css *.gcda *.html .libs/*.gcda
+CLEANFILES += ${CLEANFILES_COV}
+
+DISTCLEANFILES = ${CLEANFILES} config.mk
+
+build: librtbuf.la librtbuf.a
+
+all:
+	${MAKE} build
+	if ${HAVE_GCOV}; then ${MAKE} cov; fi
+	${MAKE} debug
+	if ${HAVE_ASAN}; then ${MAKE} asan; fi
+
+asan: librtbuf.asan.la librtbuf.asan.a
 
 clean:
-	rm -rf .libs *.o *.lo *.la *.gcno *.gcna
+	rm -rf ${CLEANFILES}
 
-.PHONY: all clean
+clean_cov:
+	rm -rf ${CLEANFILES_COV}
+
+cov: librtbuf.cov.la librtbuf.cov.a
+
+debug: librtbuf.debug.la librtbuf.debug.a
+
+distclean:
+	rm -rf ${DISTCLEANFILES}
+
+gcovr:
+	gcovr --gcov-executable ${GCOV} --html-details librtbuf.html
+
+librtbuf.a: librtbuf.la
+	cp .libs/librtbuf.a ./
+
+librtbuf.asan.a: librtbuf.asan.la
+	cp .libs/librtbuf.asan.a ./
+
+librtbuf.cov.a: librtbuf.cov.la
+	cp .libs/librtbuf.cov.a ./
+
+librtbuf.debug.a: librtbuf.debug.la
+	cp .libs/librtbuf.debug.a ./
 
 include config.mk
+include sources.mk

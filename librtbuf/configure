@@ -13,59 +13,121 @@
 ## THIS SOFTWARE.
 set -e
 
+export RTBUF_SRC_TOP="$(pwd)/.."
+
 . ../config.subr
 
 LIB=librtbuf.la
+LIB_ASAN=librtbuf.asan.la
+LIB_COV=librtbuf.cov.la
+LIB_DEBUG=librtbuf.debug.la
 
-SOURCES="$(ls *.c | tr '\n' ' ')"
-echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
+. ./sources.sh
 
-OBJECTS="$(c2lo "$SOURCES")"
+OBJECTS="$(c2ext .main.lo "$LO_SOURCES")"
 echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
+OBJECTS_ASAN="$(c2ext .asan.lo "$LO_SOURCES")"
+OBJECTS_COV="$(c2ext .cov.lo "$LO_SOURCES")"
+OBJECTS_DEBUG="$(c2ext .debug.lo "$LO_SOURCES")"
 
-check_libbsd
+# Default config
+CPPFLAGS="${CPPFLAGS:=}"
+ENV_CFLAGS="${CFLAGS:=}"
+DEFAULT_CFLAGS="-O2 -pipe -fPIC"
+LDFLAGS="${LDFLAGS:=}"
+LIBS="${LIBS:=-lm}"
 
+# Common config for all targets
+CFLAGS="$CFLAGS -W -Wall -Werror -std=c99 -pedantic"
 CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
 CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
-if pkg-config libbsd-overlay; then
-    CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
+config_asan
+config_gnu
+pkg_config libbsd-overlay
+pkg_config libffi
+pkg_config libmd
+
+# Address Sanitizer config
+CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
+LDFLAGS_ASAN="$LDFLAGS"
+LIBS_ASAN="$LIBS"
+
+# Coverage config
+CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
+LDFLAGS_COV="$LDFLAGS"
+LIBS_COV="$LIBS"
+
+# Debug config
+CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
+LDFLAGS_DEBUG="$LDFLAGS"
+LIBS_DEBUG="$LIBS"
+
+# Main config
+if [ "x$ENV_CFLAGS" = "x" ]; then
+    CFLAGS="$CFLAGS $DEFAULT_CFLAGS"
 fi
+CFLAGS="$CFLAGS -DNDEBUG"
+LIBS="$LIBS"
+
+echo "HAVE_ASAN = $HAVE_ASAN" >> ${CONFIG_MK}
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
-
-if [ x"$DEBUG" = x"yes" ]; then
-    CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb"
-else
-    CFLAGS="$CFLAGS -DNDEBUG -O3"
-fi
-CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
-if pkg-config libbsd-overlay; then
-    CFLAGS="$CFLAGS $(pkg-config --cflags libbsd-overlay)"
-fi
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
-
-if test -d /opt/homebrew/lib; then
-    LDFLAGS="$LDFLAGS -L/opt/homebrew/lib -lSystem"
-fi
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
-
-LIBS=""
-if pkg-config libbsd-overlay; then
-    LIBS="$LIBS $(pkg-config --libs libbsd-overlay)"
-fi
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
-
-for SRC in $SOURCES; do
-    SRC_LO="$(c2lo "$SRC")"
-    echo >> ${CONFIG_MK}
-    lo_rule "$SRC" >> ${CONFIG_MK}
-    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
-done
+echo >> ${CONFIG_MK}
+echo "CFLAGS_ASAN = $CFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LDFLAGS_ASAN = $LDFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LIBS_ASAN = $LIBS_ASAN" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_COV = $CFLAGS_COV" >> ${CONFIG_MK}
+echo "LDFLAGS_COV = $LDFLAGS_COV" >> ${CONFIG_MK}
+echo "LIBS_COV = $LIBS_COV" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_DEBUG = $CFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "$LIB: $OBJECTS" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} $OBJECTS \${LIBS} -o $LIB -rpath ${LIBDIR}" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${OBJECTS} \${LIBS} -o ${LIB} -rpath ${LIBDIR}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "install: $LIB" >> ${CONFIG_MK}
+echo "$LIB_ASAN: $OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${OBJECTS_ASAN} \${LIBS_ASAN} -o ${LIB_ASAN}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$LIB_COV: $OBJECTS_COV" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${OBJECTS_COV} \${LIBS_COV} -o ${LIB_COV}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$LIB_DEBUG: $OBJECTS_DEBUG" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${LIB_DEBUG}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "install: ${LIB}" >> ${CONFIG_MK}
 echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
-echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $LIB \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${LIB} \${LIBDIR}" >> ${CONFIG_MK}
+
+for SRC in $SOURCES; do
+    echo >> ${CONFIG_MK}
+    SRC_LO="$(c2ext .main.lo "$SRC")"
+    ext_rule .main.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_ASAN_LO="$(c2ext .asan.lo "$SRC")"
+    ext_rule .asan.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_ASAN} -c $SRC -o $SRC_ASAN_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_COV_LO="$(c2ext .cov.lo "$SRC")"
+    ext_rule .cov.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_COV} -c $SRC -o $SRC_COV_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_DEBUG_LO="$(c2ext .debug.lo "$SRC")"
+    ext_rule .debug.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_DEBUG} -c $SRC -o $SRC_DEBUG_LO" >> ${CONFIG_MK}
+done
+
+update_config_mk
