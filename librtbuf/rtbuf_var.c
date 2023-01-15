@@ -102,7 +102,7 @@ void rtbuf_var_print (const s_rtbuf_var *v)
       fflush(stdout);
       break;
     case RTBUF_VAR_RTBUF:
-      rtbuf_print_long(v->index);
+      rtbuf_print_long(g_rtbuf + v->index);
       break;
     default:
       assert(0);

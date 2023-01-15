@@ -14,32 +14,69 @@
 
 set -e
 
-. ../../config.subr
+SRC_TOP="$(dirname "$(dirname "$PWD")")"
 
-SOURCES="input.c output.c"
+. "${SRC_TOP}/config.subr"
 
-LIB_SRCDIR="$(dirname "$0")/.."
+. ./sources.sh
 
-require_pkg_config
+# Default config
+CPPFLAGS="${CPPFLAGS:=}"
+ENV_CFLAGS="${CFLAGS:=}"
+DEFAULT_CFLAGS="-O2 -pipe -fPIC"
+LDFLAGS="${LDFLAGS:=}"
+LIBS="${LIBS:=-lm}"
 
-CPPFLAGS="$CPPFLAGS"
+# Common config for all targets
+CFLAGS="$CFLAGS -W -Wall -Werror -std=c99 -pedantic"
+CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
+CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
+config_asan
+config_gnu
+config_portaudio
 
-if [ x"$DEBUG" = x"yes" ]; then
-    CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb"
-else
-    CFLAGS="$CFLAGS -DNDEBUG -O3"
+# Address Sanitizer config
+CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
+LDFLAGS_ASAN="$LDFLAGS"
+LIBS_ASAN="$LIBS"
+
+# Coverage config
+CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
+LDFLAGS_COV="$LDFLAGS"
+LIBS_COV="$LIBS"
+
+# Debug config
+CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
+LDFLAGS_DEBUG="$LDFLAGS"
+LIBS_DEBUG="$LIBS"
+
+# Main config
+if [ "x$ENV_CFLAGS" = "x" ]; then
+    CFLAGS="$CFLAGS $DEFAULT_CFLAGS"
 fi
-CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+CFLAGS="$CFLAGS -DNDEBUG"
+LIBS="$LIBS $SRC_TOP/lib/librtbuf_signal.la"
+LIBS="$LIBS $SRC_TOP/librtbuf/librtbuf.la"
 
-LIBS=""
-LIBS="$LIBS ../../librtbuf/librtbuf.la"
-LIBS="$LIBS ../librtbuf_signal.la"
-
-check_portaudio
-
+echo "HAVE_ASAN = $HAVE_ASAN" >> ${CONFIG_MK}
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
 echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_ASAN = $CFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LDFLAGS_ASAN = $LDFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LIBS_ASAN = $LIBS_ASAN" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_COV = $CFLAGS_COV" >> ${CONFIG_MK}
+echo "LDFLAGS_COV = $LDFLAGS_COV" >> ${CONFIG_MK}
+echo "LIBS_COV = $LIBS_COV" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_DEBUG = $CFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
 
 rtbuf_library portaudio
+
+update_config_mk

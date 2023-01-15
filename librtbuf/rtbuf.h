@@ -212,8 +212,8 @@ void  rtbuf_sort ();
 int   rtbuf_start ();
 int   rtbuf_run ();
 void  rtbuf_stop ();
-void  rtbuf_print (unsigned int i);
-void  rtbuf_print_long (unsigned int i);
+void  rtbuf_print (const s_rtbuf *rtbuf);
+void  rtbuf_print_long (const s_rtbuf *rtbuf);
 void  rtbuf_print_sorted ();
 
 int  rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value);

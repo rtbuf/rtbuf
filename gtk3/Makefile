@@ -11,12 +11,24 @@
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
 
-CLEANFILES=
+CLEANFILES = .libs *.o *.lo *.la rtbuf_gtk3 rtbuf_gtk3_asan rtbuf_gtk3_cov rtbuf_gtk3_debug *.gcno *.gcna *.gcda
 
-all: rtbuf-gtk3
+build: rtbuf_gtk3
+
+all:
+	${MAKE} build
+	if [ "x${HAVE_GCOV}" = "xYes" ]; then ${MAKE} cov; fi
+	${MAKE} debug
+	if [ "x${HAVE_ASAN}" = "xYes" ]; then ${MAKE} asan; fi
+
+asan: rtbuf_gtk3_asan
 
 clean:
-	rm -rf .libs *.o *.lo *.la rtbuf-gtk3 ${CLEANFILES} *.gcno *.gcna *.gcda
+	rm -rf ${CLEANFILES}
+
+cov: rtbuf_gtk3_cov
+
+debug: rtbuf_gtk3_debug
 
 rtbuf_gtk3_UI = \
 	rtbuf_gtk3_input_widget.ui \
@@ -32,3 +44,4 @@ CLEANFILES = rtbuf_gtk3_resources.c
 .PHONY: all clean
 
 include config.mk
+include sources.mk

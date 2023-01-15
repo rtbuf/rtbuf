@@ -38,7 +38,7 @@ int rtbuf_cli_libs (int argc, const char *argv[])
   printf("Listing %i libraries :\n", n);
   while (i < g_rtbuf_lib_alloc.n && n > 0) {
     if (g_rtbuf_lib[i].path[0]) {
-      rtbuf_lib_print(&g_rtbuf_lib[i]);
+      rtbuf_lib_print(g_rtbuf_lib + i);
       n--;
     }
     i++;
@@ -69,6 +69,7 @@ int rtbuf_cli_load (int argc, const char *argv[])
     printf("load failed\n");
     return -1;
   }
+  rtbuf_lib_print(lib);
   return 0;
 }
 
@@ -82,7 +83,7 @@ int rtbuf_cli_buffers (int argc, const char *argv[])
   printf("Listing %i buffers :\n", n);
   while (i < RTBUF_MAX && n > 0) {
     if (g_rtbuf[i].data) {
-      rtbuf_print_long(i);
+      rtbuf_print_long(g_rtbuf + i);
       printf("\n");
       n--;
     }
@@ -98,7 +99,7 @@ int rtbuf_cli_buffer (int argc, const char *argv[])
     return rtbuf_err("usage: buffer N");
   if ((i = rtbuf_find(argv[1])) < 0)
     return rtbuf_err("buffer not found");
-  rtbuf_print_long(i);
+  rtbuf_print_long(g_rtbuf + i);
   return 0;
 }
 
@@ -309,22 +310,23 @@ int rtbuf_cli_exit (int argc, const char *argv[])
 }
 
 s_cli_function rtbuf_cli_functions[] = {
-  { "libs",    0, rtbuf_cli_libs },
-  { "lib",     1, rtbuf_cli_lib },
-  { "load",    1, rtbuf_cli_load },
-  { "buffers", 0, rtbuf_cli_buffers },
-  { "buffer",  1, rtbuf_cli_buffer },
-  { "new",     2, rtbuf_cli_new },
-  { "delete",  1, rtbuf_cli_delete },
   { "bind",    4, rtbuf_cli_bind },
-  { "unbind",  1, rtbuf_cli_unbind },
-  { "unbind",  2, rtbuf_cli_unbind },
-  { "let",    -1, rtbuf_cli_let },
-  { "start",   0, rtbuf_cli_start_ },
-  { "stop",    0, rtbuf_cli_stop_ },
+  { "buffer",  1, rtbuf_cli_buffer },
+  { "buffers", 0, rtbuf_cli_buffers },
+  { "delete",  1, rtbuf_cli_delete },
+  { "exit",    0, rtbuf_cli_exit },
   { "h",       0, rtbuf_cli_help },
   { "help",    0, rtbuf_cli_help },
-  { "exit",    0, rtbuf_cli_exit },
+  { "let",    -1, rtbuf_cli_let },
+  { "lib",     1, rtbuf_cli_lib },
+  { "libs",    0, rtbuf_cli_libs },
+  { "load",    1, rtbuf_cli_load },
+  { "new",     1, rtbuf_cli_new },
+  { "new",     3, rtbuf_cli_new },
+  { "start",   0, rtbuf_cli_start_ },
+  { "stop",    0, rtbuf_cli_stop_ },
+  { "unbind",  1, rtbuf_cli_unbind },
+  { "unbind",  2, rtbuf_cli_unbind },
   { 0, 0, 0 }
 };
 

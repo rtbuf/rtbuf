@@ -15,11 +15,14 @@
 #include "../librtbuf/rtbuf.h"
 #include "rtbuf_cli.h"
 
+void rtbuf_cli_new_cb (s_rtbuf *rtb);
+
 int main (int argc, char *argv[])
 {
   int res = 0;
   symbols_init();
   librtbuf_init();
+  g_rtbuf_new_cb = rtbuf_cli_new_cb;
   assert(g_rtbuf);
   repl_init();
   rtbuf_cli_args(argc, argv);
@@ -27,4 +30,9 @@ int main (int argc, char *argv[])
   rtbuf_cli_stop();
   librtbuf_shutdown();
   return res;
+}
+
+void rtbuf_cli_new_cb (s_rtbuf *rtbuf)
+{
+  rtbuf_print(rtbuf);
 }

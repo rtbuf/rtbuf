@@ -14,52 +14,87 @@
 
 set -e
 
-. ../config.subr
+SRC_TOP="$(dirname "$PWD")"
 
-LIB_SRCDIR="$(dirname $0)"
+. "${SRC_TOP}/config.subr"
 
-SOURCES="$(ls *.c | grep -Ev '_type.c$' | tr '\n' ' ')"
+. ./sources.sh
 
-DIRS="$(ls -d */)"
+# Default config
+CPPFLAGS="${CPPFLAGS:=}"
+ENV_CFLAGS="${CFLAGS:=}"
+DEFAULT_CFLAGS="-O2 -pipe -fPIC"
+LDFLAGS="${LDFLAGS:=}"
+LIBS="${LIBS:=-lm}"
 
-if [ x"$DEBUG" = x"yes" ]; then
-    CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb"
-else
-    CFLAGS="$CFLAGS -DNDEBUG -O3"
+# Common config for all targets
+CFLAGS="$CFLAGS -W -Wall -Werror -std=c99 -pedantic"
+CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
+CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
+config_asan
+config_gnu
+pkg_config libbsd-overlay
+config_portaudio
+config_sndio
+
+# Address Sanitizer config
+CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
+LDFLAGS_ASAN="$LDFLAGS"
+LIBS_ASAN="$LIBS"
+
+# Coverage config
+CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
+LDFLAGS_COV="$LDFLAGS"
+LIBS_COV="$LIBS"
+
+# Debug config
+CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
+LDFLAGS_DEBUG="$LDFLAGS"
+LIBS_DEBUG="$LIBS"
+
+# Main config
+if [ "x$ENV_CFLAGS" = "x" ]; then
+    CFLAGS="$CFLAGS $DEFAULT_CFLAGS"
 fi
-CFLAGS="$CFLAGS -W -Wall -Werror -std=c89 -pedantic"
+CFLAGS="$CFLAGS -DNDEBUG"
+LIBS="$LIBS"
+LIBS="$LIBS $SRC_TOP/librtbuf/librtbuf.la"
 
-LIBS=""
+echo "HAVE_ASAN = $HAVE_ASAN" >> ${CONFIG_MK}
+echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
+echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
+echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
+echo "LIBS = $LIBS" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_ASAN = $CFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LDFLAGS_ASAN = $LDFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LIBS_ASAN = $LIBS_ASAN" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_COV = $CFLAGS_COV" >> ${CONFIG_MK}
+echo "LDFLAGS_COV = $LDFLAGS_COV" >> ${CONFIG_MK}
+echo "LIBS_COV = $LIBS_COV" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_DEBUG = $CFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
 
-check_libbsd
-check_portaudio
-check_sndio
-
-if test "x$HAVE_LIBBSD" = "xYes"; then
-    CPPFLAGS="$CPPFLAGS -D_DEFAULT_SOURCE -D__USE_MISC"
-fi
-
-if ! test "x$HAVE_SNDIO" = "xYes"; then
+if [ "x$HAVE_SNDIO" != "xYes" ]; then
     DIRS="$(echo "$DIRS" | grep -v sndio)"
 fi
 
-if ! test "x$HAVE_PORTAUDIO" = "xYes"; then
+if [ "x$HAVE_PORTAUDIO" != "xYes" ]; then
     DIRS="$(echo "$DIRS" | grep -v portaudio)"
 fi
 
-echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
-echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
-echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
-echo "LIBS = $LIBS" >> ${CONFIG_MK}
-
 TYPES=
 type_prog music
-if test "x$HAVE_PORTAUDIO" = "xYes"; then
+if [ "x$HAVE_PORTAUDIO" = "xYes" ]; then
     type_prog portaudio
 fi
 type_prog reverb
 type_prog signal
-if test "x$HAVE_SNDIO" = "xYes"; then
+if [ "x$HAVE_SNDIO" = "xYes" ]; then
     type_prog sndio
 fi
 type_prog synth
@@ -69,9 +104,9 @@ echo "types:${TYPES}" >> ${CONFIG_MK}
 LIBRARIES=
 
 for SRC in $SOURCES; do
-    SRC_LO="$(c2lo "$SRC")"
+    SRC_LO="$(c2ext .main.lo "$SRC")"
     echo >> ${CONFIG_MK}
-    lo_rule "$SRC" >> ${CONFIG_MK}
+    ext_rule .main.lo "$SRC" >> ${CONFIG_MK}
     echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
 
     SRC_LA="librtbuf_$(c2la "$SRC")"
@@ -120,3 +155,5 @@ done
 
 echo >> ${CONFIG_MK}
 echo ".PHONY: types libraries install subdirs subdirs-clean subdirs-install" >> ${CONFIG_MK}
+
+update_config_mk

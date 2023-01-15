@@ -560,48 +560,54 @@ int rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value)
   return default_value;
 }
 
-void rtbuf_print (unsigned int i)
+void rtbuf_print (const s_rtbuf *rtbuf)
 {
-  assert(i < RTBUF_MAX);
-  printf("#<rtbuf %u>", i);
-  fflush(stdout);
+  unsigned int i;
+  if (rtbuf >= g_rtbuf &&
+      (i = rtbuf - g_rtbuf) < RTBUF_MAX)
+    printf("#<rtbuf %i %s>\n", i, rtbuf->proc->lib->name);
+  else
+    printf("#<rtbuf %p %s>\n", (void*) rtbuf, rtbuf->proc->lib->name);
 }
 
-void rtbuf_print_long_in (s_rtbuf *rtb, unsigned int j)
+void rtbuf_print_long_in (const s_rtbuf *rtbuf, unsigned int j)
 {
-  assert(rtb);
-  assert(rtb->proc);
-  assert(j < rtb->proc->in_n);
-  assert(rtb->proc->in[j].name);
-  assert(rtb->proc->in[j].type);
-  assert(rtb->proc->in[j].type->name);
-  printf("\n  in %i %s:%s", j, rtb->proc->in[j].name,
-         rtb->proc->in[j].type->name);
-  if (rtb->in[j].rtb >= 0) {
-    s_rtbuf *target = &g_rtbuf[rtb->in[j].rtb];
-    unsigned int target_out = rtb->in[j].out;
+  assert(rtbuf);
+  assert(rtbuf->proc);
+  assert(j < rtbuf->proc->in_n);
+  assert(rtbuf->proc->in[j].name);
+  assert(rtbuf->proc->in[j].type);
+  assert(rtbuf->proc->in[j].type->name);
+  printf("\n  in %i %s:%s", j, rtbuf->proc->in[j].name,
+         rtbuf->proc->in[j].type->name);
+  if (rtbuf->in[j].rtb >= 0) {
+    s_rtbuf *target = &g_rtbuf[rtbuf->in[j].rtb];
+    unsigned int target_out = rtbuf->in[j].out;
     printf (" = ");
-    rtbuf_print(rtb->in[j].rtb);
+    rtbuf_print(g_rtbuf + rtbuf->in[j].rtb);
     printf(" out %u %s:%s", target_out,
            target->proc->out[target_out].name,
            target->proc->out[target_out].type->name);
   }
 }
 
-void rtbuf_print_long (unsigned int i)
+void rtbuf_print_long (const s_rtbuf *rtbuf)
 {
-  s_rtbuf *rtb;
   s_rtbuf_proc *proc;
+  int i;
   unsigned int j = 0;
   assert(i < RTBUF_MAX);
-  rtb = &g_rtbuf[i];
-  proc = rtb->proc;
-  printf("#<rtbuf %i", i);
+  proc = rtbuf->proc;
+  if (rtbuf >= g_rtbuf &&
+      (i = rtbuf - g_rtbuf) < RTBUF_MAX)
+    printf("#<rtbuf %i", i);
+  else
+    printf("#<rtbuf %p", (void*) rtbuf);
   printf(" %s", proc->lib->name);
-  if (rtb->data) {
-    printf(" %d", rtb->refc);
+  if (rtbuf->data) {
+    printf(" %d", rtbuf->refc);
     while (j < proc->in_n)
-      rtbuf_print_long_in(rtb, j++);
+      rtbuf_print_long_in(rtbuf, j++);
     j = 0;
     while (j < proc->out_n) {
       printf("\n  out %i %s:%s", j, proc->out[j].name,
@@ -619,7 +625,7 @@ void rtbuf_print_sorted ()
   while (i < g_rtbuf_sorted_n) {
     if (i)
       printf(" ");
-    rtbuf_print(g_rtbuf_sorted[i]);
+    rtbuf_print(g_rtbuf + g_rtbuf_sorted[i]);
     i++;
   }
   printf("\n");

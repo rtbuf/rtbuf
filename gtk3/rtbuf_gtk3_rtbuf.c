@@ -54,7 +54,7 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
                                        signal,
                                        0,
                                        NULL,
-                                       G_CALLBACK(rtbuf_gtk_rtbuf_rename),
+                                       (gpointer) rtbuf_gtk_rtbuf_rename,
                                        NULL);
   g_signal_connect_swapped(G_OBJECT(rename), "activate",
                            G_CALLBACK(rtbuf_gtk_rtbuf_rename),
@@ -64,7 +64,7 @@ void rtbuf_gtk_rtbuf_menu (RtbufWidget *widget, GdkEvent *event)
                                        signal,
                                        0,
                                        NULL,
-                                       G_CALLBACK(rtbuf_gtk_rtbuf_delete),
+                                       (gpointer) rtbuf_gtk_rtbuf_delete,
                                        NULL);
   g_signal_connect_swapped(G_OBJECT(delete), "activate",
                            G_CALLBACK(rtbuf_gtk_rtbuf_delete),

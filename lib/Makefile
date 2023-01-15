@@ -11,12 +11,12 @@
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
 
-CLEANFILES =
+CLEANFILES = .libs *.o *.lo *.la *.gcno *.gcna *.gcda
 
 all: types libraries subdirs
 
 clean: subdirs-clean
-	rm -rf .libs *.o *.lo *.la ${CLEANFILES} *.gcno *.gcna *.gcda
+	rm -rf ${CLEANFILES}
 
 install: libraries-install subdirs-install
 

@@ -14,57 +14,143 @@
 
 set -e
 
-. ../config.subr
+SRC_TOP="$(dirname "$PWD")"
 
-PROG=rtbuf-gtk3
+. "${SRC_TOP}/config.subr"
+
+# Targets
+PROG=rtbuf_gtk3
+PROG_ASAN=rtbuf_gtk3_asan
+PROG_COV=rtbuf_gtk3_cov
+PROG_DEBUG=rtbuf_gtk3_debug
+
+# Sources
+. ./sources.sh
+
+PROG_OBJECTS="$(c2ext .main.lo "$PROG_SOURCES")"
+PROG_OBJECTS_ASAN="$(c2ext .asan.lo "$PROG_SOURCES")"
+PROG_OBJECTS_COV="$(c2ext .cov.lo "$PROG_SOURCES")"
+PROG_OBJECTS_DEBUG="$(c2ext .debug.lo "$PROG_SOURCES")"
+
+echo "PROG_OBJECTS = $PROG_OBJECTS" >> ${CONFIG_MK}
+echo "PROG_OBJECTS_ASAN = $PROG_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "PROG_OBJECTS_COV = $PROG_OBJECTS_COV" >> ${CONFIG_MK}
+echo "PROG_OBJECTS_DEBUG = $PROG_OBJECTS_DEBUG" >> ${CONFIG_MK}
+
+# Default config
+CPPFLAGS="${CPPFLAGS:=}"
+ENV_CFLAGS="${CFLAGS:=}"
+DEFAULT_CFLAGS="-O2 -pipe -fPIC"
+LDFLAGS="${LDFLAGS:=}"
+LIBS="${LIBS:=-lm}"
+
+# Common config for all targets
+CFLAGS="$CFLAGS -W -Wall -Werror -std=c11 -pedantic"
+CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
+CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
+LIBS="$LIBS -lpthread -lreadline"
+config_asan
+config_gnu
+pkg_config libbsd-overlay
+pkg_config gtk+-3.0
+
+# Address Sanitizer config
+CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
+LDFLAGS_ASAN="$LDFLAGS"
+LIBS_ASAN="$LIBS $SRC_TOP/cli/librtbuf_cli_asan.la"
+
+# Coverage config
+CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
+LDFLAGS_COV="$LDFLAGS"
+LIBS_COV="$LIBS $SRC_TOP/cli/librtbuf_cli_cov.la"
+
+# Debug config
+CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
+LDFLAGS_DEBUG="$LDFLAGS"
+LIBS_DEBUG="$LIBS $SRC_TOP/cli/librtbuf_cli_debug.la"
+
+# Main config
+if [ "x$ENV_CFLAGS" = "x" ]; then
+    CFLAGS="$CFLAGS $DEFAULT_CFLAGS"
+fi
+CFLAGS="$CFLAGS -DNDEBUG"
+LIBS="$LIBS $SRC_TOP/lib/librtbuf_signal.la"
+LIBS="$LIBS $SRC_TOP/librtbuf/librtbuf.la"
+LIBS="$LIBS $SRC_TOP/cli/librtbuf_cli.la"
+
+echo "HAVE_ASAN = $HAVE_ASAN" >> ${CONFIG_MK}
+echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
+echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
+echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
+echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
+echo "LIBS = $LIBS" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_ASAN = $CFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LDFLAGS_ASAN = $LDFLAGS_ASAN" >> ${CONFIG_MK}
+echo "LIBS_ASAN = $LIBS_ASAN" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_COV = $CFLAGS_COV" >> ${CONFIG_MK}
+echo "LDFLAGS_COV = $LDFLAGS_COV" >> ${CONFIG_MK}
+echo "LIBS_COV = $LIBS_COV" >> ${CONFIG_MK}
+echo >> ${CONFIG_MK}
+echo "CFLAGS_DEBUG = $CFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
+echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
+
+# Program
+PROG=rtbuf_gtk3
 
 touch rtbuf_gtk3_resources.c
 
-SOURCES="$(ls *.c | tr '\n' ' ')"
-echo "SOURCES = $SOURCES" >> ${CONFIG_MK}
-
-OBJECTS="$(c2o "$SOURCES")"
-echo "OBJECTS = $OBJECTS" >> ${CONFIG_MK}
-
-if test -d /usr/local/include; then
-    CPPFLAGS="$CPPFLAGS -I/usr/local/include"
-    CPPFLAGS="$CPPFLAGS $(pkg-config --cflags-only-I gtk+-3.0)"
-fi
-echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
-
-if [ x"$DEBUG" = x"yes" ]; then
-    CFLAGS="$CFLAGS -DDEBUG -O0 -ggdb"
-else
-    CFLAGS="$CFLAGS -DNDEBUG -O3"
-fi
-CFLAGS="$CFLAGS -W -Wall -Werror"
-CFLAGS="$CFLAGS $(pkg-config --cflags-only-other gtk+-3.0)"
-echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
-
-LDFLAGS="$LDFLAGS -pthread"
-echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
-
-LIBS=""
-LIBS="$LIBS ../librtbuf/librtbuf.la"
-LIBS="$LIBS ../cli/librtbuf_cli.la"
-LIBS="$LIBS $(pkg-config --libs gtk+-3.0)"
-LIBS="$LIBS -lm"
-echo "LIBS = $LIBS" >> ${CONFIG_MK}
-
-for SRC in $SOURCES; do
-    SRC_O=$(c2o $SRC)
-    echo >> ${CONFIG_MK}
-    o_rule $SRC >> ${CONFIG_MK}
-    echo "	\${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_O" >> ${CONFIG_MK}
-done
+echo >> ${CONFIG_MK}
+echo "$PROG: $PROG_OBJECTS" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} \${LIBS} -o ${PROG} -rpath ${LIBDIR}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$PROG: $OBJECTS" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${OBJECTS} ${LIBS} -o $PROG" >> ${CONFIG_MK}
+echo "$PROG_ASAN: $PROG_OBJECTS_ASAN" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${PROG_OBJECTS_ASAN} \${LIBS_ASAN} -o ${PROG_ASAN}" >> ${CONFIG_MK}
 
+echo >> ${CONFIG_MK}
+echo "$PROG_COV: $PROG_OBJECTS_COV" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${PROG_OBJECTS_COV} \${LIBS_COV} -o ${PROG_COV}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "$PROG_DEBUG: $PROG_OBJECTS_DEBUG" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${PROG_OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${PROG_DEBUG}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "install: ${PROG}" >> ${CONFIG_MK}
+echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${PROG} \${BINDIR}" >> ${CONFIG_MK}
+
+for SRC in $PROG_SOURCES; do
+    echo >> ${CONFIG_MK}
+    SRC_LO="$(c2ext .main.lo "$SRC")"
+    ext_rule .main.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_ASAN_LO="$(c2ext .asan.lo "$SRC")"
+    ext_rule .asan.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_ASAN} -c $SRC -o $SRC_ASAN_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_COV_LO="$(c2ext .cov.lo "$SRC")"
+    ext_rule .cov.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_COV} -c $SRC -o $SRC_COV_LO" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    SRC_DEBUG_LO="$(c2ext .debug.lo "$SRC")"
+    ext_rule .debug.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_DEBUG} -c $SRC -o $SRC_DEBUG_LO" >> ${CONFIG_MK}
+done
+
+# Install
 echo >> ${CONFIG_MK}
 echo "install: $PROG" >> ${CONFIG_MK}
 echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
 echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 $PROG \${BINDIR}/$PROG" >> ${CONFIG_MK}
+
+update_config_mk
 
 rm rtbuf_gtk3_resources.c

@@ -22,11 +22,11 @@ build: librtbuf.la librtbuf.a
 
 all:
 	${MAKE} build
-	if ${HAVE_GCOV}; then ${MAKE} cov; fi
+	if [ "x${HAVE_GCOV}" = "xYes" ]; then ${MAKE} cov; fi
 	${MAKE} debug
-	if ${HAVE_ASAN}; then ${MAKE} asan; fi
+	if [ "x${HAVE_ASAN}" = "xYes" ]; then ${MAKE} asan; fi
 
-asan: librtbuf.asan.la librtbuf.asan.a
+asan: librtbuf_asan.la librtbuf_asan.a
 
 clean:
 	rm -rf ${CLEANFILES}
@@ -34,9 +34,9 @@ clean:
 clean_cov:
 	rm -rf ${CLEANFILES_COV}
 
-cov: librtbuf.cov.la librtbuf.cov.a
+cov: librtbuf_cov.la librtbuf_cov.a
 
-debug: librtbuf.debug.la librtbuf.debug.a
+debug: librtbuf_debug.la librtbuf_debug.a
 
 distclean:
 	rm -rf ${DISTCLEANFILES}
@@ -47,14 +47,14 @@ gcovr:
 librtbuf.a: librtbuf.la
 	cp .libs/librtbuf.a ./
 
-librtbuf.asan.a: librtbuf.asan.la
-	cp .libs/librtbuf.asan.a ./
+librtbuf_asan.a: librtbuf_asan.la
+	cp .libs/librtbuf_asan.a ./
 
-librtbuf.cov.a: librtbuf.cov.la
-	cp .libs/librtbuf.cov.a ./
+librtbuf_cov.a: librtbuf_cov.la
+	cp .libs/librtbuf_cov.a ./
 
-librtbuf.debug.a: librtbuf.debug.la
-	cp .libs/librtbuf.debug.a ./
+librtbuf_debug.a: librtbuf_debug.la
+	cp .libs/librtbuf_debug.a ./
 
 include config.mk
 include sources.mk

@@ -11,11 +11,36 @@
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
 
-all: rtbuf
+build: librtbuf_cli.la librtbuf_cli.a rtbuf
+
+all:
+	${MAKE} build
+	if [ "x${HAVE_GCOV}" = "xYes" ]; then ${MAKE} cov; fi
+	${MAKE} debug
+	if [ "x${HAVE_ASAN}" = "xYes" ]; then ${MAKE} asan; fi
+
+asan: rtbuf_asan
 
 clean:
 	rm -rf .libs *.o *.lo *.la rtbuf *.gcno *.gcna *.gcda
 
+cov: rtbuf_cov
+
+debug: rtbuf_debug
+
+librtbuf_cli.a: librtbuf_cli.la
+	cp .libs/librtbuf_cli.a ./
+
+librtbuf_cli_asan.a: librtbuf_cli_asan.la
+	cp .libs/librtbuf_cli_asan.a ./
+
+librtbuf_cli_cov.a: librtbuf_cli_cov.la
+	cp .libs/librtbuf_cli_cov.a ./
+
+librtbuf_cli_debug.a: librtbuf_cli_debug.la
+	cp .libs/librtbuf_cli_debug.a ./
+
 .PHONY: all clean
 
 include config.mk
+include sources.mk

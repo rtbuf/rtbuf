@@ -11,13 +11,17 @@
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
 
-all: build
-
 build:
 	${MAKE} -C ${PWD}/librtbuf
 	${MAKE} -C ${PWD}/lib
 	${MAKE} -C ${PWD}/cli
 	${MAKE} -C ${PWD}/gtk3
+
+all:
+	${MAKE} -C ${PWD}/librtbuf all
+	${MAKE} -C ${PWD}/lib all
+	${MAKE} -C ${PWD}/cli all
+	${MAKE} -C ${PWD}/gtk3 all
 
 clean:
 	${MAKE} -C ${PWD}/librtbuf clean

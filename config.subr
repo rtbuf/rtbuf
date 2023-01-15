@@ -14,7 +14,7 @@
 
 set -e
 
-echo "$(basename "$PWD")/$(basename "$0")"
+echo "$(echo "$PWD/" | sed -e "s|^${SRC_TOP}/||")$(basename "$0")"
 
 o_rule() {
     "$CC" $CPPFLAGS $CFLAGS -M "$1" || { echo "$1" | sed -e 's/^\(.*\)\.c$/\1.o: \1.c/'; }
@@ -138,7 +138,7 @@ require_pkg_config() {
 update_config_mk() {
     if ! cmp "${CONFIG_MK}" config.mk >/dev/null 2>&1; then
         mv "${CONFIG_MK}" config.mk
-        echo "-> $(basename "$PWD")/config.mk"
+        echo "-> $(echo "$PWD" | sed -e "s|^${SRC_TOP}/||")/config.mk"
     else
         rm "${CONFIG_MK}"
     fi
@@ -147,7 +147,7 @@ update_config_mk() {
 update_sources_mk() {
     if ! cmp "${SOURCES_MK}" sources.mk >/dev/null 2>&1; then
         mv "${SOURCES_MK}" sources.mk
-        echo "-> $(basename "$PWD")/sources.mk"
+        echo "-> $(echo "$PWD" | sed -e "s|^${SRC_TOP}/||")/sources.mk"
     else
         rm "${SOURCES_MK}"
     fi
@@ -156,7 +156,7 @@ update_sources_mk() {
 update_sources_sh() {
     if ! cmp "${SOURCES_SH}" sources.sh >/dev/null 2>&1; then
         mv "${SOURCES_SH}" sources.sh
-        echo "-> $(basename "$PWD")/sources.sh"
+        echo "-> $(echo "$PWD" | sed -e "s|^${SRC_TOP}/||")/sources.sh"
     else
         rm "${SOURCES_SH}"
     fi
@@ -175,11 +175,18 @@ VER=0.4
 echo "VER = $VER" >> ${CONFIG_MK}
 echo "SRC_TOP = $SRC_TOP" >> ${CONFIG_MK}
 
+if [ "x$AR" = "x" ]; then
+    if which ar >/dev/null 2>&1; then
+        AR=ar
+    fi
+fi
 if [ "x$CC" = "x" ]; then
-    if test -n $(which cc); then
+    if which cc >/dev/null 2>&1; then
         CC=cc
-    elif test -n $(which gcc); then
+    elif which gcc >/dev/null 2>&1; then
         CC=gcc
+    elif which egcc >/dev/null 2>&1; then
+        CC=egcc
     fi
 fi
 echo "CC = $CC" >> ${CONFIG_MK}
@@ -187,17 +194,17 @@ echo "CC = $CC" >> ${CONFIG_MK}
 if [ "x$GCOV" = "x" ]; then
     if which gcov >/dev/null 2>&1; then
 	GCOV=gcov
-        HAVE_GCOV=true
+        HAVE_GCOV=Yes
     elif which egcov >/dev/null 2>&1; then
 	GCOV=egcov
-        HAVE_GCOV=true
+        HAVE_GCOV=No
     fi
-    HAVE_GCOV=false
+    HAVE_GCOV=No
 else
-    HAVE_GCOV=true
+    HAVE_GCOV=Yes
 fi
 echo "HAVE_GCOV = $HAVE_GCOV" >> ${CONFIG_MK}
-if ${HAVE_GCOV}; then
+if [ "x${HAVE_GCOV}" = "xYes" ]; then
     echo "GCOV = $GCOV" >> ${CONFIG_MK}
 fi
 
@@ -235,17 +242,17 @@ fi
 echo "GROUP = $GROUP" >> ${CONFIG_MK}
 
 if [ "x$BINDIR" = "x" ]; then
-    BINDIR=${PREFIX}/bin
+    BINDIR="${PREFIX}/bin"
 fi
 echo "BINDIR = $BINDIR" >> ${CONFIG_MK}
 
 if [ "x$LIBDIR" = "x" ]; then
-    LIBDIR=${PREFIX}/lib
+    LIBDIR="${PREFIX}/lib"
 fi
 echo "LIBDIR = $LIBDIR" >> ${CONFIG_MK}
 
 if [ "x$RTBUF_LIBDIR" = "x" ]; then
-    RTBUF_LIBDIR=${LIBDIR}/rtbuf/${VER}
+    RTBUF_LIBDIR="${LIBDIR}/rtbuf/${VER}"
 fi
 echo "RTBUF_LIBDIR = $RTBUF_LIBDIR" >> ${CONFIG_MK}
 
@@ -255,11 +262,10 @@ rtbuf_library() {
 
     LIBRARIES=
 
-    echo sources: "'$SOURCES'"
     for SRC in $SOURCES; do
-        SRC_LO="$(c2lo "$SRC")"
+        SRC_LO="$(c2ext .main.lo "$SRC")"
         echo >> ${CONFIG_MK}
-        lo_rule "$SRC" >> ${CONFIG_MK}
+        ext_rule .main.lo "$SRC" >> ${CONFIG_MK}
         echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
         SRC_LA="$(c2la "$SRC")"
         echo >> ${CONFIG_MK}

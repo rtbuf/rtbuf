@@ -14,7 +14,7 @@
 
 set -e
 
-export RTBUF_SRC_TOP="$(pwd)/.."
+export SRC_TOP="$PWD"
 
 PREFIX="${PREFIX:-/usr/local}"
 if [ "x$1" = "x--prefix" ]; then
@@ -23,7 +23,7 @@ if [ "x$1" = "x--prefix" ]; then
 fi
 export PREFIX
 
-. ./config.subr
+. "${SRC_TOP}/config.subr"
 
 RTBUF_DIRS="librtbuf lib cli gtk3"
 RTBUF_CONFIGURES="$(find . -name configure -or -name update_sources | tr '\n' ' ')"

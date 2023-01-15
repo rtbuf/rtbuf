@@ -14,15 +14,15 @@
 
 set -e
 
-export RTBUF_SRC_TOP="$(pwd)/.."
+SRC_TOP="$(dirname "$PWD")"
 
-. ../config.subr
+. "${SRC_TOP}/config.subr"
 
 # Targets
 LIB=librtbuf.la
-LIB_ASAN=librtbuf.asan.la
-LIB_COV=librtbuf.cov.la
-LIB_DEBUG=librtbuf.debug.la
+LIB_ASAN=librtbuf_asan.la
+LIB_COV=librtbuf_cov.la
+LIB_DEBUG=librtbuf_debug.la
 
 # Sources
 . ./sources.sh
@@ -95,6 +95,7 @@ echo "CFLAGS_DEBUG = $CFLAGS_DEBUG" >> ${CONFIG_MK}
 echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
 echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
 
+# Library
 echo >> ${CONFIG_MK}
 echo "$LIB: $LIB_OBJECTS" >> ${CONFIG_MK}
 echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${LIB_OBJECTS} \${LIBS} -o ${LIB} -rpath ${LIBDIR}" >> ${CONFIG_MK}
@@ -110,11 +111,6 @@ echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${LIB_OBJECTS_COV}
 echo >> ${CONFIG_MK}
 echo "$LIB_DEBUG: $LIB_OBJECTS_DEBUG" >> ${CONFIG_MK}
 echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${LIB_OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${LIB_DEBUG}" >> ${CONFIG_MK}
-
-echo >> ${CONFIG_MK}
-echo "install: ${LIB}" >> ${CONFIG_MK}
-echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
-echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${LIB} \${LIBDIR}" >> ${CONFIG_MK}
 
 for SRC in $LIB_SOURCES; do
     echo >> ${CONFIG_MK}
@@ -137,5 +133,11 @@ for SRC in $LIB_SOURCES; do
     ext_rule .debug.lo "$SRC" >> ${CONFIG_MK}
     echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_DEBUG} -c $SRC -o $SRC_DEBUG_LO" >> ${CONFIG_MK}
 done
+
+# Install
+echo >> ${CONFIG_MK}
+echo "install: ${LIB}" >> ${CONFIG_MK}
+echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
+echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0644 ${LIB} \${LIBDIR}" >> ${CONFIG_MK}
 
 update_config_mk

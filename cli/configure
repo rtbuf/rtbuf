@@ -14,15 +14,15 @@
 
 set -e
 
-export SRC_TOP="$(pwd)/.."
+SRC_TOP="$(dirname "$PWD")"
 
-. ../config.subr
+. "${SRC_TOP}/config.subr"
 
 # Targets
 LIB=librtbuf_cli.la
-LIB_ASAN=librtbuf_cli.asan.la
-LIB_COV=librtbuf_cli.cov.la
-LIB_DEBUG=librtbuf_cli.debug.la
+LIB_ASAN=librtbuf_cli_asan.la
+LIB_COV=librtbuf_cli_cov.la
+LIB_DEBUG=librtbuf_cli_debug.la
 
 PROG=rtbuf
 PROG_ASAN=rtbuf_asan
@@ -57,12 +57,13 @@ CPPFLAGS="${CPPFLAGS:=}"
 ENV_CFLAGS="${CFLAGS:=}"
 DEFAULT_CFLAGS="-O2 -pipe -fPIC"
 LDFLAGS="${LDFLAGS:=}"
-LIBS="${LIBS:=-lm}"
+LIBS="${LIBS:=}"
 
 # Common config for all targets
 CFLAGS="$CFLAGS -W -Wall -Werror -std=c99 -pedantic"
 CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
 CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
+LIBS="$LIBS -lpthread -lreadline"
 config_asan
 config_gnu
 pkg_config libbsd-overlay
@@ -70,24 +71,28 @@ pkg_config libbsd-overlay
 # Address Sanitizer config
 CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
 LDFLAGS_ASAN="$LDFLAGS"
-LIBS_ASAN="$LIBS"
+LIBS_ASAN="$LIBS ${SRC_TOP}/librtbuf/librtbuf_asan.la"
+PROG_LIBS_ASAN="librtbuf_cli_asan.la"
 
 # Coverage config
 CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
 LDFLAGS_COV="$LDFLAGS"
-LIBS_COV="$LIBS"
+LIBS_COV="$LIBS ${SRC_TOP}/librtbuf/librtbuf_cov.la"
+PROG_LIBS_COV="librtbuf_cli_cov.la"
 
 # Debug config
 CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
 LDFLAGS_DEBUG="$LDFLAGS"
-LIBS_DEBUG="$LIBS"
+LIBS_DEBUG="$LIBS ${SRC_TOP}/librtbuf/librtbuf_debug.la"
+PROG_LIBS_DEBUG="librtbuf_cli_debug.la"
 
 # Main config
 if [ "x$ENV_CFLAGS" = "x" ]; then
     CFLAGS="$CFLAGS $DEFAULT_CFLAGS"
 fi
 CFLAGS="$CFLAGS -DNDEBUG"
-LIBS="$LIBS"
+LIBS="$LIBS ${SRC_TOP}/librtbuf/librtbuf.la"
+PROG_LIBS="$LIBS librtbuf_cli.la"
 
 echo "HAVE_ASAN = $HAVE_ASAN" >> ${CONFIG_MK}
 echo "CPPFLAGS = $CPPFLAGS" >> ${CONFIG_MK}
@@ -95,18 +100,22 @@ echo "CFLAGS = $CFLAGS" >> ${CONFIG_MK}
 echo "LDFLAGS = $LDFLAGS" >> ${CONFIG_MK}
 echo "LIB_OBJECTS = $LIB_OBJECTS" >> ${CONFIG_MK}
 echo "LIBS = $LIBS" >> ${CONFIG_MK}
+echo "PROG_LIBS = $PROG_LIBS" >> ${CONFIG_MK}
 echo >> ${CONFIG_MK}
 echo "CFLAGS_ASAN = $CFLAGS_ASAN" >> ${CONFIG_MK}
 echo "LDFLAGS_ASAN = $LDFLAGS_ASAN" >> ${CONFIG_MK}
 echo "LIBS_ASAN = $LIBS_ASAN" >> ${CONFIG_MK}
+echo "PROG_LIBS_ASAN = $PROG_LIBS_ASAN" >> ${CONFIG_MK}
 echo >> ${CONFIG_MK}
 echo "CFLAGS_COV = $CFLAGS_COV" >> ${CONFIG_MK}
 echo "LDFLAGS_COV = $LDFLAGS_COV" >> ${CONFIG_MK}
 echo "LIBS_COV = $LIBS_COV" >> ${CONFIG_MK}
+echo "PROG_LIBS_COV = $PROG_LIBS_COV" >> ${CONFIG_MK}
 echo >> ${CONFIG_MK}
 echo "CFLAGS_DEBUG = $CFLAGS_DEBUG" >> ${CONFIG_MK}
 echo "LDFLAGS_DEBUG = $LDFLAGS_DEBUG" >> ${CONFIG_MK}
 echo "LIBS_DEBUG = $LIBS_DEBUG" >> ${CONFIG_MK}
+echo "PROG_LIBS_DEBUG = $PROG_LIBS_DEBUG" >> ${CONFIG_MK}
 
 # Library
 echo >> ${CONFIG_MK}
@@ -124,11 +133,6 @@ echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${LIB_OBJECTS_COV}
 echo >> ${CONFIG_MK}
 echo "$LIB_DEBUG: $LIB_OBJECTS_DEBUG" >> ${CONFIG_MK}
 echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${LIB_OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${LIB_DEBUG}" >> ${CONFIG_MK}
-
-echo >> ${CONFIG_MK}
-echo "install: ${LIB}" >> ${CONFIG_MK}
-echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${LIBDIR}" >> ${CONFIG_MK}
-echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${LIB} \${LIBDIR}" >> ${CONFIG_MK}
 
 for SRC in $LIB_SOURCES; do
     echo >> ${CONFIG_MK}
@@ -154,25 +158,20 @@ done
 
 # Program
 echo >> ${CONFIG_MK}
-echo "$PROG: $PROG_OBJECTS" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} \${LIBS} -o ${PROG} -rpath ${LIBDIR}" >> ${CONFIG_MK}
+echo "$PROG: $PROG_OBJECTS $LIB" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS} ${PROG_OBJECTS} \${PROG_LIBS} -o ${PROG} -rpath ${LIBDIR}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$PROG_ASAN: $PROG_OBJECTS_ASAN" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${PROG_OBJECTS_ASAN} \${LIBS_ASAN} -o ${PROG_ASAN}" >> ${CONFIG_MK}
+echo "$PROG_ASAN: $PROG_OBJECTS_ASAN $LIB_ASAN" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_ASAN} ${PROG_OBJECTS_ASAN} \${PROG_LIBS_ASAN} -o ${PROG_ASAN}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$PROG_COV: $PROG_OBJECTS_COV" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${PROG_OBJECTS_COV} \${LIBS_COV} -o ${PROG_COV}" >> ${CONFIG_MK}
+echo "$PROG_COV: $PROG_OBJECTS_COV $LIB_COV" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_COV} ${PROG_OBJECTS_COV} \${PROG_LIBS_COV} -o ${PROG_COV}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
-echo "$PROG_DEBUG: $PROG_OBJECTS_DEBUG" >> ${CONFIG_MK}
-echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${PROG_OBJECTS_DEBUG} \${LIBS_DEBUG} -o ${PROG_DEBUG}" >> ${CONFIG_MK}
-
-echo >> ${CONFIG_MK}
-echo "install: ${PROG}" >> ${CONFIG_MK}
-echo "	\${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 -d \${BINDIR}" >> ${CONFIG_MK}
-echo "	\${LIBTOOL} --tag=CC --mode=install \${INSTALL} -o \${OWNER} -g \${GROUP} -m 0755 ${PROG} \${BINDIR}" >> ${CONFIG_MK}
+echo "$PROG_DEBUG: $PROG_OBJECTS_DEBUG $LIB_DEBUG" >> ${CONFIG_MK}
+echo "	${LIBTOOL} --tag=CC --mode=link \${CC} \${LDFLAGS_DEBUG} ${PROG_OBJECTS_DEBUG} \${PROG_LIBS_DEBUG} -o ${PROG_DEBUG}" >> ${CONFIG_MK}
 
 for SRC in $PROG_SOURCES; do
     echo >> ${CONFIG_MK}
