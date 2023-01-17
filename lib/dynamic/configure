@@ -33,30 +33,34 @@ CPPFLAGS="$CPPFLAGS -DRTBUF_LIBDIR=\\\"${RTBUF_LIBDIR}\\\""
 CPPFLAGS="$CPPFLAGS -DVER=\\\"${VER}\\\""
 config_asan
 config_gnu
-pkg_config libbsd-overlay
-pkg_config libffi
-pkg_config libmd
 
 # Address Sanitizer config
 CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
 LDFLAGS_ASAN="$LDFLAGS"
 LIBS_ASAN="$LIBS"
+LIBS_ASAN="$LIBS_ASAN $SRC_TOP/lib/librtbuf_signal_asan.la"
+LIBS_ASAN="$LIBS_ASAN $SRC_TOP/librtbuf/librtbuf_asan.la"
 
 # Coverage config
 CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
 LDFLAGS_COV="$LDFLAGS"
 LIBS_COV="$LIBS"
+LIBS_COV="$LIBS_COV $SRC_TOP/lib/librtbuf_signal_cov.la"
+LIBS_COV="$LIBS_COV $SRC_TOP/librtbuf/librtbuf_cov.la"
 
 # Debug config
 CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
 LDFLAGS_DEBUG="$LDFLAGS"
 LIBS_DEBUG="$LIBS"
+LIBS_DEBUG="$LIBS_DEBUG $SRC_TOP/lib/librtbuf_signal_debug.la"
+LIBS_DEBUG="$LIBS_DEBUG $SRC_TOP/librtbuf/librtbuf_debug.la"
 
 # Main config
 if [ "x$ENV_CFLAGS" = "x" ]; then
     CFLAGS="$CFLAGS $DEFAULT_CFLAGS"
 fi
 CFLAGS="$CFLAGS -DNDEBUG"
+LIBS="$LIBS"
 LIBS="$LIBS $SRC_TOP/lib/librtbuf_signal.la"
 LIBS="$LIBS $SRC_TOP/librtbuf/librtbuf.la"
 

@@ -29,6 +29,10 @@ lo_rule() {
     ext_rule .lo "$1"
 }
 
+prog_ext_rule() {
+    { o_rule "$2" || exit 1; } | sed -e "s/[.]o:/$1:/"
+}
+
 prog_rule() {
     { o_rule "$1" || exit 1; } | sed -e 's/[.]o:/:/'
 }
@@ -261,6 +265,7 @@ rtbuf_library() {
     echo "RTBUF_LIBRARY_LIBDIR = $RTBUF_LIBRARY_LIBDIR" >> ${CONFIG_MK}
 
     LIBRARIES=
+    LIBRARIES_DEBUG=
 
     for SRC in $SOURCES; do
         SRC_LO="$(c2ext .main.lo "$SRC")"
@@ -272,10 +277,23 @@ rtbuf_library() {
         echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
         echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath ${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
         LIBRARIES="$LIBRARIES $SRC_LA"
-    done
+
+        SRC_LO="$(c2ext .debug.lo "$SRC")"
+        echo >> ${CONFIG_MK}
+        ext_rule .debug.lo "$SRC" >> ${CONFIG_MK}
+        echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_DEBUG} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+        SRC_LA="$(c2ext _debug.la "$SRC")"
+        echo >> ${CONFIG_MK}
+        echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
+        echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -no-undefined -module \${LDFLAGS} $SRC_LO \${LIBS_DEBUG} -o $SRC_LA -rpath ${RTBUF_LIBRARY_LIBDIR}" >> ${CONFIG_MK}
+        LIBRARIES_DEBUG="$LIBRARIES_DEBUG $SRC_LA"
+done
 
     echo >> ${CONFIG_MK}
     echo "libraries:${LIBRARIES}" >> ${CONFIG_MK}
+
+    echo >> ${CONFIG_MK}
+    echo "libraries-debug:${LIBRARIES_DEBUG}" >> ${CONFIG_MK}
 
     echo >> ${CONFIG_MK}
     echo "install:${LIBRARIES}" >> ${CONFIG_MK}

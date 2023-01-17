@@ -13,13 +13,25 @@
 
 CLEANFILES = .libs *.o *.lo *.la *.gcno *.gcna *.gcda
 
-all: types libraries subdirs
+build: types libraries subdirs
+
+all: build
 
 clean: subdirs-clean
 	rm -rf ${CLEANFILES}
 
+debug: types libraries-debug subdirs-debug
+
 install: libraries-install subdirs-install
 
+libraries: types
+
+libraries-debug: types
+
 .PHONY: all clean libraries subdirs subdirs-clean subdirs-install
+
+subdirs: libraries
+
+subdirs-debug: libraries-debug
 
 include config.mk

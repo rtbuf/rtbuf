@@ -79,7 +79,7 @@ rtbuf_input_widget_class_init (RtbufInputWidgetClass *klass)
                      G_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
   g_object_class_install_properties(gobject_class, LAST_PROP, rtbuf_input_widget_props);
   gtk_widget_class_set_template_from_resource(widget_class,
-                                              "/rtbuf/rtbuf_input_widget.ui");
+                                              "/rtbuf/rtbuf_gtk3_input_widget.ui");
   gtk_widget_class_bind_template_child_private(widget_class,
                                                RtbufInputWidget, check);
   gtk_widget_class_bind_template_child_private(widget_class,

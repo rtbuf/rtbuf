@@ -41,16 +41,19 @@ config_sndio
 CFLAGS_ASAN="$CFLAGS -fsanitize=address -O1 -fno-omit-frame-pointer -g"
 LDFLAGS_ASAN="$LDFLAGS"
 LIBS_ASAN="$LIBS"
+LIBS_ASAN="$LIBS_ASAN $SRC_TOP/librtbuf/librtbuf_asan.la"
 
 # Coverage config
 CFLAGS_COV="$CFLAGS -ftest-coverage -fprofile-arcs"
 LDFLAGS_COV="$LDFLAGS"
 LIBS_COV="$LIBS"
+LIBS_COV="$LIBS_COV $SRC_TOP/librtbuf/librtbuf_cov.la"
 
 # Debug config
 CFLAGS_DEBUG="$CFLAGS -DDEBUG -O0 -ggdb"
 LDFLAGS_DEBUG="$LDFLAGS"
 LIBS_DEBUG="$LIBS"
+LIBS_DEBUG="$LIBS_DEBUG $SRC_TOP/librtbuf/librtbuf_debug.la"
 
 # Main config
 if [ "x$ENV_CFLAGS" = "x" ]; then
@@ -102,6 +105,7 @@ type_prog synth
 echo "types:${TYPES}" >> ${CONFIG_MK}
 
 LIBRARIES=
+LIBRARIES_DEBUG=
 
 for SRC in $SOURCES; do
     SRC_LO="$(c2ext .main.lo "$SRC")"
@@ -114,10 +118,24 @@ for SRC in $SOURCES; do
     echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
     echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS} $SRC_LO \${LIBS} -o $SRC_LA -rpath \${LIBDIR}" >> ${CONFIG_MK}
     LIBRARIES="$LIBRARIES $SRC_LA"
+
+    SRC_LO="$(c2ext .debug.lo "$SRC")"
+    echo >> ${CONFIG_MK}
+    ext_rule .debug.lo "$SRC" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=compile \${CC} \${CPPFLAGS} \${CFLAGS_DEBUG} -c $SRC -o $SRC_LO" >> ${CONFIG_MK}
+
+    SRC_LA="librtbuf_$(c2ext _debug.la "$SRC")"
+    echo >> ${CONFIG_MK}
+    echo "$SRC_LA: $SRC_LO" >> ${CONFIG_MK}
+    echo "	${LIBTOOL} --tag=CC --mode=link \${CC} -shared \${LDFLAGS_DEBUG} $SRC_LO \${LIBS_DEBUG} -o $SRC_LA -rpath \${LIBDIR}" >> ${CONFIG_MK}
+    LIBRARIES_DEBUG="$LIBRARIES_DEBUG $SRC_LA"
 done
 
 echo >> ${CONFIG_MK}
 echo "libraries:${LIBRARIES} ${TYPES}" >> ${CONFIG_MK}
+
+echo >> ${CONFIG_MK}
+echo "libraries-debug:${LIBRARIES_DEBUG} ${TYPES}" >> ${CONFIG_MK}
 
 echo >> ${CONFIG_MK}
 echo "libraries-install: ${LIBRARIES}" >> ${CONFIG_MK}
@@ -138,6 +156,12 @@ for DIR in $DIRS; do
 done
 
 echo >> ${CONFIG_MK}
+echo "subdirs-debug:" >> ${CONFIG_MK}
+for DIR in $DIRS; do
+    echo "	\${MAKE} -C $DIR debug" >> ${CONFIG_MK}
+done
+
+echo >> ${CONFIG_MK}
 echo "subdirs-install: libraries" >> ${CONFIG_MK}
 for DIR in $DIRS; do
     echo "	\${MAKE} -C $DIR install" >> ${CONFIG_MK}
@@ -154,6 +178,6 @@ for TYPE_SRC in $TYPE_SOURCES; do
 done
 
 echo >> ${CONFIG_MK}
-echo ".PHONY: types libraries install subdirs subdirs-clean subdirs-install" >> ${CONFIG_MK}
+echo ".PHONY: types libraries libraries-debug install subdirs subdirs-clean subdirs-debug subdirs-install" >> ${CONFIG_MK}
 
 update_config_mk

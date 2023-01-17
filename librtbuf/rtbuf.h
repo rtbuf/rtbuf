@@ -110,6 +110,11 @@ extern int          g_rtbuf_run;
 extern int          g_rtbuf_running;
 
 /**
+ * @brief Callback function for rtbuf_err.
+ */
+typedef void (*f_rtbuf_err_cb) (const char *msg);
+
+/**
  * @brief Callback function for rtbuf_new.
  */
 typedef void (*f_rtbuf_new_cb) (s_rtbuf *rtb);
@@ -130,6 +135,11 @@ typedef void (*f_rtbuf_bind_cb) (s_rtbuf *src, unsigned int out,
  */
 typedef void (*f_rtbuf_unbind_cb) (s_rtbuf *src, unsigned int out,
                                    s_rtbuf *dest, unsigned int in);
+
+/**
+ * @brief Callback function for rtbuf_err.
+ */
+extern f_rtbuf_err_cb    g_rtbuf_err_cb;
 
 /**
  * @brief Callback function for rtbuf_new.
@@ -171,6 +181,8 @@ int librtbuf_init ();
 void librtbuf_shutdown ();
 
 int rtbuf_err (const char *msg);
+
+void rtbuf_err_default (const char *msg);
 
 /**
  * @brief Create a new real time buffer.

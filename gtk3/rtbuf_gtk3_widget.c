@@ -71,7 +71,7 @@ rtbuf_widget_class_init (RtbufWidgetClass *klass)
                          G_PARAM_READWRITE|G_PARAM_EXPLICIT_NOTIFY);
   g_object_class_install_properties(gobject_class, LAST_PROP, rtbuf_widget_props);
   gtk_widget_class_set_template_from_resource(widget_class,
-                                              "/rtbuf/rtbuf_widget.ui");
+                                              "/rtbuf/rtbuf_gtk3_widget.ui");
   gtk_widget_class_bind_template_child_private(widget_class,
                                                RtbufWidget, event_box);
   gtk_widget_class_bind_template_child_private(widget_class,

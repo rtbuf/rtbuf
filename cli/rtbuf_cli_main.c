@@ -12,6 +12,7 @@
  * THIS SOFTWARE.
  */
 #include <assert.h>
+#include <stdio.h>
 #include "../librtbuf/rtbuf.h"
 #include "rtbuf_cli.h"
 

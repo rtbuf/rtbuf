@@ -38,6 +38,7 @@ unsigned int  g_rtbuf_sort = 0;
 unsigned int  g_rtbuf_sorted[RTBUF_MAX];
 unsigned int  g_rtbuf_sorted_n = 0;
 
+f_rtbuf_err_cb    g_rtbuf_err_cb = 0;
 f_rtbuf_new_cb    g_rtbuf_new_cb = 0;
 f_rtbuf_delete_cb g_rtbuf_delete_cb = 0;
 f_rtbuf_bind_cb   g_rtbuf_bind_cb = 0;
@@ -66,6 +67,20 @@ void librtbuf_shutdown ()
   data_alloc_clean(&g_rtbuf_alloc);
   g_rtbuf = 0;
   libdata_shutdown();
+}
+
+int rtbuf_err (const char *msg)
+{
+  if (g_rtbuf_err_cb)
+    g_rtbuf_err_cb(msg);
+  else
+    rtbuf_err_default(msg);
+  return -1;
+}
+
+void rtbuf_err_default (const char *msg)
+{
+  fprintf(stderr, "rtbuf: %s\n", msg);
 }
 
 int rtbuf_new (s_rtbuf_proc *rp)
@@ -563,6 +578,7 @@ int rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value)
 void rtbuf_print (const s_rtbuf *rtbuf)
 {
   unsigned int i;
+  assert(rtbuf);
   if (rtbuf >= g_rtbuf &&
       (i = rtbuf - g_rtbuf) < RTBUF_MAX)
     printf("#<rtbuf %i %s>\n", i, rtbuf->proc->lib->name);
@@ -596,7 +612,7 @@ void rtbuf_print_long (const s_rtbuf *rtbuf)
   s_rtbuf_proc *proc;
   int i;
   unsigned int j = 0;
-  assert(i < RTBUF_MAX);
+  assert(rtbuf);
   proc = rtbuf->proc;
   if (rtbuf >= g_rtbuf &&
       (i = rtbuf - g_rtbuf) < RTBUF_MAX)
@@ -644,12 +660,6 @@ double max (double a, double b)
 double clamp (double inf, double x, double sup)
 {
   return max(inf, min(x, sup));
-}
-
-int rtbuf_err (const char *msg)
-{
-  fprintf(stderr, "%s\n", msg);
-  return -1;
 }
 
 double * rtbuf_in_unbound_value (s_rtbuf *rtb, unsigned int in)

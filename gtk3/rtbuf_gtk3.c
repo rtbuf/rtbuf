@@ -48,6 +48,8 @@ GtkWidget              *drag_widget = NULL;
 gint                    drag_x = 0;
 gint                    drag_y = 0;
 
+void rtbuf_gtk_err_cb (const char *msg);
+
 void rtbuf_gtk_drag_connection_end (RtbufInputWidget *input_widget)
 {
   if (drag_connection) {
@@ -146,6 +148,7 @@ void rtbuf_gtk_new (gchar *library, const gint x, const gint y)
     fprintf(stderr, "rtbuf-gtk new rtbuf_new failed: %s\n", library);
     return;
   }
+  rtbuf_print(g_rtbuf + i);
 }
 
 void rtbuf_gtk_library_menu_activate (GtkMenuItem *menuitem,
@@ -154,9 +157,9 @@ void rtbuf_gtk_library_menu_activate (GtkMenuItem *menuitem,
   gchar *proc;
   gchar *library = (gchar*) data;
   g_object_get(menuitem, "label", &proc, NULL);
-  rtbuf_gtk_new(library, rtbuf_x, rtbuf_y);
   rtbuf_x = 100;
   rtbuf_y = 100;
+  rtbuf_gtk_new(library, rtbuf_x, rtbuf_y);
   g_free(proc);
 }
 
@@ -469,6 +472,21 @@ void rtbuf_gtk_unlock ()
     g_mutex_unlock(&g_mutex);
 }
 
+void rtbuf_gtk_new_cb (s_rtbuf *rtbuf)
+{
+  s_rtbuf_gtk_rtbuf_info *info;
+  assert(rtbuf);
+  rtbuf_print(rtbuf);
+  info = rtbuf_gtk_rtbuf_info_new();
+  assert(info);
+  rtbuf->user_ptr = info;
+  info->x = 10;
+  info->y = 10;
+  rtbuf_gtk_lock();
+  rtbuf_gtk_modular_layout_new(rtbuf);
+  rtbuf_gtk_unlock();
+}
+
 void rtbuf_gtk_position_cb (s_rtbuf *rtbuf, short x, short y)
 {
   s_rtbuf_gtk_rtbuf_info *info =
@@ -605,6 +623,8 @@ int main (int argc, char *argv[])
 {
   g_mutex_init(&g_mutex);
   symbols_init();
+  g_rtbuf_err_cb = rtbuf_gtk_err_cb;
+  g_rtbuf_new_cb = rtbuf_gtk_new_cb;
   g_rtbuf_position_cb = rtbuf_gtk_position_cb;
   g_rtbuf_delete_cb = rtbuf_gtk_delete_cb;
   g_rtbuf_bind_cb = rtbuf_gtk_bind_cb;
@@ -624,8 +644,7 @@ int main (int argc, char *argv[])
   return 0;
 }
 
-extern int rtbuf_err (const char *msg)
+void rtbuf_gtk_err_cb (const char *msg)
 {
   fprintf(stderr, "rtbuf-gtk: %s\n", msg);
-  return -1;
 }

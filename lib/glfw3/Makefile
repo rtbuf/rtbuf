@@ -11,11 +11,16 @@
 ## AUTHOR BE CONSIDERED LIABLE FOR THE USE AND PERFORMANCE OF
 ## THIS SOFTWARE.
 
-all: libraries
+build: libraries
+
+all: build debug
 
 clean:
 	rm -rf .libs *.o *.lo *.la *.gcno *.gcna *.gcda
 
-.PHONY: all clean libraries
+debug: libraries-debug
+
+.PHONY: all clean libraries libraries-debug
 
 include config.mk
+include sources.mk

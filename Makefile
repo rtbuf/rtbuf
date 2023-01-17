@@ -29,6 +29,12 @@ clean:
 	${MAKE} -C ${PWD}/cli      clean
 	${MAKE} -C ${PWD}/gtk3     clean
 
+debug:
+	${MAKE} -C ${PWD}/librtbuf debug
+	${MAKE} -C ${PWD}/lib debug
+	${MAKE} -C ${PWD}/cli debug
+	${MAKE} -C ${PWD}/gtk3 debug
+
 doc:
 	doxygen doxygen.conf
 
@@ -38,11 +44,17 @@ install:
 	${MAKE} -C ${PWD}/cli      install
 	${MAKE} -C ${PWD}/gtk3     install
 
+install-debug:
+	${MAKE} -C ${PWD}/librtbuf install-debug
+	${MAKE} -C ${PWD}/lib      install-debug
+	${MAKE} -C ${PWD}/cli      install-debug
+	${MAKE} -C ${PWD}/gtk3     install-debug
+
 licence:
 	update_header config.subr ${RTBUF_CONFIGURES}
 	update_header Makefile ${RTBUF_MAKEFILES}
 	update_header librtbuf/rtbuf.h ${RTBUF_C_SOURCES}
 
-.PHONY: all build clean doc install
+.PHONY: all build clean doc install install-debug
 
 include config.mk

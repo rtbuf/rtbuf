@@ -1,6 +1,6 @@
 load signal/sinus
-let sinus00 = new signal/sinus
+let sinus00 = new signal/sinus 10 10
 load portaudio/output
-let output00 = new portaudio/output
+let output00 = new portaudio/output 200 400
 bind sinus00 signal output00 left
 bind sinus00 signal output00 right
