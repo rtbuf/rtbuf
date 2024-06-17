@@ -44,7 +44,7 @@ f_rtbuf_delete_cb g_rtbuf_delete_cb = 0;
 f_rtbuf_bind_cb   g_rtbuf_bind_cb = 0;
 f_rtbuf_unbind_cb g_rtbuf_unbind_cb = 0;
 
-int librtbuf_init ()
+int librtbuf_init (void)
 {
   libdata_init();
   bzero(g_rtbuf_sorted, sizeof(g_rtbuf_sorted));
@@ -58,7 +58,7 @@ int librtbuf_init ()
   return 0;
 }
 
-void librtbuf_shutdown ()
+void librtbuf_shutdown (void)
 {
   rtbuf_var_shutdown();
   rtbuf_lib_shutdown();
@@ -207,7 +207,7 @@ void rtbuf_unbind_all_out (s_rtbuf *rtb)
   assert(g_rtbuf <= rtb);
   assert(rtb < g_rtbuf + RTBUF_MAX);
   rtb_i = rtb - g_rtbuf;
-  while (i < g_rtbuf_alloc.n && rtb->refc) {
+  while (i < g_rtbuf_alloc.n && n && rtb->refc) {
     if (g_rtbuf[i].data) {
       rtbuf_unbind_all_out_rtbuf(rtb, rtb_i, &g_rtbuf[i]);
       n--;
@@ -357,17 +357,17 @@ void rtbuf_find_roots (s_rtbuf_in_stack *rvs)
   s_rtbuf *rtb = g_rtbuf;
   unsigned int i = 0;
   unsigned int n = g_rtbuf_alloc.n - g_rtbuf_alloc.free_n;
-  unsigned int c = 0;
-  /* printf("rtbuf_find_roots\n"); */
-  while (i < g_rtbuf_alloc.n && n > 0) {
-    /* printf(" rtbuf_find_roots %u %u\n", i, n); */
+  // unsigned int c = 0;
+  // printf("rtbuf_find_roots\n");
+  while (i < g_rtbuf_alloc.n && n) {
+    // printf(" rtbuf_find_roots %u %u\n", i, n);
     if (rtb->data) {
       if (rtb->flags & RTBUF_DELETE)
         rtbuf_delete_(rtb);
       else {
         if (rtb->refc == 0) {
           rtbuf_in_stack_push(rvs, i, 0);
-          c++;
+          // c++;
         }
       }
       n--;
@@ -375,7 +375,7 @@ void rtbuf_find_roots (s_rtbuf_in_stack *rvs)
     rtb++;
     i++;
   }
-  /* printf(" rtbuf_find_roots => %u\n", c); */
+  // printf(" rtbuf_find_roots => %u\n", c);
 }
 
 /* XXX needs rewrite */
@@ -406,7 +406,7 @@ void rtbuf_sort_push_child (s_rtbuf_in_stack *rvs,
 }
 
 /* XXX needs rewrite */
-void rtbuf_sort ()
+void rtbuf_sort (void)
 {
   s_rtbuf_in_stack rvs;
   s_rtbuf_in_ptr *ptr;
@@ -428,7 +428,7 @@ void rtbuf_sort ()
   rtbuf_print_sorted();
 }
 
-int rtbuf_start ()
+int rtbuf_start (void)
 {
   unsigned int i = 0;
   /* printf("rtbuf_start\n"); */
@@ -452,7 +452,7 @@ int rtbuf_start ()
   return 0;
 }
 
-int rtbuf_run ()
+int rtbuf_run (void)
 {
   unsigned int i = 0;
   /* printf("rtbuf_run\n"); */
@@ -484,7 +484,7 @@ int rtbuf_run ()
   return 0;
 }
 
-void rtbuf_stop ()
+void rtbuf_stop (void)
 {
   unsigned int i = 0;
   /* printf("rtbuf_stop\n"); */
@@ -635,7 +635,7 @@ void rtbuf_print_long (const s_rtbuf *rtbuf)
   fflush(stdout);
 }
 
-void rtbuf_print_sorted ()
+void rtbuf_print_sorted (void)
 {
   unsigned int i = 0;
   while (i < g_rtbuf_sorted_n) {

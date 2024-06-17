@@ -26,7 +26,7 @@ struct queue {
 
 void      queue_init (s_queue *q);
 void      queue_destroy (s_queue *q);
-s_queue * queue_new ();
+s_queue * queue_new (void);
 void      queue_delete (s_queue *q);
 void      queue_enqueue (s_queue *q, void *item);
 void *    queue_dequeue (s_queue *q);

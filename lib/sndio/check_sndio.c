@@ -13,7 +13,7 @@
  */
 #include <sndio.h>
 
-int main ()
+int main (void)
 {
   struct sio_hdl *sio_hdl = sio_open(SIO_DEVANY, SIO_PLAY, 0);
   sio_close(sio_hdl);

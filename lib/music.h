@@ -73,7 +73,7 @@ typedef struct rtbuf_music_notes {
 #define RTBUF_MUSIC_NOTES_SIZE sizeof(unsigned int)
 #define RTBUF_MUSIC_NOTES_TYPE "music_notes"
 
-int  rtbuf_music_init ();
+int  rtbuf_music_init (void);
 void rtbuf_music_notes_init (s_rtbuf_music_notes *notes);
 int  rtbuf_music_notes_new (s_rtbuf_music_notes *notes, double velocity);
 void rtbuf_music_notes_delete (s_rtbuf_music_notes *notes,

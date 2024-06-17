@@ -22,14 +22,14 @@ extern f_rtbuf_position g_rtbuf_position_cb;
 extern pthread_t g_rtbuf_cli_run_thread;
 
 int rtbuf_cli_exit (int argc, const char *argv[]);
-void repl_init ();
+void repl_init (void);
 int load (const char *path);
-int repl ();
+int repl (void);
 void rtbuf_cli_args (int argc, char *argv[]);
 
-int rtbuf_cli_start ();
-int rtbuf_cli_stop ();
+int rtbuf_cli_start (void);
+int rtbuf_cli_stop (void);
 
-int rtbuf_cli_do_event ();
+int rtbuf_cli_do_event (void);
 
 #endif /* RTBUF_CLI_H */

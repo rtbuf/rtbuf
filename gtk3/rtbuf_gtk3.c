@@ -178,7 +178,7 @@ void rtbuf_gtk_destroy (GtkWidget *widget, gpointer data)
   gtk_widget_destroy(widget);
 }
 
-void rtbuf_gtk_library_menu ()
+void rtbuf_gtk_library_menu (void)
 {
   if (!library_menu)
     library_menu = GTK_MENU(gtk_builder_get_object(builder,
@@ -393,7 +393,7 @@ void rtbuf_gtk_modular_stop (GtkWidget *widget, gpointer data)
   rtbuf_cli_stop();
 }
 
-void rtbuf_gtk_modular_toolbar ()
+void rtbuf_gtk_modular_toolbar (void)
 {
   GtkWidget *image;
   GtkToolItem *item;
@@ -417,7 +417,7 @@ void rtbuf_gtk_modular_toolbar ()
   gtk_toolbar_insert(modular_toolbar, item, -1);
 }
 
-void rtbuf_gtk_modular ()
+void rtbuf_gtk_modular (void)
 {
   GObject *button;
 
@@ -446,10 +446,10 @@ void rtbuf_gtk_modular ()
                    G_CALLBACK(rtbuf_gtk_modular_motion), NULL);
 }
 
-int rtbuf_gtk_builder ()
+int rtbuf_gtk_builder (void)
 {
   GError *error = NULL;
-  builder = gtk_builder_new ();
+  builder = gtk_builder_new();
   if (gtk_builder_add_from_resource(builder, "/rtbuf/rtbuf_gtk3_modular.ui",
                                     &error) == 0) {
     g_printerr("Error loading resource /rtbuf/rtbuf_gtk3_modular.ui: %s\n",
@@ -460,13 +460,13 @@ int rtbuf_gtk_builder ()
   return 0;
 }
 
-void rtbuf_gtk_lock ()
+void rtbuf_gtk_lock (void)
 {
   if (pthread_equal(pthread_self(), g_rtbuf_cli_run_thread))
     g_mutex_lock(&g_mutex);
 }
 
-void rtbuf_gtk_unlock ()
+void rtbuf_gtk_unlock (void)
 {
   if (pthread_equal(pthread_self(), g_rtbuf_cli_run_thread))
     g_mutex_unlock(&g_mutex);

@@ -25,8 +25,8 @@ struct rtbuf_gtk_connection {
   s_rtbuf_gtk_connection *next;
 };
 
-void rtbuf_gtk_connection_init ();
-s_rtbuf_gtk_connection * rtbuf_gtk_connection_new ();
+void rtbuf_gtk_connection_init (void);
+s_rtbuf_gtk_connection * rtbuf_gtk_connection_new (void);
 void rtbuf_gtk_connection_delete (s_rtbuf_gtk_connection *connection);
 
 void rtbuf_gtk_connection_push (s_rtbuf_gtk_connection **head,

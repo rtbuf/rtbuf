@@ -53,11 +53,11 @@ void rtbuf_var_delete (s_rtbuf_var *var)
   data_delete(&g_rtbuf_var_alloc, var);
 }
 
-void rtbuf_var_delete_all ()
+void rtbuf_var_delete_all (void)
 {
   unsigned i = 0;
   int n = g_rtbuf_var_alloc.n;
-  while (i < g_rtbuf_var_alloc.max) {
+  while (i < g_rtbuf_var_alloc.max && n > 0) {
     if (g_rtbuf_var[i].name) {
       rtbuf_var_delete(g_rtbuf_var + i);
       n--;

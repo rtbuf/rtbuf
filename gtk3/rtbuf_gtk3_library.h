@@ -28,6 +28,6 @@ struct rtbuf_gtk_library_tree {
 
 extern s_rtbuf_gtk_library_tree *g_rtbuf_gtk_library_tree;
 
-void rtbuf_gtk_library_load ();
+void rtbuf_gtk_library_load (void);
 
 #endif /* RTBUF_GTK_LIBRARY_H */

@@ -45,7 +45,7 @@ void g_str_reset (char *head)
 const char  *g_symbols[SYMBOL_MAX];
 unsigned int g_symbols_n = 0;
 
-void symbols_init () {
+void symbols_init (void) {
   bzero(g_str_start, sizeof(g_str_start));
   bzero(g_symbols, sizeof(g_symbols));
 }

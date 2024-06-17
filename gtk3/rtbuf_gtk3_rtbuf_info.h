@@ -26,8 +26,8 @@ typedef struct rtbuf_gtk_rtbuf_info {
   RtbufOutputWidget *out[RTBUF_PROC_OUT_MAX];
 } s_rtbuf_gtk_rtbuf_info;
 
-void rtbuf_gtk_rtbuf_info_init ();
-s_rtbuf_gtk_rtbuf_info *rtbuf_gtk_rtbuf_info_new ();
+void rtbuf_gtk_rtbuf_info_init (void);
+s_rtbuf_gtk_rtbuf_info *rtbuf_gtk_rtbuf_info_new (void);
 void rtbuf_gtk_rtbuf_info_delete (s_rtbuf_gtk_rtbuf_info *info);
 
 #endif /* RTBUF_GTK_RTBUF_INFO_H */

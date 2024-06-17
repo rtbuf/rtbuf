@@ -26,7 +26,7 @@ s_data_type   g_rtbuf_data_type_type = {
 s_data_alloc  g_rtbuf_data_type_alloc;
 s_rtbuf_type *g_rtbuf_data_type;
 
-void rtbuf_type_init ()
+void rtbuf_type_init (void)
 {
   data_alloc_init(&g_rtbuf_data_type_alloc, &g_rtbuf_data_type_type,
                   RTBUF_TYPE_MAX, 0, 0);
@@ -44,7 +44,7 @@ void rtbuf_type_init ()
   rtbuf_type_define("double"        , sizeof(double));
 }
 
-void rtbuf_type_shutdown ()
+void rtbuf_type_shutdown (void)
 {
   if (g_rtbuf_data_type) {
     rtbuf_type_delete_all();
@@ -70,7 +70,7 @@ void rtbuf_type_delete (s_rtbuf_type *rt)
   data_delete(&g_rtbuf_data_type_alloc, rt);
 }
 
-void rtbuf_type_delete_all ()
+void rtbuf_type_delete_all (void)
 {
   unsigned i = 0;
   int n = g_rtbuf_data_type_alloc.n;

@@ -32,7 +32,7 @@ void queue_destroy (s_queue *q)
   q->length = 0;
 }
 
-s_queue * queue_new ()
+s_queue * queue_new (void)
 {
   s_queue *q = malloc(sizeof(s_queue));
   if (q)

@@ -21,14 +21,14 @@ s_data_type g_rtbuf_gtk_connection_type = {
 };
 s_data_alloc g_rtbuf_gtk_connection_alloc;
 
-void rtbuf_gtk_connection_init ()
+void rtbuf_gtk_connection_init (void)
 {
   data_alloc_init(&g_rtbuf_gtk_connection_alloc,
                   &g_rtbuf_gtk_connection_type,
                   RTBUF_MAX * 10, NULL, NULL);
 }
 
-s_rtbuf_gtk_connection * rtbuf_gtk_connection_new ()
+s_rtbuf_gtk_connection * rtbuf_gtk_connection_new (void)
 {
   s_rtbuf_gtk_connection *connection = data_new(&g_rtbuf_gtk_connection_alloc);
   return connection;

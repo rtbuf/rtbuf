@@ -35,7 +35,7 @@ char *g_rtbuf_lib_path[] = { "./lib/",
                              RTBUF_LIBDIR "/",
                              0 };
 
-void rtbuf_lib_init_ ()
+void rtbuf_lib_init_ (void)
 {
   char *in = getenv("HOME");
   char *out = g_rtbuf_lib_user_dir;
@@ -53,7 +53,7 @@ void rtbuf_lib_init_ ()
   *out = 0;
 }
 
-void rtbuf_lib_shutdown ()
+void rtbuf_lib_shutdown (void)
 {
   if (g_rtbuf_lib) {
     rtbuf_lib_delete_all();
@@ -91,7 +91,7 @@ int rtbuf_lib_find (const char *str)
   return -1;
 }
 
-s_rtbuf_lib * rtbuf_lib_new ()
+s_rtbuf_lib * rtbuf_lib_new (void)
 {
   s_rtbuf_lib *lib = data_new(&g_rtbuf_lib_alloc);
   return lib;
@@ -110,7 +110,7 @@ void rtbuf_lib_delete (s_rtbuf_lib *rl)
   data_delete(&g_rtbuf_lib_alloc, rl);
 }
 
-void rtbuf_lib_delete_all ()
+void rtbuf_lib_delete_all (void)
 {
   unsigned i = 0;
   int n = g_rtbuf_lib_alloc.n;

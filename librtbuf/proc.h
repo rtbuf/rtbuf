@@ -61,14 +61,14 @@ extern s_data_alloc  g_rtbuf_proc_alloc;
 extern s_rtbuf_proc *g_rtbuf_proc;
 
 void           rtbuf_proc_delete (s_rtbuf_proc *proc);
-void           rtbuf_proc_delete_all ();
+void           rtbuf_proc_delete_all (void);
 s_rtbuf_proc * rtbuf_proc_find (const char *x);
-void           rtbuf_proc_init ();
-s_rtbuf_proc * rtbuf_proc_new ();
+void           rtbuf_proc_init (void);
+s_rtbuf_proc * rtbuf_proc_new (void);
 int            rtbuf_proc_out_find (s_rtbuf_proc *proc,
                                     const char *name);
 int            rtbuf_proc_p (s_rtbuf_proc *proc);
 void           rtbuf_proc_print (s_rtbuf_proc *proc);
-void           rtbuf_proc_shutdown ();
+void           rtbuf_proc_shutdown (void);
 
 #endif

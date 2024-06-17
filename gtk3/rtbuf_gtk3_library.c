@@ -189,7 +189,7 @@ void rtbuf_gtk_library_load_directory (const char *path, size_t prefix_len)
   }
 }
 
-void rtbuf_gtk_library_load ()
+void rtbuf_gtk_library_load (void)
 {
   char **path = g_rtbuf_lib_path;
   if (g_rtbuf_gtk_library_tree) {

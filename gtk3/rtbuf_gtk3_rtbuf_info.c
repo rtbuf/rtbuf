@@ -22,14 +22,14 @@ s_data_type  g_rtbuf_gtk_rtbuf_info_type = {
 
 s_data_alloc g_rtbuf_gtk_rtbuf_info_alloc;
 
-void rtbuf_gtk_rtbuf_info_init ()
+void rtbuf_gtk_rtbuf_info_init (void)
 {
   data_alloc_init(&g_rtbuf_gtk_rtbuf_info_alloc,
                   &g_rtbuf_gtk_rtbuf_info_type,
                   RTBUF_MAX, 0, 0);
 }
 
-s_rtbuf_gtk_rtbuf_info *rtbuf_gtk_rtbuf_info_new ()
+s_rtbuf_gtk_rtbuf_info *rtbuf_gtk_rtbuf_info_new (void)
 {
   s_rtbuf_gtk_rtbuf_info *info =
     data_new(&g_rtbuf_gtk_rtbuf_info_alloc);

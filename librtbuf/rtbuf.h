@@ -168,7 +168,7 @@ extern f_rtbuf_unbind_cb g_rtbuf_unbind_cb;
  *
  * @sa librtbuf_shutdown
  */
-int librtbuf_init ();
+int librtbuf_init (void);
 
 /**
  * @brief Shutdown librtbuf.
@@ -178,7 +178,7 @@ int librtbuf_init ();
  *
  * @sa librtbuf_init
  */
-void librtbuf_shutdown ();
+void librtbuf_shutdown (void);
 
 int rtbuf_err (const char *msg);
 
@@ -220,13 +220,13 @@ void  rtbuf_bind (unsigned int src, unsigned int out,
 int   rtbuf_out_find (s_rtbuf *rtb, symbol sym);
 int   rtbuf_data_set (s_rtbuf *rtb, symbol name, void *value,
                       unsigned int size);
-void  rtbuf_sort ();
-int   rtbuf_start ();
-int   rtbuf_run ();
-void  rtbuf_stop ();
+void  rtbuf_sort (void);
+int   rtbuf_start (void);
+int   rtbuf_run (void);
+void  rtbuf_stop (void);
 void  rtbuf_print (const s_rtbuf *rtbuf);
 void  rtbuf_print_long (const s_rtbuf *rtbuf);
-void  rtbuf_print_sorted ();
+void  rtbuf_print_sorted (void);
 
 int  rtbuf_out_int (s_rtbuf *rtb, unsigned int out, int default_value);
 

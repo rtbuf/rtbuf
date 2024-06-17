@@ -26,7 +26,7 @@ s_data_type g_rtbuf_proc_type = {
 s_data_alloc g_rtbuf_proc_alloc;
 s_rtbuf_proc *g_rtbuf_proc;
 
-void rtbuf_proc_init ()
+void rtbuf_proc_init (void)
 {
   data_alloc_init(&g_rtbuf_proc_alloc, &g_rtbuf_proc_type,
                   RTBUF_PROC_MAX, 0, 0);
@@ -34,7 +34,7 @@ void rtbuf_proc_init ()
   assert(g_rtbuf_proc);
 }
 
-void rtbuf_proc_shutdown ()
+void rtbuf_proc_shutdown (void)
 {
   if (g_rtbuf_proc) {
     rtbuf_proc_delete_all();
@@ -48,7 +48,7 @@ int rtbuf_proc_p (s_rtbuf_proc *proc)
   return proc && proc->name;
 }
 
-s_rtbuf_proc * rtbuf_proc_new ()
+s_rtbuf_proc * rtbuf_proc_new (void)
 {
   s_rtbuf_proc *rf = data_new(&g_rtbuf_proc_alloc);
   return rf;
@@ -60,7 +60,7 @@ void rtbuf_proc_delete (s_rtbuf_proc *proc)
   data_delete(&g_rtbuf_proc_alloc, proc);
 }
 
-void rtbuf_proc_delete_all ()
+void rtbuf_proc_delete_all (void)
 {
   unsigned i = 0;
   int n = g_rtbuf_proc_alloc.n;

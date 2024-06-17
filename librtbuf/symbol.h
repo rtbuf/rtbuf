@@ -31,7 +31,7 @@ void   g_str_reset (char *head);
 extern symbol       g_symbols[SYMBOL_MAX];
 extern unsigned int g_symbols_n;
 
-void   symbols_init ();
+void   symbols_init (void);
 symbol symbol_new (symbol name);
 void   symbol_delete (symbol sym);
 symbol symbol_find (symbol name);

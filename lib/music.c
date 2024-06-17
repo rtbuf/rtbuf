@@ -20,7 +20,7 @@
 int    g_rtbuf_music_init = 0;
 double g_rtbuf_music_tune = 0.0;
 
-int rtbuf_music_init ()
+int rtbuf_music_init (void)
 {
   double tune_c;
   if (g_rtbuf_music_init)

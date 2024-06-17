@@ -30,7 +30,7 @@ s_data_type g_data_type_type = {
 s_data_alloc *g_data_type_alloc = NULL;
 u_data_type *g_data_type = NULL;
 
-int libdata_init ()
+int libdata_init (void)
 {
   data_alloc_init(&g_data_alloc_alloc, &g_data_alloc_type,
                   DATA_ALLOC_MAX, 0, (f_data_clean*) data_alloc_clean);
@@ -42,7 +42,7 @@ int libdata_init ()
   return 0;
 }
 
-void libdata_shutdown ()
+void libdata_shutdown (void)
 {
   if (g_data_alloc) {
     data_alloc_delete_all();
@@ -150,7 +150,7 @@ void data_alloc_delete (s_data_alloc *da)
   data_delete(&g_data_alloc_alloc, da);
 }
 
-void data_alloc_delete_all ()
+void data_alloc_delete_all (void)
 {
   unsigned i = 0;
   int n = g_data_alloc_alloc.n;

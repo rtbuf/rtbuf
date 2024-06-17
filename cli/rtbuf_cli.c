@@ -232,7 +232,7 @@ void * rtbuf_cli_run_thread_proc (void *arg)
   return 0;
 }
 
-int rtbuf_cli_start ()
+int rtbuf_cli_start (void)
 {
   if (!g_rtbuf_run && g_rtbuf_cli_run_thread) {
     if (pthread_join(g_rtbuf_cli_run_thread, 0))
@@ -255,7 +255,7 @@ int rtbuf_cli_start_ (int argc, const char *argv[])
   return rtbuf_cli_start();
 }
 
-int rtbuf_cli_stop ()
+int rtbuf_cli_stop (void)
 {
   if (g_rtbuf_run)
     g_rtbuf_run = 0;
@@ -355,7 +355,7 @@ void debug_read (int argc, const char **argv, f_cli f)
   }
 }
 
-void repl_init ()
+void repl_init (void)
 {
   cli_init(&g_cli);
   cli_prompt(&g_cli, "rtbuf> ");
@@ -374,7 +374,7 @@ int load (const char *path)
   return 0;
 }
 
-int repl ()
+int repl (void)
 {
   while (cli_read(&g_cli) >= 0) {
     /* debug_read(cli.argc, cli.argv, cli.f); */
@@ -383,7 +383,7 @@ int repl ()
   return 0;
 }
 
-int rtbuf_cli_do_event ()
+int rtbuf_cli_do_event (void)
 {
   if (cli_read_nonblocking(&g_cli) >= 0) {
     /* debug_read(cli.argc, cli.argv, cli.f); */

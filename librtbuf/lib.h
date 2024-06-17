@@ -88,12 +88,12 @@ extern s_data_alloc g_rtbuf_lib_alloc;
 extern s_rtbuf_lib *g_rtbuf_lib;
 
 void          rtbuf_lib_delete (s_rtbuf_lib *rl);
-void          rtbuf_lib_delete_all ();
+void          rtbuf_lib_delete_all (void);
 int           rtbuf_lib_find (const char *str);
-void          rtbuf_lib_init_ ();
-void          rtbuf_lib_shutdown ();
+void          rtbuf_lib_init_ (void);
+void          rtbuf_lib_shutdown (void);
 s_rtbuf_lib * rtbuf_lib_load (const char *path);
-s_rtbuf_lib * rtbuf_lib_new ();
+s_rtbuf_lib * rtbuf_lib_new (void);
 void          rtbuf_lib_print (const s_rtbuf_lib *lib);
 void          rtbuf_lib_print_long (unsigned int i);
 

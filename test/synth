@@ -4,8 +4,8 @@ let Keyboard00 = new glfw3/keyboard 100 100
 load synth/adsr
 let ADSR00 = new synth/adsr 300 300
 
-load signal/sinus
-let Osc00 = new signal/sinus 300 800
+load signal/square
+let Osc00 = new signal/square 300 800
 
 load synth/synth
 let Synth00 = new synth/synth 1000 100
@@ -14,10 +14,14 @@ bind Keyboard00 notes Synth00 notes
 bind ADSR00 signal Synth00 envelope
 bind Osc00 signal Synth00 oscillator
 
+load signal/flanger
+let Flanger00 = new signal/flanger 500 500
+
+bind Synth00 signal Flanger00 signal
+
 load portaudio/output
 let Output = new portaudio/output 1600 100
 
-bind Synth00 signal Output left
-bind Synth00 signal Output right
+bind Flanger00 signal Output left
 
 start

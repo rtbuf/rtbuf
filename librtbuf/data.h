@@ -92,9 +92,9 @@ s_data_alloc * data_alloc_new (s_data_type *t,
                                unsigned int max, f_data_init *init,
                                f_data_clean *clean);
 void           data_alloc_delete (s_data_alloc *da);
-void           data_alloc_delete_all ();
+void           data_alloc_delete_all (void);
 
-int libdata_init ();
-void libdata_shutdown ();
+int libdata_init (void);
+void libdata_shutdown (void);
 
 #endif
